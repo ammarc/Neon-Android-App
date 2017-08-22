@@ -1,2 +1,2 @@
 # Neon-Client
-client side stufff
+new template client
