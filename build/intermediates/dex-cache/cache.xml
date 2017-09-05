@@ -3,12 +3,30 @@
 
     <item
         is-multidex="false"
+        jar="/Users/soe/Library/Android/sdk/extras/m2repository/com/android/support/constraint/constraint-layout-solver/1.0.2/constraint-layout-solver-1.0.2.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="26.0.1"
+        sha1="b9cd8fc6bd15cb915735d34535db30ece0c44603">
+        <dex dex="/Users/soe/Documents/Uni/IT project/Neon-Client/app/build/intermediates/pre-dexed/debug/constraint-layout-solver-1.0.2_75f1d0d7c4e6a9ec69a689e192e28d2fe82c9eb6.jar" />
+    </item>
+    <item
+        is-multidex="false"
         jar="/Users/soe/Library/Android/sdk/extras/android/m2repository/com/android/support/support-annotations/26.0.0-alpha1/support-annotations-26.0.0-alpha1.jar"
         jumboMode="false"
         optimize="true"
         revision="26.0.1"
         sha1="023ee503b631f69511e335a061ea008f8da60f40">
         <dex dex="/Users/soe/Documents/Uni/IT project/Neon-Client/app/build/intermediates/pre-dexed/debug/support-annotations-26.0.0-alpha1_e00868b6f80995b7085f6924a36aff8c1c6b5af7.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/soe/.android/build-cache/c80be93db9c646cca257079dcc0e3c41d06b9b2b/output/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="26.0.1"
+        sha1="44ee06abb66da30f5855e6bf54574e64cdcd982a">
+        <dex dex="/Users/soe/Documents/Uni/IT project/Neon-Client/app/build/intermediates/pre-dexed/debug/classes_a7c97d65bb421454c6c70317ddc0066d95087838.jar" />
     </item>
     <item
         is-multidex="false"

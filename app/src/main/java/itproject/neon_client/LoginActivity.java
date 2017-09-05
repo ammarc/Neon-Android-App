@@ -3,6 +3,7 @@ package itproject.neon_client;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -345,6 +346,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             mAuthTask = null;
             showProgress(false);
         }
+    }
+
+    /** Called when the user taps the Send button */
+    public void loginButton(View view) {
+        // Do something in response to button
+        Intent intent = new Intent(this, SecondPageActivity.class);
+        startActivity(intent);
     }
 }
 
