@@ -25,7 +25,10 @@
         <activity
             android:name=".SecondPageActivity"
             android:parentActivityName=".LoginActivity">
-
+            <!-- The meta-data tag is required if you support API level 15 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".LoginActivity" />
         </activity>
         <activity
             android:name=".DisplayMessageActivity"

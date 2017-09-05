@@ -185,9 +185,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         } else {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
-            showProgress(true);
+            /*showProgress(true);
             mAuthTask = new UserLoginTask(email, password);
-            mAuthTask.execute((Void) null);
+            mAuthTask.execute((Void) null);*/
+            loginAction();
         }
     }
 
@@ -199,6 +200,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private boolean isPasswordValid(String password) {
         //TODO: Replace this with your own logic
         return password.length() > 4;
+    }
+
+    private void loginAction() {
+        Intent intent = new Intent(this, SecondPageActivity.class);
+        startActivity(intent);
     }
 
     /**
@@ -346,13 +352,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             mAuthTask = null;
             showProgress(false);
         }
-    }
-
-    /** Called when the user taps the Send button */
-    public void loginButton(View view) {
-        // Do something in response to button
-        Intent intent = new Intent(this, SecondPageActivity.class);
-        startActivity(intent);
     }
 }
 
