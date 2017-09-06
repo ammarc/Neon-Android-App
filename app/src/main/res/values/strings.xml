@@ -16,4 +16,5 @@
     </string>
     <string name="edit_message">Enter a message</string>
     <string name="button_send">Send</string>
+    <string name="title_activity_login2">Sign in</string>
 </resources>
