@@ -257,10 +257,13 @@ public class LoginActivity extends AppCompatActivity
         } else {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
-            /*showProgress(true);
+            showProgress(true);
             mAuthTask = new UserLoginTask(email, password);
             mAuthTask.execute((Void) null);
+<<<<<<< HEAD
             loginAction();
+=======
+>>>>>>> parent of 83059db... got some pages working together
         }
     }
 
@@ -274,9 +277,13 @@ public class LoginActivity extends AppCompatActivity
         return password.length() > 4;
     }
 
+<<<<<<< HEAD
     private void loginAction() {
 
 
+=======
+    /**
+>>>>>>> parent of 83059db... got some pages working together
      * Shows the progress UI and hides the login form.
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
@@ -418,6 +425,17 @@ public class LoginActivity extends AppCompatActivity
             showProgress(false);
         }
     }
+<<<<<<< HEAD
+=======
+
+    /** Called when the user taps the Send button */
+    public void loginButton(View view) {
+        // Do something in response to button
+        Intent intent = new Intent(this, SecondPageActivity.class);
+        startActivity(intent);
+    }
+}
+>>>>>>> parent of 83059db... got some pages working together
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

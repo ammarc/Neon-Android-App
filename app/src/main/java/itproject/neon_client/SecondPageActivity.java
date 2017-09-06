@@ -16,7 +16,7 @@ public class SecondPageActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_second_page);
+        setContentView(R.layout.activity_login);
     }
 
     /** Called when the user taps the Send button */
