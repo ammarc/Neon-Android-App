@@ -212,7 +212,7 @@ public class LoginActivity extends AppCompatActivity
 
 
 
-     * Attempts to sign in or register the account specified by the login form.
+     * Attempts to sign in or register the account specified by the login form. 
      * If there are form errors (invalid email, missing fields, etc.), the
      * errors are presented and no actual login attempt is made.
 
@@ -261,7 +261,10 @@ public class LoginActivity extends AppCompatActivity
             mAuthTask = new UserLoginTask(email, password);
             mAuthTask.execute((Void) null);
 <<<<<<< HEAD
+<<<<<<< HEAD
             loginAction();
+=======
+>>>>>>> parent of 83059db... got some pages working together
 =======
 >>>>>>> parent of 83059db... got some pages working together
         }
@@ -278,10 +281,13 @@ public class LoginActivity extends AppCompatActivity
     }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     private void loginAction() {
 
 
 =======
+=======
+>>>>>>> parent of 83059db... got some pages working together
     /**
 >>>>>>> parent of 83059db... got some pages working together
      * Shows the progress UI and hides the login form.
@@ -426,7 +432,10 @@ public class LoginActivity extends AppCompatActivity
         }
     }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> parent of 83059db... got some pages working together
 
     /** Called when the user taps the Send button */
     public void loginButton(View view) {
