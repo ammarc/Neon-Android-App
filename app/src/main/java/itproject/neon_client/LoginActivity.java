@@ -8,7 +8,6 @@ import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentActivity;
-import android.support.v7.app.AppCompatActivity;
 import android.app.LoaderManager.LoaderCallbacks;
 
 import android.content.CursorLoader;
@@ -23,10 +22,8 @@ import android.provider.ContactsContract;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -57,6 +54,9 @@ public class LoginActivity extends FragmentActivity implements LoaderCallbacks<C
 
     CallbackManager callbackManager;
     LoginButton fbLoginButton;
+    ProfileTracker profileTracker;
+
+    private String firstName, lastName;
 
     /**
      * Id to identity READ_CONTACTS permission request.
@@ -85,52 +85,16 @@ public class LoginActivity extends FragmentActivity implements LoaderCallbacks<C
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        setContentView(R.layout.activity_login);
+
         FacebookSdk.sdkInitialize(getApplicationContext());
         AppEventsLogger.activateApp(this);
 
         callbackManager = CallbackManager.Factory.create();
         fbLoginButton = (LoginButton) findViewById(R.id.fb_login_button);
-        //fbLoginButton.setReadPermissions("public_profile");
-
-        /*fbLoginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
-
-            ProfileTracker profileTracker;
-
-            @Override
-            public void onSuccess(LoginResult loginResult) {
-                if(Profile.getCurrentProfile() == null) {
-                    profileTracker = new ProfileTracker() {
-                        @Override
-                        protected void onCurrentProfileChanged(Profile profile, Profile profile2) {
-                            // profile2 is the new profile
-                            Log.v("facebook - profile", profile2.getFirstName());
-                            profileTracker.stopTracking();
-                        }
-                    };
-                    // no need to call startTracking() on mProfileTracker
-                    // because it is called by its constructor, internally.
-                }
-                else {
-                    Profile profile = Profile.getCurrentProfile();
-                    Log.v("facebook - profile", profile.getFirstName());
-                }
-            }
-
-            @Override
-            public void onCancel() {
-                Log.v("facebook - onCancel", "cancelled");
-            }
-
-            @Override
-            public void onError(FacebookException e) {
-                Log.v("facebook - onError", e.getMessage());
-            }
-        });*/
 
         LoginManager.getInstance().registerCallback(callbackManager,
                 new FacebookCallback<LoginResult>() {
-
-                    ProfileTracker profileTracker;
 
                     @Override
                     public void onSuccess(LoginResult loginResult) {
@@ -140,18 +104,20 @@ public class LoginActivity extends FragmentActivity implements LoaderCallbacks<C
                                 @Override
                                 protected void onCurrentProfileChanged(Profile profile, Profile profile2) {
                                     // profile2 is the new profile
-                                    Log.i("facebook - profile", profile2.getFirstName());
+                                    firstName = profile2.getFirstName();
+                                    lastName = profile2.getLastName();
+                                    Log.i("fb profile: ", firstName + " " + lastName);
                                     profileTracker.stopTracking();
                                 }
                             };
+
                             // no need to call startTracking() on mProfileTracker
                             // because it is called by its constructor, internally.
                         }
                         else {
                             Profile profile = Profile.getCurrentProfile();
-                            Log.v("facebook - profile", profile.getFirstName());
+                            Log.i("facebook profile: ", profile.getFirstName());
                         }
-
                     }
 
                     @Override
@@ -165,7 +131,6 @@ public class LoginActivity extends FragmentActivity implements LoaderCallbacks<C
                     }
                 });
 
-        setContentView(R.layout.activity_login);
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         populateAutoComplete();
@@ -199,6 +164,13 @@ public class LoginActivity extends FragmentActivity implements LoaderCallbacks<C
     protected void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         callbackManager.onActivityResult(requestCode, resultCode, data);
+        startActivity(new Intent(LoginActivity.this, SecondPageActivity.class));
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        profileTracker.stopTracking();
     }
 
 

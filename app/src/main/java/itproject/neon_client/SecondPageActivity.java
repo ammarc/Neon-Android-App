@@ -3,8 +3,12 @@ package itproject.neon_client;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
+
+import com.facebook.Profile;
 
 /**
  * Created by kit on 5/9/17.
@@ -17,6 +21,12 @@ public class SecondPageActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_second_page);
+
+        TextView user_info_display = (TextView) findViewById(R.id.user_info_display);
+        //Profile profile = Profile.getCurrentProfile();
+
+        //Log.i("second page profile: ", profile.getFirstName());
+        //user_info_display.setText(profile.getFirstName() + " " + profile.getLastName());
     }
 
     /** Called when the user taps the Send button */
