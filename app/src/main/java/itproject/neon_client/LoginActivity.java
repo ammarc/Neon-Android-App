@@ -98,8 +98,12 @@ public class LoginActivity extends FragmentActivity implements LoaderCallbacks<C
 
                     @Override
                     public void onSuccess(LoginResult loginResult) {
+
+                        Log.i("success ", "no profile yet");
+
                         // App code
                         if(Profile.getCurrentProfile() == null) {
+                            Log.i("profile == null","setting new");
                             profileTracker = new ProfileTracker() {
                                 @Override
                                 protected void onCurrentProfileChanged(Profile profile, Profile profile2) {
