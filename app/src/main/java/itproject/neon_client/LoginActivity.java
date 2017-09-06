@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.app.LoaderManager.LoaderCallbacks;
 
@@ -20,15 +21,29 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.FacebookSdk;
+import com.facebook.Profile;
+import com.facebook.ProfileTracker;
+import com.facebook.appevents.AppEventsLogger;
+import com.facebook.login.LoginManager;
+import com.facebook.login.LoginResult;
+import com.facebook.login.widget.LoginButton;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +53,10 @@ import static android.Manifest.permission.READ_CONTACTS;
 /**
  * A login screen that offers login via email/password.
  */
-public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
+public class LoginActivity extends FragmentActivity implements LoaderCallbacks<Cursor> {
+
+    CallbackManager callbackManager;
+    LoginButton fbLoginButton;
 
     /**
      * Id to identity READ_CONTACTS permission request.
@@ -66,6 +84,87 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        FacebookSdk.sdkInitialize(getApplicationContext());
+        AppEventsLogger.activateApp(this);
+
+        callbackManager = CallbackManager.Factory.create();
+        fbLoginButton = (LoginButton) findViewById(R.id.fb_login_button);
+        //fbLoginButton.setReadPermissions("public_profile");
+
+        /*fbLoginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+
+            ProfileTracker profileTracker;
+
+            @Override
+            public void onSuccess(LoginResult loginResult) {
+                if(Profile.getCurrentProfile() == null) {
+                    profileTracker = new ProfileTracker() {
+                        @Override
+                        protected void onCurrentProfileChanged(Profile profile, Profile profile2) {
+                            // profile2 is the new profile
+                            Log.v("facebook - profile", profile2.getFirstName());
+                            profileTracker.stopTracking();
+                        }
+                    };
+                    // no need to call startTracking() on mProfileTracker
+                    // because it is called by its constructor, internally.
+                }
+                else {
+                    Profile profile = Profile.getCurrentProfile();
+                    Log.v("facebook - profile", profile.getFirstName());
+                }
+            }
+
+            @Override
+            public void onCancel() {
+                Log.v("facebook - onCancel", "cancelled");
+            }
+
+            @Override
+            public void onError(FacebookException e) {
+                Log.v("facebook - onError", e.getMessage());
+            }
+        });*/
+
+        LoginManager.getInstance().registerCallback(callbackManager,
+                new FacebookCallback<LoginResult>() {
+
+                    ProfileTracker profileTracker;
+
+                    @Override
+                    public void onSuccess(LoginResult loginResult) {
+                        // App code
+                        if(Profile.getCurrentProfile() == null) {
+                            profileTracker = new ProfileTracker() {
+                                @Override
+                                protected void onCurrentProfileChanged(Profile profile, Profile profile2) {
+                                    // profile2 is the new profile
+                                    Log.i("facebook - profile", profile2.getFirstName());
+                                    profileTracker.stopTracking();
+                                }
+                            };
+                            // no need to call startTracking() on mProfileTracker
+                            // because it is called by its constructor, internally.
+                        }
+                        else {
+                            Profile profile = Profile.getCurrentProfile();
+                            Log.v("facebook - profile", profile.getFirstName());
+                        }
+
+                    }
+
+                    @Override
+                    public void onCancel() {
+                        // App code
+                    }
+
+                    @Override
+                    public void onError(FacebookException exception) {
+                        // App code
+                    }
+                });
+
         setContentView(R.layout.activity_login);
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
@@ -94,6 +193,14 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
     }
+
+
+    @Override
+    protected void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        callbackManager.onActivityResult(requestCode, resultCode, data);
+    }
+
 
     private void populateAutoComplete() {
         if (!mayRequestContacts()) {
