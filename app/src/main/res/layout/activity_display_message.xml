@@ -7,12 +7,12 @@
     tools:context="itproject.neon_client.DisplayMessageActivity">
 
     <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="TextView"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        tools:layout_editor_absoluteY="6dp"
-        android:layout_marginTop="16dp" />
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="TextView"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent" tools:layout_constraintTop_creator="1"
+            tools:layout_constraintRight_creator="1" android:layout_marginTop="38dp"
+            tools:layout_constraintLeft_creator="1" app:layout_constraintTop_toTopOf="parent"/>
 </android.support.constraint.ConstraintLayout>

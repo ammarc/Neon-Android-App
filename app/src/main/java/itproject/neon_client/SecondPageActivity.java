@@ -48,7 +48,7 @@ public class SecondPageActivity extends AppCompatActivity {
             Log.i("profile firstname ","null");
         }
         else {
-            Log.i("profile okkk ", firstName + " " + lastName);
+            Log.i("profile ok", firstName + " " + lastName);
         }
 
         //Log.i("second page firstName: ", firstName);
@@ -56,7 +56,7 @@ public class SecondPageActivity extends AppCompatActivity {
         //Log.i("second page profile: ", profile.getFirstName());
         //user_info_display.setText(profile.getFirstName() + " " + profile.getLastName());
 
-        user_info_display.setText("heyyyyy");
+        user_info_display.setText("hey");
     }
 
     /** Called when the user taps the Send button */

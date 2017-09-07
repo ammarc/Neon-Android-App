@@ -24,7 +24,7 @@
         android:layout_width="168dp"
         android:layout_height="67dp"
         android:hint="@string/button_send"
-        android:text="Button"
+        android:text="Send"
         android:onClick="sendMessage"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -37,11 +37,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="16dp"
-        android:layout_marginTop="16dp"
         android:text="TextView"
         android:textAppearance="@style/TextAppearance.AppCompat.Display1"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        tools:layout_editor_absoluteY="16dp"/>
 
 
 </android.support.constraint.ConstraintLayout>

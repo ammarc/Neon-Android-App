@@ -174,7 +174,7 @@ public class LoginActivity extends FragmentActivity implements LoaderCallbacks<C
     @Override
     public void onDestroy() {
         super.onDestroy();
-        profileTracker.stopTracking();
+        //profileTracker.stopTracking();
     }
 
 
