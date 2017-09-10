@@ -28,7 +28,7 @@
         </activity>
 
         <activity
-            android:name=".SecondPageActivity"
+            android:name=".ProfilePageActivity"
             android:parentActivityName=".LoginActivity">
             <!-- The meta-data tag is required if you support API level 15 and lower -->
             <meta-data
@@ -38,13 +38,13 @@
         </activity>
 
         <activity
-            android:name=".DisplayMessageActivity"
-            android:parentActivityName=".SecondPageActivity">
+            android:name=".ChatActivity"
+            android:parentActivityName=".ProfilePageActivity">
 
             <!-- The meta-data tag is required if you support API level 15 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".SecondPageActivity" />
+                android:value=".ProfilePageActivity" />
         </activity>
 
         <meta-data android:name="com.facebook.sdk.ApplicationId"
