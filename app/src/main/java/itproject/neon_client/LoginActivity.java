@@ -52,11 +52,10 @@ import static android.Manifest.permission.READ_CONTACTS;
  */
 public class LoginActivity extends FragmentActivity implements LoaderCallbacks<Cursor> {
 
+
     CallbackManager callbackManager;
     LoginButton fbLoginButton;
     ProfileTracker profileTracker;
-
-    private String firstName, lastName;
 
     /**
      * Id to identity READ_CONTACTS permission request.
@@ -108,9 +107,9 @@ public class LoginActivity extends FragmentActivity implements LoaderCallbacks<C
                                 @Override
                                 protected void onCurrentProfileChanged(Profile profile, Profile profile2) {
                                     // profile2 is the new profile
-                                    firstName = profile2.getFirstName();
-                                    lastName = profile2.getLastName();
-                                    Log.i("fb profile: ", firstName + " " + lastName);
+                                    User.setFirstName(profile2.getFirstName());
+                                    User.setLastName(profile2.getLastName());
+                                    Log.i("fb profile: ", User.getFirstName() + " " + User.getLastName());
                                     profileTracker.stopTracking();
                                 }
                             };
