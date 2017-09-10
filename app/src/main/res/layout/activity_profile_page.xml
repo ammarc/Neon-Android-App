@@ -4,20 +4,23 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="itproject.neon_client.ProfilePageActivity">
+    tools:context="itproject.neon_client.ProfilePageActivity"
+    android:background="@color/black">
 
     <TextView
         android:id="@+id/user_info_display"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="16dp"
         android:text="TextView"
         android:textAppearance="@style/TextAppearance.AppCompat"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        android:gravity="center_horizontal"
         android:textSize="30dp"
-        android:layout_marginStart="16dp" />
+        android:textColor="@color/blue"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintHorizontal_bias="0.501"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="24dp" />
 
     <TableLayout
         android:id="@+id/friends_table"

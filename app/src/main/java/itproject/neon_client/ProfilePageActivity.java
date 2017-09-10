@@ -61,13 +61,14 @@ public class ProfilePageActivity extends AppCompatActivity {
         TextView tv0 = new TextView(this);
         tv0.setText("Friends");
         tv0.setTextSize(20);
-        tv0.setTextColor(Color.BLACK);
+        tv0.setTextColor(Color.WHITE);
         tbrow0.addView(tv0);
         stk.addView(tbrow0);
         for (final String friend : friends) {
             TableRow tbrow = new TableRow(this);
             TextView t1v = new TextView(this);
             t1v.setText(friend);
+            t1v.setTextColor(Color.WHITE);
             t1v.setGravity(Gravity.LEFT);
             tbrow.addView(t1v);
             tbrow.setOnClickListener(new View.OnClickListener() {
