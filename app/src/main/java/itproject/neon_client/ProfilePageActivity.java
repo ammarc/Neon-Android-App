@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -42,7 +43,6 @@ public class ProfilePageActivity extends AppCompatActivity {
         user_info_display.setText("Welcome " + firstName + " " + lastName);
 
         init();
-
     }
 
 
@@ -57,17 +57,12 @@ public class ProfilePageActivity extends AppCompatActivity {
 
     public void init() {
         TableLayout stk = (TableLayout) findViewById(R.id.friends_table);
-        TableRow tbrow0 = new TableRow(this);
-        TextView tv0 = new TextView(this);
-        tv0.setText("Friends");
-        tv0.setTextSize(20);
-        tv0.setTextColor(Color.WHITE);
-        tbrow0.addView(tv0);
-        stk.addView(tbrow0);
         for (final String friend : friends) {
             TableRow tbrow = new TableRow(this);
             TextView t1v = new TextView(this);
             t1v.setText(friend);
+            t1v.setMinHeight(100);
+            t1v.setTextSize(15);
             t1v.setTextColor(Color.WHITE);
             t1v.setGravity(Gravity.LEFT);
             tbrow.addView(t1v);

@@ -33,13 +33,6 @@ public class LoginActivity extends FragmentActivity {
     LoginButton fbLoginButton;
     ProfileTracker profileTracker;
 
-
-    // UI references.
-    private AutoCompleteTextView mEmailView;
-    private EditText mPasswordView;
-    private View mProgressView;
-    private View mLoginFormView;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,9 +53,8 @@ public class LoginActivity extends FragmentActivity {
             User.setFirstName(Profile.getCurrentProfile().getFirstName());
             User.setLastName(Profile.getCurrentProfile().getLastName());
 
-            TextView textView = (TextView) findViewById(R.id.logged_in_button);
             String message = "Continue as " + User.getFirstName();
-            textView.setText(message);
+            loggedInButton.setText(message);
         }
 
         LoginManager.getInstance().registerCallback(callbackManager,
