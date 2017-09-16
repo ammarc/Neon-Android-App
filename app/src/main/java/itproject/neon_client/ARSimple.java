@@ -7,8 +7,10 @@ import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.widget.FrameLayout;
-import artoolkit.ar.base.ARActivity;
-import artoolkit.ar.base.rendering.ARRenderer;
+
+import org.artoolkit.ar.base.ARActivity;
+import org.artoolkit.ar.base.rendering.ARRenderer;
+
 
 public class ARSimple extends ARActivity
 {

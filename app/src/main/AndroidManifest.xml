@@ -17,6 +17,13 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
+        <activity android:name=".ARSimple"
+                  android:parentActivityName=".ProfilePageActivity">
+                <meta-data android:name="android.support.PARENT_ACTIVITY"
+                            android:value = ".ARSimple"/>
+        </activity>
+
         <activity
             android:name=".LoginActivity"
             android:label="@string/app_name">
