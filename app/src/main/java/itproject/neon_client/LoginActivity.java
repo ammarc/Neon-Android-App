@@ -1,5 +1,6 @@
 package itproject.neon_client;
 
+import android.app.Application;
 import android.content.Intent;
 import android.support.v4.app.FragmentActivity;
 
@@ -23,6 +24,8 @@ import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 
+import eu.kudan.kudan.ARAPIKey;
+
 /**
  * A login screen that offers login via facebook.
  */
@@ -40,9 +43,11 @@ public class LoginActivity extends FragmentActivity {
     private View mProgressView;
     private View mLoginFormView;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
 
         setContentView(R.layout.activity_login);
 
@@ -129,7 +134,7 @@ public class LoginActivity extends FragmentActivity {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        profileTracker.stopTracking();
+        //profileTracker.stopTracking();
     }
 }
 
