@@ -1,24 +1,17 @@
 package itproject.neon_client;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
 import android.view.View;
-import android.widget.CheckBox;
-import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
-import java.util.List;
 
-import static android.R.attr.onClick;
-import static android.R.attr.rowHeight;
+import java.util.List;
 
 /**
  * Created by kit on 5/9/17.

@@ -1,4 +1,4 @@
-package com.example.chatiui;
+package co.intentservice.chatui;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -23,11 +23,12 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+
 import java.util.ArrayList;
 
-import com.example.chatiui.fab.FloatingActionsMenu;
-import com.example.chatiui.models.ChatMessage;
-import com.example.chatiui.models.ChatMessage.Type;
+import co.intentservice.chatui.fab.FloatingActionsMenu;
+import co.intentservice.chatui.models.ChatMessage;
+import co.intentservice.chatui.models.ChatMessage.Type;
 
 /**
  * Created by timi on 17/11/2015.

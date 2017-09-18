@@ -23,6 +23,9 @@ import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 
+//import com.example.chatiui.ChatView;
+//import com.example.chatiui.models.ChatMessage;
+
 /**
  * A login screen that offers login via facebook.
  */

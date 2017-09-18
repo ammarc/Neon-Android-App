@@ -1,4 +1,4 @@
-package com.example.chatiui;
+package co.intentservice.chatui;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;
