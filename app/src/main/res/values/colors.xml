@@ -7,4 +7,7 @@
     <color name="blue">#ade1ff</color>
     <color name="facebookBlue">#3b5998</color>
     <color name="white">#FFFFFF</color>
+    <color name="whatsapp_green">#00897b</color>
+    <color name="bubble_background_rcv">#f3ffd2</color>
+    <color name="bubble_background_send">#d2ffdb</color>
 </resources>

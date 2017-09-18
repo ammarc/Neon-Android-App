@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:chatview="http://schemas.android.com/apk/res-auto"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
     tools:context="itproject.neon_client.ChatActivity"
     android:background="@color/black">
 
@@ -17,4 +20,12 @@
             app:layout_constraintLeft_toLeftOf="parent" tools:layout_constraintTop_creator="1"
             tools:layout_constraintRight_creator="1" android:layout_marginTop="38dp"
             tools:layout_constraintLeft_creator="1" app:layout_constraintTop_toTopOf="parent"/>
+
+
 </android.support.constraint.ConstraintLayout>
+
+    <!--chatview:backgroundColor="@color/white"
+            chatview:bubbleElevation="elevated"
+            chatview:bubbleBackgroundRcv="@color/blue"
+            chatview:bubbleBackgroundSend="@color/white"
+            android:layout_marginTop="8dp"-->

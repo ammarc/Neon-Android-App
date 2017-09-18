@@ -56,7 +56,7 @@ public class ProfilePageActivity extends AppCompatActivity {
 
 
     public void init() {
-        TableLayout stk = (TableLayout) findViewById(R.id.friends_table);
+        TableLayout friends_table = (TableLayout) findViewById(R.id.friends_table);
         for (final String friend : friends) {
             TableRow tbrow = new TableRow(this);
             TextView t1v = new TextView(this);
@@ -72,9 +72,27 @@ public class ProfilePageActivity extends AppCompatActivity {
                     chat(friend);
                 }
             });
-            stk.addView(tbrow);
+            friends_table.addView(tbrow);
         }
 
+        TableLayout friend_requests_table = (TableLayout) findViewById(R.id.friend_requests_table);
+        for (final String friend : User.getFriendRequests()) {
+            TableRow tbrow = new TableRow(this);
+            TextView t1v = new TextView(this);
+            t1v.setText(friend);
+            t1v.setMinHeight(100);
+            t1v.setTextSize(15);
+            t1v.setTextColor(Color.WHITE);
+            t1v.setGravity(Gravity.LEFT);
+            tbrow.addView(t1v);
+            tbrow.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    // Code here executes on main thread after user presses button
+                    chat(friend);
+                }
+            });
+            friend_requests_table.addView(tbrow);
+        }
     }
 
 
