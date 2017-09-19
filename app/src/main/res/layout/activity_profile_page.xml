@@ -32,6 +32,12 @@
         android:layout_marginLeft="16dp"
         android:layout_marginTop="10dp">
     </TableLayout>
+    <Button
+            android:text="Camera"
+            android:onClick="cameraClick"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" tools:layout_editor_absoluteY="414dp"
+            tools:layout_editor_absoluteX="147dp" android:id="@+id/button2"/>
 
 
 </android.support.constraint.ConstraintLayout>
