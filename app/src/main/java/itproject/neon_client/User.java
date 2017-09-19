@@ -9,6 +9,7 @@ import java.util.List;
  */
 
 public class User {
+    public static final String myName = "John";
     private static String firstName;
     private static String lastName;
     private static String username;
