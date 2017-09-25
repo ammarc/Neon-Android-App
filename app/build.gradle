@@ -16,6 +16,11 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    aaptOptions
+    {
+        noCompress 'KARMarker'
+        noCompress 'armodel'
+    }
 }
 
 dependencies {
@@ -29,4 +34,5 @@ dependencies {
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile 'co.intentservice.android-chat-ui:chat-ui:0.1.1'
     testCompile 'junit:junit:4.12'
+    compile project(':KudanAR')
 }

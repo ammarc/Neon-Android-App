@@ -1,1 +1,1 @@
-include ':app', ':chat-ui', ':java'
+include ':app', ':chat-ui', ':java', ':KudanAR'

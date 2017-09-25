@@ -8,6 +8,8 @@ com_crashlytics_export_strings.xml
 local.properties
 
 # Gradle generated files
+*.gradle*
+!build.gradle
 
 # Signing files
 .signing/
@@ -23,9 +25,4 @@ local.properties
 .Spotlight-V100
 .Trashes
 ehthumbs.db
-<<<<<<< Updated upstream
 Thumbs.db
-=======
-Thumbs.db 
-
->>>>>>> Stashed changes

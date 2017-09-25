@@ -38,6 +38,11 @@ public class ProfilePageActivity extends AppCompatActivity {
         init();
     }
 
+    public void cameraClick (View view) {
+        // Do something in response to button
+        Intent intent = new Intent(this, ARSimple.class);
+        startActivity(intent);
+    }
 
     /** Called when the user taps the Send button */
     public void chat(String friend) {
