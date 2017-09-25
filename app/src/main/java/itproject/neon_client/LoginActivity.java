@@ -2,15 +2,15 @@ package itproject.neon_client;
 
 import android.app.Application;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
+import android.provider.MediaStore;
 import android.support.v4.app.FragmentActivity;
 
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
 
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
@@ -36,14 +36,6 @@ public class LoginActivity extends FragmentActivity {
     LoginButton fbLoginButton;
     ProfileTracker profileTracker;
 
-
-    // UI references.
-    private AutoCompleteTextView mEmailView;
-    private EditText mPasswordView;
-    private View mProgressView;
-    private View mLoginFormView;
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,9 +57,8 @@ public class LoginActivity extends FragmentActivity {
             User.setFirstName(Profile.getCurrentProfile().getFirstName());
             User.setLastName(Profile.getCurrentProfile().getLastName());
 
-            TextView textView = (TextView) findViewById(R.id.logged_in_button);
-            String message = "Continue as " + User.getFirstName();
-            textView.setText(message);
+            String message = "Continue as " + Profile.getCurrentProfile().getFirstName();
+            loggedInButton.setText(message);
         }
 
         LoginManager.getInstance().registerCallback(callbackManager,
@@ -78,23 +69,19 @@ public class LoginActivity extends FragmentActivity {
 
                         // App code
                         if (Profile.getCurrentProfile() == null) {
-                            Log.i("profile == null", "setting new");
                             profileTracker = new ProfileTracker() {
                                 @Override
                                 protected void onCurrentProfileChanged(Profile profile, Profile profile2) {
                                     // profile2 is the new profile
                                     User.setFirstName(profile2.getFirstName());
                                     User.setLastName(profile2.getLastName());
-                                    Log.i("fb profile: ", User.getFirstName() + " " + User.getLastName());
+                                    Log.i("fb profile: ", profile2.getFirstName() + " " + profile2.getLastName());
                                     profileTracker.stopTracking();
                                 }
                             };
 
                             // no need to call startTracking() on mProfileTracker
                             // because it is called by its constructor, internally.
-                        } else {
-                            Profile profile = Profile.getCurrentProfile();
-                            Log.i("facebook profile: ", profile.getFirstName());
                         }
                     }
 
@@ -114,8 +101,10 @@ public class LoginActivity extends FragmentActivity {
     /** Called when the user taps the continue as -- button */
     public void ContinueLoggedIn(View view) {
         // Do something in response to button
+        Button loggedInButton = (Button) findViewById(R.id.logged_in_button);
         Intent intent = new Intent(this, ProfilePageActivity.class);
         startActivity(intent);
+        loggedInButton.setVisibility(View.INVISIBLE);
     }
 
     public boolean isLoggedIn() {
@@ -127,6 +116,17 @@ public class LoginActivity extends FragmentActivity {
     @Override
     protected void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        {
+            /*Uri imageUri = data.getData();
+            try {
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageUri);
+                User.setDp(bitmap);
+                Log.i("profile dp", "worked");
+            } catch (IOException e) {
+                Log.i("profile dp", "didn't work");
+                e.printStackTrace();
+            }*/
+        }
         callbackManager.onActivityResult(requestCode, resultCode, data);
         startActivity(new Intent(LoginActivity.this, ProfilePageActivity.class));
     }
