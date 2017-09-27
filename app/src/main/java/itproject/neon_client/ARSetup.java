@@ -2,9 +2,6 @@ package itproject.neon_client;
 
 import eu.kudan.kudan.ARAPIKey;
 
-/**
- * Created by ammar on 9/18/17.
- */
 
 public class ARSetup {
     public void setupAR() {
