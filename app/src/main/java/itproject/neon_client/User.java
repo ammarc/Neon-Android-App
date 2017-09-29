@@ -1,5 +1,7 @@
 package itproject.neon_client;
 
+import android.graphics.Bitmap;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -13,7 +15,9 @@ public class User {
     private static String firstName;
     private static String lastName;
     private static String username;
-    private static List<String> friends = new ArrayList<>(Arrays.asList("lucy_green", "Stacey_Jane", "Adam_Ryan", "Samuel_Smith", "Ron_Weasley", "Hermione_Granger", "Harry_Potter", "Ginny_Weasley"));
+    private static Bitmap dp;
+    private static List<String> friends = new ArrayList<>(Arrays.asList("lucy_green", "Stacey_Jane", "Adam_Ryan", "Samuel_Smith", "Ron_Weasley", "Hermione_Granger"));
+    private static List<String> friend_requests = new ArrayList<>(Arrays.asList("Harry_Potter", "Ginny_Weasley"));
 
     public static String getFirstName() {
         return firstName;
@@ -35,10 +39,22 @@ public class User {
         return friends;
     }
 
-    public String getUserName() {
+    public static List<String> getFriendRequests() {
+        return friend_requests;
+    }
+
+    public static String getUserName() {
         if (username == null) {
             return firstName + "_" + lastName;
         }
         return username;
+    }
+
+    public static Bitmap getDp() {
+        return dp;
+    }
+
+    public static void setDp(Bitmap dp1) {
+        dp = dp1;
     }
 }

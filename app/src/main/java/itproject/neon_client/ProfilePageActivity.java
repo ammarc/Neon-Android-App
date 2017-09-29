@@ -1,23 +1,17 @@
 package itproject.neon_client;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
 import android.view.View;
-import android.widget.CheckBox;
-import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
-import java.util.List;
 
-import static android.R.attr.onClick;
-import static android.R.attr.rowHeight;
+import java.util.List;
 
 /**
  * Created by kit on 5/9/17.
@@ -42,9 +36,13 @@ public class ProfilePageActivity extends AppCompatActivity {
         user_info_display.setText("Welcome " + firstName + " " + lastName);
 
         init();
-
     }
 
+    public void cameraClick (View view) {
+        // Do something in response to button
+        Intent intent = new Intent(this, ARSimple.class);
+        startActivity(intent);
+    }
 
     /** Called when the user taps the Send button */
     public void chat(String friend) {
@@ -56,18 +54,13 @@ public class ProfilePageActivity extends AppCompatActivity {
 
 
     public void init() {
-        TableLayout stk = (TableLayout) findViewById(R.id.friends_table);
-        TableRow tbrow0 = new TableRow(this);
-        TextView tv0 = new TextView(this);
-        tv0.setText("Friends");
-        tv0.setTextSize(20);
-        tv0.setTextColor(Color.WHITE);
-        tbrow0.addView(tv0);
-        stk.addView(tbrow0);
+        TableLayout friends_table = (TableLayout) findViewById(R.id.friends_table);
         for (final String friend : friends) {
             TableRow tbrow = new TableRow(this);
             TextView t1v = new TextView(this);
             t1v.setText(friend);
+            t1v.setMinHeight(100);
+            t1v.setTextSize(15);
             t1v.setTextColor(Color.WHITE);
             t1v.setGravity(Gravity.LEFT);
             tbrow.addView(t1v);
@@ -77,9 +70,27 @@ public class ProfilePageActivity extends AppCompatActivity {
                     chat(friend);
                 }
             });
-            stk.addView(tbrow);
+            friends_table.addView(tbrow);
         }
 
+        TableLayout friend_requests_table = (TableLayout) findViewById(R.id.friend_requests_table);
+        for (final String friend : User.getFriendRequests()) {
+            TableRow tbrow = new TableRow(this);
+            TextView t1v = new TextView(this);
+            t1v.setText(friend);
+            t1v.setMinHeight(100);
+            t1v.setTextSize(15);
+            t1v.setTextColor(Color.WHITE);
+            t1v.setGravity(Gravity.LEFT);
+            tbrow.addView(t1v);
+            tbrow.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    // Code here executes on main thread after user presses button
+                    chat(friend);
+                }
+            });
+            friend_requests_table.addView(tbrow);
+        }
     }
 
 
