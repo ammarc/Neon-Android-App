@@ -49,9 +49,9 @@ public class ChatActivity extends AppCompatActivity {
         mySocket.connect();
     }
 
-    /*protected void onDestroy(){
+    protected void onDestroy(){
         super.onDestroy();
-    }*/
+    }
 
 }
 
