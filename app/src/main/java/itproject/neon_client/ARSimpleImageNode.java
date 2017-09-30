@@ -62,8 +62,11 @@ public class ARSimpleImageNode extends ARImageNode
             if (i == 0)
             {
                 // Log.e(TAG, "The current angle for now is: " + currentAngleRadians);
-                orientationMatrix[0] = updatedRotationMatrix[0] -  currentAngleRadians;
+                // orientationMatrix[0] = updatedRotationMatrix[0] -  currentAngleRadians;
                 // Log.e(TAG, "The oM is " + orientationMatrix[0]);
+                /////////////////////
+                orientationMatrix[0] = newYaw -  currentAngleRadians;
+                /////////////////////
             }
            else
             {

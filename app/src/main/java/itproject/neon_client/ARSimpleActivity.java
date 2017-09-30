@@ -31,6 +31,9 @@ public class ARSimpleActivity extends ARActivity implements SensorEventListener,
     // TODO: set the following two constants back to their original values
     private static final int LOCATION_MIN_TIME = 0;
     private static final int LOCATION_MIN_DISTANCE = 0;
+    // TODO: these are test coordinates (South Lawn), we need to change them to the friend's location
+    private static final double TEST_LOCATION_LATITUDE = -37.798649;
+    private static final double TEST_LOCATION_LONGITUDE= 144.960338;
     // private static final int LOCATION_MIN_TIME = 30 * 1000;
     // private static final int LOCATION_MIN_DISTANCE = 10;
     private static final int INITIAL_SENSOR_ACTIVITY_NUM = 500;
@@ -51,6 +54,7 @@ public class ARSimpleActivity extends ARActivity implements SensorEventListener,
     private Sensor sensorMagnetic;
     private LocationManager locationManager;
     private Location currentLocation;
+    private Location destLocation;
     private GeomagneticField geomagneticField;
     private double bearing = 0;
     private ARSimpleImageNode targetNode;
@@ -191,6 +195,9 @@ public class ARSimpleActivity extends ARActivity implements SensorEventListener,
                     , Toast.LENGTH_SHORT).show();
         }
 
+        destLocation = new Location(currentLocation);
+        destLocation.setLatitude(TEST_LOCATION_LATITUDE);
+        destLocation.setLongitude(TEST_LOCATION_LONGITUDE);
 
     }
 
@@ -207,15 +214,15 @@ public class ARSimpleActivity extends ARActivity implements SensorEventListener,
     @Override
     public void onLocationChanged(Location location)
     {
+        // Log.e(TAG, "I am in onLocationChanged");
         currentLocation = location;
+        // Log.e(TAG, "Found the current location to be " + currentLocation);
         // can be used to update location info on screen
         geomagneticField = new GeomagneticField(
                 (float) currentLocation.getLatitude(),
                 (float) currentLocation.getLongitude(),
                 (float) currentLocation.getAltitude(),
                 System.currentTimeMillis());
-        Log.e(TAG, "onLocationChanged: ");
-        Log.e(TAG, "Found the current location to be " + currentLocation);
     }
 
     @Override
@@ -288,7 +295,10 @@ public class ARSimpleActivity extends ARActivity implements SensorEventListener,
         }
         else if (targetNode != null && numSensorChanged > INITIAL_SENSOR_ACTIVITY_NUM-1)
         {
-            targetNode.updateOrientationMatrix(orientation, orientation[0]);
+            // targetNode.updateOrientationMatrix(orientation, orientation[0]);
+            Log.e(TAG, "The angle to dest is " + currentLocation.bearingTo(destLocation));
+            targetNode.updateOrientationMatrix(orientation, orientation[0] -
+                                (float) Math.toRadians(currentLocation.bearingTo(destLocation)));
         }
     }
 
