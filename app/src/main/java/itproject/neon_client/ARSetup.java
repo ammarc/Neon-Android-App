@@ -3,8 +3,10 @@ package itproject.neon_client;
 import eu.kudan.kudan.ARAPIKey;
 
 
-public class ARSetup {
-    public void setupAR() {
+public class ARSetup
+{
+    public void setupAR()
+    {
         ARAPIKey key = ARAPIKey.getInstance();
         key.setAPIKey("SXPsvJHcUUalWkk+f7dm9xDp6hHT34Nx6zzozia8QH5Jvc/pxTax4Xci834x9Z9CqWJurPZ0lkK2" +
                 "8LTT9xs9VsYq2HKimtQVxc+XXZ+7L4IAi61t2qZgpIYB/w1Iv1noZDtotpsF0LRgH2rOEyXOzQUhrGTGyK" +

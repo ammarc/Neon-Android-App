@@ -13,34 +13,27 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.view.GestureDetectorCompat;
 import android.util.Log;
-import android.view.GestureDetector;
-import android.view.MotionEvent;
 import android.widget.Toast;
 
 import eu.kudan.kudan.ARActivity;
 import eu.kudan.kudan.ARArbiTrack;
 import eu.kudan.kudan.ARGyroPlaceManager;
-import eu.kudan.kudan.ARImageNode;
-import eu.kudan.kudan.ARImageTrackable;
-import eu.kudan.kudan.ARImageTracker;
-import eu.kudan.kudan.ARRenderer;
-import eu.kudan.kudan.ARRendererListener;
 
 import static android.content.ContentValues.TAG;
 
-public class ARSimple extends ARActivity implements SensorEventListener, LocationListener {
+public class ARSimpleActivity extends ARActivity implements SensorEventListener, LocationListener
+{
     private ARSetup setupObject;
-    private GestureDetectorCompat gestureDetect;
-    private ARRenderer arRenderer;
-    private SensorEvent sensorEvent;
     private boolean hasAccel = false;
-    private boolean hasGyro = false;
+    private boolean hasGravity = false;
     private boolean hasCompass = false;
-    private static final int LOCATION_MIN_TIME = 30 * 1000;
-    private static final int LOCATION_MIN_DISTANCE = 10;
+    // TODO: set the following two constants back to their original values
+    private static final int LOCATION_MIN_TIME = 0;
+    private static final int LOCATION_MIN_DISTANCE = 0;
+    // private static final int LOCATION_MIN_TIME = 30 * 1000;
+    // private static final int LOCATION_MIN_DISTANCE = 10;
+    private static final int INITIAL_SENSOR_ACTIVITY_NUM = 500;
     // Gravity for accelerometer data
     private float[] gravity = new float[3];
     // magnetic data
@@ -60,13 +53,22 @@ public class ARSimple extends ARActivity implements SensorEventListener, Locatio
     private Location currentLocation;
     private GeomagneticField geomagneticField;
     private double bearing = 0;
+    private ARSimpleImageNode targetNode;
+    private float yaw;
+    private boolean initialArrowPosSet;
+    private float initialArrowAngleRadians;
+    private int numSensorChanged = 0;
 
     @Override
-    public void onCreate(Bundle savedInstance) {
+    public void onCreate(Bundle savedInstance)
+    {
         super.onCreate(savedInstance);
         setupObject = new ARSetup();
         setupObject.setupAR();
         PackageManager manager = getPackageManager();
+        yaw = 0.0f;
+        initialArrowPosSet = false;
+        initialArrowAngleRadians = 0.0f;
 
         // arRenderer.initialise();
         // Create gesture recogniser to start and stop arbitrack
@@ -74,13 +76,14 @@ public class ARSimple extends ARActivity implements SensorEventListener, Locatio
         if (manager.hasSystemFeature(PackageManager.FEATURE_SENSOR_ACCELEROMETER))
             hasAccel = true;
         if (manager.hasSystemFeature(PackageManager.FEATURE_SENSOR_GYROSCOPE))
-            hasGyro = true;
+            hasGravity = true;
         if (manager.hasSystemFeature(PackageManager.FEATURE_SENSOR_COMPASS))
             hasCompass = true;
     }
 
     @Override
-    public void setup() {
+    public void setup()
+    {
         super.setup();
 
 
@@ -93,7 +96,7 @@ public class ARSimple extends ARActivity implements SensorEventListener, Locatio
         gyroPlaceManager.initialise();
 
         // Create a node to be used as the target.
-        ARSimpleImageNode targetNode = new ARSimpleImageNode("arrow.png");
+        targetNode = new ARSimpleImageNode("arrow.png");
 
         // Add it to the Gyro Placement Manager's world so that it moves with the device's Gyroscope.
         gyroPlaceManager.getWorld().addChild(targetNode);
@@ -101,6 +104,13 @@ public class ARSimple extends ARActivity implements SensorEventListener, Locatio
         // Rotate and scale the node to ensure it is displayed correctly.
         targetNode.rotateByDegrees(90.0f, 1.0f, 0.0f, 0.0f);
         targetNode.rotateByDegrees(90.0f, 0.0f, 0.0f, 1.0f);
+
+        // Rotate the arrow by an initial reading
+        if (initialArrowPosSet)
+        {
+            Log.e(TAG, "Rotating by " + Math.toDegrees(initialArrowAngleRadians));
+            targetNode.rotateByDegrees(-(float)Math.toDegrees(initialArrowAngleRadians), 0.0f, 0.0f, 1.0f);
+        }
 
         targetNode.scaleByUniform(0.3f);
 
@@ -127,7 +137,10 @@ public class ARSimple extends ARActivity implements SensorEventListener, Locatio
         Location gpsLocation;
 
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-        sensorGravity = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        if (hasGravity)
+            sensorGravity = sensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY);
+        else
+            sensorGravity = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         sensorMagnetic = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
 
         // listen to these sensors
@@ -137,32 +150,45 @@ public class ARSimple extends ARActivity implements SensorEventListener, Locatio
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
         // request location data
-        try {
+        try
+        {
+            // 1 is a integer which will return the result in onRequestPermissionsResult
+            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
                     LOCATION_MIN_TIME, LOCATION_MIN_DISTANCE, this);
             // get last known position
             gpsLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-            if (gpsLocation != null) {
+            if (gpsLocation != null)
+            {
                 currentLocation = gpsLocation;
-            } else {
+            }
+            else
+            {
                 // try with network provider
                 Location networkLocation = locationManager
                         .getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
 
-                if (networkLocation != null) {
+                if (networkLocation != null)
+                {
                     currentLocation = networkLocation;
-                } else {
+                }
+                else
+                {
                     // throw an error
+                    Log.e(TAG, "Couldn't find any location services");
                     throw new SecurityException();
                 }
 
                 // set current location
                 onLocationChanged(currentLocation);
             }
-        } catch (SecurityException e) {
+        }
+        catch (SecurityException e)
+        {
             // let the user know about the lack of permission
             Toast.makeText(getApplicationContext(), "You do not have permission to access the location"
-                    , Toast.LENGTH_LONG).show();
+                    , Toast.LENGTH_SHORT).show();
         }
 
 
@@ -188,6 +214,8 @@ public class ARSimple extends ARActivity implements SensorEventListener, Locatio
                 (float) currentLocation.getLongitude(),
                 (float) currentLocation.getAltitude(),
                 System.currentTimeMillis());
+        Log.e(TAG, "onLocationChanged: ");
+        Log.e(TAG, "Found the current location to be " + currentLocation);
     }
 
     @Override
@@ -195,7 +223,8 @@ public class ARSimple extends ARActivity implements SensorEventListener, Locatio
     {
 
         // get accelerometer data
-        if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER)
+        if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER
+                            || event.sensor.getType() == Sensor.TYPE_GRAVITY)
         {
             // we need to use a low pass filter to make data smoothed
             // smoothed = LowPassFilter.filter(event.values, gravity);
@@ -216,6 +245,9 @@ public class ARSimple extends ARActivity implements SensorEventListener, Locatio
         SensorManager.getRotationMatrix(rotation, null, gravity, geomagnetic);
         // get bearing to target
         SensorManager.getOrientation(rotation, orientation);
+
+        // TODO: not sure if the coordinates need to be remapped
+        SensorManager.remapCoordinateSystem(rotation, SensorManager.AXIS_X, SensorManager.AXIS_Y, rotation);
         // east degrees of true North
         bearing = orientation[0];
         // convert from radians to degrees
@@ -229,9 +261,35 @@ public class ARSimple extends ARActivity implements SensorEventListener, Locatio
         if (bearing < 0)
             bearing += 360;
 
-        // log the bearing
-        Log.e(TAG, "matrix is " + Math.toDegrees(orientation[0]) + " " + Math.toDegrees(orientation[1]) + " " + Math.toDegrees(orientation[2]));
-        Log.e(TAG, "the bearing is " + bearing);
+        // finding the yaw
+        // yaw = (float)Math.atan2(rotation[3],rotation[0]);
+        yaw = (float)Math.atan2(rotation[6],rotation[7]);
+
+        // Log.e(TAG, "Angle from north " + Math.toDegrees(orientation[0]));
+
+        if (numSensorChanged <= INITIAL_SENSOR_ACTIVITY_NUM)
+        {
+            numSensorChanged++;
+            if (numSensorChanged != INITIAL_SENSOR_ACTIVITY_NUM)
+            {
+                Toast.makeText(getApplicationContext(), "Setting up...", Toast.LENGTH_SHORT);
+            }
+            else
+            {
+                Toast.makeText(getApplicationContext(), "Done!", Toast.LENGTH_LONG);
+            }
+        }
+
+        if (!initialArrowPosSet)
+        {
+            // Log.e(TAG, "Setting initial arrow direction as " + Math.toDegrees(orientation[0]));
+            initialArrowAngleRadians = orientation[0];
+            initialArrowPosSet = true;
+        }
+        else if (targetNode != null && numSensorChanged > INITIAL_SENSOR_ACTIVITY_NUM-1)
+        {
+            targetNode.updateOrientationMatrix(orientation, orientation[0]);
+        }
     }
 
     @Override
