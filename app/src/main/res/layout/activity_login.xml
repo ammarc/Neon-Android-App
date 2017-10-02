@@ -12,97 +12,69 @@
     tools:context="itproject.neon_client.LoginActivity"
     android:background="@color/black">
 
-    <!-- Login progress -->
-    <ProgressBar
-        android:id="@+id/login_progress"
-        style="?android:attr/progressBarStyleLarge"
+    <!-- The primary full-screen view. This can be replaced with whatever view
+         is needed to present your content, e.g. VideoView, SurfaceView,
+         TextureView, etc. -->
+    <TextView
+        android:id="@+id/fullscreen_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:layout_marginTop="20dp"
+        android:keepScreenOn="true"
+        android:text="Team\nNeon"
+        android:textColor="@color/blue"
+        android:textSize="100dp" />
+
+
+    <LinearLayout
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:orientation="horizontal"
+        android:layout_marginTop="20dp">
+
+        <Button
+            android:id="@+id/sign_up_button"
+            style="?metaButtonBarButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Sign Up"
+            android:background="@color/blue"
+            android:layout_margin="10dp"
+            android:textSize="15dp"
+            android:textColor="@color/black"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="20dp"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/fb_sign_in_button"
+            style="?metaButtonBarButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Login"
+            android:layout_margin="10dp"
+            android:background="@color/blue"
+            android:textSize="15dp"
+            android:textColor="@color/black"/>
+
+    </LinearLayout>
+
+    <com.facebook.login.widget.LoginButton
+        android:id="@+id/fb_login_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:visibility="gone" />
-
-
-        <LinearLayout
-            android:id="@+id/login_page"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/app_name"
-                android:layout_width="match_parent"
-                android:layout_height="300dp"
-                android:layout_marginTop="50dp"
-                android:text="Team\nNeon"
-                android:fontFamily=""
-                android:textAlignment="center"
-                android:textSize="100dp"
-                android:textAppearance="@style/TextAppearance.AppCompat.Title"
-                android:textColor="@color/blue"/>
-
-            <Button
-                android:id="@+id/logged_in_button"
-                android:layout_width="250dp"
-                android:layout_height="30dp"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="30dp"
-                android:background="@color/facebookBlue"
-                android:onClick="ContinueLoggedIn"
-                android:text="Continue as logged in"
-                android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-                android:textColor="@color/white"
-                android:visibility="visible" />
-
-
-            <com.facebook.login.widget.LoginButton
-                android:id="@+id/fb_login_button"
-                android:layout_width="250dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal" />
-
-        </LinearLayout>
+        android:layout_marginTop="30dp"
+        android:layout_gravity="center_horizontal" />
 
 </LinearLayout>
 
-
-<!--android.support.design.widget.TextInputLayout
-android:layout_width="match_parent"
-android:layout_height="wrap_content">
-
-<AutoCompleteTextView
-    android:id="@+id/email"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:hint="@string/prompt_email"
-    android:inputType="textEmailAddress"
-    android:maxLines="1"
-    android:singleLine="true" />
-
-<android.support.design.widget.TextInputLayout>
-
-<android.support.design.widget.TextInputLayout
-android:layout_width="match_parent"
-android:layout_height="wrap_content">
-
-<EditText
-    android:id="@+id/password"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:hint="@string/prompt_password"
-    android:imeActionId="@+id/login"
-    android:imeActionLabel="@string/action_sign_in_short"
-    android:imeOptions="actionUnspecified"
-    android:inputType="textPassword"
-    android:maxLines="1"
-    android:singleLine="true" />
-
-</android.support.design.widget.TextInputLayout>
-
-<Button
-android:id="@+id/email_sign_in_button"
-style="?android:textAppearanceSmall"
-android:layout_width="match_parent"
-android:layout_height="wrap_content"
-android:layout_marginTop="16dp"
-android:text="@string/action_sign_in"
-android:textStyle="bold"/-->

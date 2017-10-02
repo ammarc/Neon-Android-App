@@ -1,13 +1,9 @@
 package itproject.neon_client;
 
-import android.app.Application;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.net.Uri;
-import android.provider.MediaStore;
-import android.support.v4.app.FragmentActivity;
 
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -24,42 +20,49 @@ import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import eu.kudan.kudan.ARAPIKey;
+import itproject.neon_client.mock_data.AppDatabase;
+import itproject.neon_client.mock_data.User;
+import itproject.neon_client.mock_data.UserDao;
+
+import static android.Manifest.permission.READ_CONTACTS;
 
 /**
  * A login screen that offers login via facebook.
  */
-public class LoginActivity extends FragmentActivity {
-
+public class LoginActivity extends AppCompatActivity {
 
     CallbackManager callbackManager;
-    LoginButton fbLoginButton;
     ProfileTracker profileTracker;
+
+    LoginButton fbLoginButton;
+    Button signUpButton;
+    Button signInButton;
+
+    public static AppDatabase database;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        Log.i("profile", "on create");
 
         setContentView(R.layout.activity_login);
+
+        fbLoginButton = (LoginButton) findViewById(R.id.fb_login_button);
+        signUpButton = (Button) findViewById(R.id.sign_up_button);
+        signInButton = (Button) findViewById(R.id.fb_sign_in_button);
+
+
+        /* facebook and login */
 
         FacebookSdk.sdkInitialize(getApplicationContext());
         AppEventsLogger.activateApp(this);
 
         callbackManager = CallbackManager.Factory.create();
-        fbLoginButton = (LoginButton) findViewById(R.id.fb_login_button);
-        Button loggedInButton = (Button) findViewById(R.id.logged_in_button);
-
-        if (isLoggedIn()) {
-
-            loggedInButton.setVisibility(View.VISIBLE);
-
-            User.setFirstName(Profile.getCurrentProfile().getFirstName());
-            User.setLastName(Profile.getCurrentProfile().getLastName());
-
-            String message = "Continue as " + Profile.getCurrentProfile().getFirstName();
-            loggedInButton.setText(message);
-        }
 
         LoginManager.getInstance().registerCallback(callbackManager,
                 new FacebookCallback<LoginResult>() {
@@ -73,12 +76,14 @@ public class LoginActivity extends FragmentActivity {
                                 @Override
                                 protected void onCurrentProfileChanged(Profile profile, Profile profile2) {
                                     // profile2 is the new profile
-                                    User.setFirstName(profile2.getFirstName());
-                                    User.setLastName(profile2.getLastName());
                                     Log.i("fb profile: ", profile2.getFirstName() + " " + profile2.getLastName());
                                     profileTracker.stopTracking();
                                 }
                             };
+
+                            signInButton.setVisibility(View.VISIBLE);
+                            signUpButton.setVisibility(View.VISIBLE);
+
 
                             // no need to call startTracking() on mProfileTracker
                             // because it is called by its constructor, internally.
@@ -96,45 +101,87 @@ public class LoginActivity extends FragmentActivity {
                     }
                 });
 
+        Log.i("profile", "*");
+
+        if (Profile.getCurrentProfile() == null) {
+            signInButton.setVisibility(View.INVISIBLE);
+            signUpButton.setVisibility(View.INVISIBLE);
+        }
+        else {
+            signInButton.setVisibility(View.VISIBLE);
+            signUpButton.setVisibility(View.VISIBLE);
+        }
+
+        Log.i("profile","!");
+
+        signUpButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                sign_up();
+            }
+        });
+        signInButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                facebook_sign_in();
+            }
+        });
+
+        /* mock data */
+        database = AppDatabase.getDatabase(getApplicationContext());
+
+        // add some data
+        List<User> users = database.userDao().getAllUser();
+        if (users.size()==0) {
+            database.userDao().addUser(new User(1, "harryP", "harry", "potter", "0411854930", "hazP@account", 2, "0"));
+            database.userDao().addUser(new User(2, "ginny_weasley", "ginny", "weasley", "0447893029", "gweasley@gmail", 1, "0"));
+            database.userDao().addUser(new User(3, "hermione", "hermione", "granger", "0478986543", "hgranger@hotmail", 1, "0"));
+        }
+
     }
 
-    /** Called when the user taps the continue as -- button */
-    public void ContinueLoggedIn(View view) {
-        // Do something in response to button
-        Button loggedInButton = (Button) findViewById(R.id.logged_in_button);
-        Intent intent = new Intent(this, ProfilePageActivity.class);
-        startActivity(intent);
-        loggedInButton.setVisibility(View.INVISIBLE);
+    private void sign_up() {
+        Log.i("profile","sign up");
+        if (Profile.getCurrentProfile() == null) {
+            Log.i("profile","null");
+        }
+        else {
+            Log.i("profile",Profile.getCurrentProfile().getFirstName());
+            startActivity(new Intent(LoginActivity.this, NewProfileActivity.class));
+        }
     }
 
-    public boolean isLoggedIn() {
-        AccessToken accessToken = AccessToken.getCurrentAccessToken();
-        return accessToken != null;
-    }
+    private void facebook_sign_in() {
+        Log.i("profile","fb login");
+        if (Profile.getCurrentProfile() == null) {
+            Log.i("profile","null");
+        }
+        else {
+            Log.i("profile",Profile.getCurrentProfile().getFirstName());
 
+            for (User user : database.userDao().getAllUser()) {
+                Log.i("profile", "user : " + user.username);
+                if (Profile.getCurrentProfile().getId().compareTo(user.fb_id) == 0) {
+                    LoggedInUser.setUser(user);
+                    startActivity(new Intent(LoginActivity.this, ProfilePageActivity.class));
+                }
+            }
+
+            // TODO error message if they don't have account
+        }
+    }
 
     @Override
     protected void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        {
-            /*Uri imageUri = data.getData();
-            try {
-                Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageUri);
-                User.setDp(bitmap);
-                Log.i("profile dp", "worked");
-            } catch (IOException e) {
-                Log.i("profile dp", "didn't work");
-                e.printStackTrace();
-            }*/
-        }
+        Log.i("profile", "on activity result");
         callbackManager.onActivityResult(requestCode, resultCode, data);
-        startActivity(new Intent(LoginActivity.this, ProfilePageActivity.class));
     }
 
     @Override
     public void onDestroy() {
+        AppDatabase.destroyInstance();
         super.onDestroy();
-        //profileTracker.stopTracking();
     }
 }
 
