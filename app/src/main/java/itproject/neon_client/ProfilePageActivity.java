@@ -40,7 +40,7 @@ public class ProfilePageActivity extends AppCompatActivity {
 
     public void cameraClick (View view) {
         // Do something in response to button
-        Intent intent = new Intent(this, ARSimple.class);
+        Intent intent = new Intent(this, ARSimpleActivity.class);
         startActivity(intent);
     }
 
