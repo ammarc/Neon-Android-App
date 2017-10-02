@@ -192,7 +192,7 @@ public class ARSimpleActivity extends ARActivity implements SensorEventListener,
         {
             // let the user know about the lack of permission
             Toast.makeText(getApplicationContext(), "You do not have permission to access the location"
-                    , Toast.LENGTH_SHORT).show();
+                    , Toast.LENGTH_LONG).show();
         }
 
         if (currentLocation != null)
@@ -201,7 +201,6 @@ public class ARSimpleActivity extends ARActivity implements SensorEventListener,
             destLocation.setLatitude(TEST_LOCATION_LATITUDE);
             destLocation.setLongitude(TEST_LOCATION_LONGITUDE);
         }
-
     }
 
     @Override
@@ -304,7 +303,7 @@ public class ARSimpleActivity extends ARActivity implements SensorEventListener,
             {
                 currentAngleToDestRadians = (float) Math.toRadians(currentLocation.bearingTo(destLocation));
             }
-            Log.e(TAG, "Offset by "+currentAngleToDestRadians);
+            Log.e(TAG, "Offset by "+Math.toDegrees(currentAngleToDestRadians) + " with curr location " + currentLocation);
             targetNode.updateOrientationMatrix(orientation, orientation[0] - currentAngleToDestRadians);
         }
     }
