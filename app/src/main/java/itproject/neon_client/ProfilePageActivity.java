@@ -17,6 +17,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+
+import itproject.neon_client.mock_data.UserDao;
+import itproject.neon_client.mock_data.User;
+
+
 /**
  * Created by kit on 5/9/17.
  */
@@ -25,8 +30,6 @@ public class ProfilePageActivity extends AppCompatActivity {
 
     public static final String EXTRA_MESSAGE = "itproject.neon_client.MESSAGE";
 
-    String firstName = Profile.getCurrentProfile().getFirstName();
-    String lastName = Profile.getCurrentProfile().getLastName();
     private static List<String> friends = new ArrayList<>(Arrays.asList("Ron_Weasley", "Hermione_Granger", "Luna_Lovegood","Neville_Longbottom"));
     private static List<String> friend_requests = new ArrayList<>(Arrays.asList("Harry_Potter", "Ginny_Weasley"));
 
@@ -37,7 +40,7 @@ public class ProfilePageActivity extends AppCompatActivity {
 
         TextView user_info_display = (TextView) findViewById(R.id.user_info_display);
 
-        user_info_display.setText("Welcome " + firstName + " " + lastName);
+        user_info_display.setText("Welcome " + LoggedInUser.getUser().firstname + " " + LoggedInUser.getUser().lastname);
 
         init();
     }

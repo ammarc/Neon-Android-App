@@ -24,6 +24,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import eu.kudan.kudan.ARAPIKey;
+import itproject.neon_client.mock_data.AppDatabase;
+import itproject.neon_client.mock_data.User;
+import itproject.neon_client.mock_data.UserDao;
 
 import static android.Manifest.permission.READ_CONTACTS;
 
@@ -39,6 +42,8 @@ public class LoginActivity extends AppCompatActivity {
     Button signUpButton;
     Button signInButton;
 
+    private AppDatabase database;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,6 +55,9 @@ public class LoginActivity extends AppCompatActivity {
         fbLoginButton = (LoginButton) findViewById(R.id.fb_login_button);
         signUpButton = (Button) findViewById(R.id.sign_up_button);
         signInButton = (Button) findViewById(R.id.fb_sign_in_button);
+
+
+        /* facebook and login */
 
         FacebookSdk.sdkInitialize(getApplicationContext());
         AppEventsLogger.activateApp(this);
@@ -93,6 +101,8 @@ public class LoginActivity extends AppCompatActivity {
                     }
                 });
 
+        Log.i("profile", "*");
+
         if (Profile.getCurrentProfile() == null) {
             signInButton.setVisibility(View.INVISIBLE);
             signUpButton.setVisibility(View.INVISIBLE);
@@ -101,6 +111,8 @@ public class LoginActivity extends AppCompatActivity {
             signInButton.setVisibility(View.VISIBLE);
             signUpButton.setVisibility(View.VISIBLE);
         }
+
+        Log.i("profile","!");
 
         signUpButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -114,9 +126,24 @@ public class LoginActivity extends AppCompatActivity {
                 facebook_sign_in();
             }
         });
+
+        /* mock data */
+        database = AppDatabase.getDatabase(getApplicationContext());
+
+        // cleanup for testing some initial data
+        database.userDao().removeAllUsers();
+        // add some data
+        List<User> users = database.userDao().getAllUser();
+        if (users.size()==0) {
+            database.userDao().addUser(new User(1, "harryP", "harry", "potter", "0411854930", "hazP@account", 2, "0"));
+            database.userDao().addUser(new User(2, "ginny_weasley", "ginny", "weasley", "0447893029", "gweasley@gmail", 1, "0"));
+            database.userDao().addUser(new User(3, "hermione", "hermione", "granger", "0478986543", "hgranger@hotmail", 1, "0"));
+        }
+
     }
 
     private void sign_up() {
+        Log.i("profile","sign up");
         if (Profile.getCurrentProfile() == null) {
             Log.i("profile","null");
         }
@@ -127,12 +154,21 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void facebook_sign_in() {
+        Log.i("profile","fb login");
         if (Profile.getCurrentProfile() == null) {
             Log.i("profile","null");
         }
         else {
             Log.i("profile",Profile.getCurrentProfile().getFirstName());
-            startActivity(new Intent(LoginActivity.this, ProfilePageActivity.class));
+
+            for (User user : database.userDao().getAllUser()) {
+                if (Profile.getCurrentProfile().getId().compareTo(user.fb_id) == 0) {
+                    LoggedInUser.setUser(user);
+                    startActivity(new Intent(LoginActivity.this, ProfilePageActivity.class));
+                }
+            }
+
+            // TODO error message if they don't have account
         }
     }
 
@@ -145,6 +181,7 @@ public class LoginActivity extends AppCompatActivity {
 
     @Override
     public void onDestroy() {
+        AppDatabase.destroyInstance();
         super.onDestroy();
     }
 }
