@@ -11,29 +11,36 @@ import android.widget.TableRow;
 import android.widget.TextView;
 
 
+import com.facebook.Profile;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+
+
+import itproject.neon_client.mock_data.UserDao;
+import itproject.neon_client.mock_data.User;
+
 
 /**
  * Created by kit on 5/9/17.
  */
 
 public class ProfilePageActivity extends AppCompatActivity {
+
     public static final String EXTRA_MESSAGE = "itproject.neon_client.MESSAGE";
 
-    String firstName = User.getFirstName();
-    String lastName = User.getLastName();
-    List<String> friends = User.getFriends();
+    private static List<String> friends = new ArrayList<>(Arrays.asList("Ron_Weasley", "Hermione_Granger", "Luna_Lovegood","Neville_Longbottom"));
+    private static List<String> friend_requests = new ArrayList<>(Arrays.asList("Harry_Potter", "Ginny_Weasley"));
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile_page);
 
-        // todo : something is not syncing, name down the bottom isn't working
-
         TextView user_info_display = (TextView) findViewById(R.id.user_info_display);
 
-        user_info_display.setText("Welcome " + firstName + " " + lastName);
+        user_info_display.setText("Welcome " + LoggedInUser.getUser().firstname + " " + LoggedInUser.getUser().lastname);
 
         init();
     }
@@ -74,7 +81,7 @@ public class ProfilePageActivity extends AppCompatActivity {
         }
 
         TableLayout friend_requests_table = (TableLayout) findViewById(R.id.friend_requests_table);
-        for (final String friend : User.getFriendRequests()) {
+        for (final String friend : friend_requests) {
             TableRow tbrow = new TableRow(this);
             TextView t1v = new TextView(this);
             t1v.setText(friend);

@@ -10,4 +10,6 @@
     <color name="whatsapp_green">#00897b</color>
     <color name="bubble_background_rcv">#f3ffd2</color>
     <color name="bubble_background_send">#d2ffdb</color>
+
+    <color name="black_overlay">#66000000</color>
 </resources>
