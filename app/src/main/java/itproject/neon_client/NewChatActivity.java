@@ -42,7 +42,7 @@ public class NewChatActivity extends AppCompatActivity {
             System.out.println("ActivityName: socket connected");
 
             // emit anything you want here to the server
-            mySocket.emit("Connect", "User has connected!!");
+            mySocket.emit("Connect", "LoggedInUser has connected!!");
             //socket.disconnect();
         }
     };
