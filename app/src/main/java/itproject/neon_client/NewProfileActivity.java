@@ -24,17 +24,12 @@ public class NewProfileActivity extends AppCompatActivity {
 
     private static int id = 3;
     private EditText username, phone_number, email;
-    private AppDatabase database;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_profile);
-
-        /*mock data*/
-        database = AppDatabase.getDatabase(getApplicationContext());
 
         TextView user_info_display = (TextView) findViewById(R.id.user_welcome);
         username = (EditText) findViewById(R.id.username);
@@ -76,10 +71,15 @@ public class NewProfileActivity extends AppCompatActivity {
         User newUser = new User(id,usernameString,Profile.getCurrentProfile().getFirstName(),Profile.getCurrentProfile().getLastName(),
                 phoneString, emailString, 1, Profile.getCurrentProfile().getId());
 
-        database.userDao().addUser(newUser);
-        User user = database.userDao().getUser(id).get(0);
+        LoginActivity.database.userDao().addUser(newUser);
+
+        for (User user : LoginActivity.database.userDao().getAllUser()) {
+            Log.i("profile", "user : " + user.username);
+        }
+
+        User user = LoginActivity.database.userDao().getUser(id).get(0);
         LoggedInUser.setUser(newUser);
-        Log.i("profile","user " + LoggedInUser.getUser().username + " id " + LoggedInUser.getUser().id);
+        Log.i("profile","user " + user.username + " id " + user.id);
         startActivity(new Intent(NewProfileActivity.this, ProfilePageActivity.class));
     }
 }
