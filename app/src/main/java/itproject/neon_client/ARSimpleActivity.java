@@ -195,9 +195,12 @@ public class ARSimpleActivity extends ARActivity implements SensorEventListener,
                     , Toast.LENGTH_SHORT).show();
         }
 
-        destLocation = new Location(currentLocation);
-        destLocation.setLatitude(TEST_LOCATION_LATITUDE);
-        destLocation.setLongitude(TEST_LOCATION_LONGITUDE);
+        if (currentLocation != null)
+        {
+            destLocation = new Location(currentLocation);
+            destLocation.setLatitude(TEST_LOCATION_LATITUDE);
+            destLocation.setLongitude(TEST_LOCATION_LONGITUDE);
+        }
 
     }
 
@@ -296,9 +299,13 @@ public class ARSimpleActivity extends ARActivity implements SensorEventListener,
         else if (targetNode != null && numSensorChanged > INITIAL_SENSOR_ACTIVITY_NUM-1)
         {
             // targetNode.updateOrientationMatrix(orientation, orientation[0]);
-            Log.e(TAG, "The angle to dest is " + currentLocation.bearingTo(destLocation));
-            targetNode.updateOrientationMatrix(orientation, orientation[0] -
-                                (float) Math.toRadians(currentLocation.bearingTo(destLocation)));
+            float currentAngleToDestRadians = 0.0f;
+            if (currentLocation != null && destLocation != null)
+            {
+                currentAngleToDestRadians = (float) Math.toRadians(currentLocation.bearingTo(destLocation));
+            }
+            Log.e(TAG, "Offset by "+currentAngleToDestRadians);
+            targetNode.updateOrientationMatrix(orientation, orientation[0] - currentAngleToDestRadians);
         }
     }
 
