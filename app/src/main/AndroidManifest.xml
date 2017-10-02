@@ -13,25 +13,27 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
+    <uses-feature android:name="android.hardware.sensor.accelerometer" android:required="true" />
 
     <application
         android:allowBackup="true"
-        android:configChanges="keyboardHidden|orientation"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
-        <activity
-            android:name=".ARSimple"
-            android:configChanges="orientation|screenSize"
-            android:parentActivityName=".ProfilePageActivity"
-            android:screenOrientation="fullSensor">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ARSimple" />
+        android:theme="@style/AppTheme"
+        android:configChanges="keyboardHidden|orientation">
+
+        <activity android:name=".ARSimpleActivity"
+                android:configChanges="orientation|screenSize"
+                android:screenOrientation="fullSensor"
+                  android:parentActivityName=".ProfilePageActivity">
+                <meta-data android:name="android.support.PARENT_ACTIVITY"
+                            android:value = ".ARSimpleActivity"/>
         </activity>
         <activity
             android:name=".LoginActivity"
