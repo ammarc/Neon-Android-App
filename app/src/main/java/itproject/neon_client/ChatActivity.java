@@ -13,7 +13,7 @@ import java.net.URISyntaxException;
 
 
 public class ChatActivity extends AppCompatActivity {
-    static final Client mySocket = new Client("10.0.2.2", 3000);
+    static final Client mySocket = new Client("10.0.2.2", 4000);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,7 +24,7 @@ public class ChatActivity extends AppCompatActivity {
         // Get the Intent that started this activity and extract the string
         Intent intent = getIntent();
         final String friendName = intent.getStringExtra(ProfilePageActivity.EXTRA_MESSAGE);
-        final String userName = "Bryce";
+        final String userName = LoggedInUser.getUser().username;
 
         // Capture the layout's TextView and set the string as its text
 
@@ -46,7 +46,7 @@ public class ChatActivity extends AppCompatActivity {
        mySocket.setClientCallback(new Client.ClientCallback () {
             @Override
             public void onMessage(final String message) {
-                System.out.println(message);
+                //Need to run the addMessage call on the UI thread as it is modifying the UI
                 runOnUiThread(new Runnable(){
                     public void run(){
                         chatView.addMessage(new ChatMessage(message, System.currentTimeMillis(), ChatMessage.Type.RECEIVED));
@@ -56,7 +56,8 @@ public class ChatActivity extends AppCompatActivity {
 
             @Override
             public void onConnect(Socket socket){
-                mySocket.initSocket(friendName,userName);
+                //Initialises socket with the name of the friend your chatting with and the your userName
+                mySocket.initSocket(friendName, userName);
             }
 
             @Override
