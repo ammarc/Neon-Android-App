@@ -2,6 +2,7 @@ package itproject.neon_client;
 
 import android.content.Intent;
 
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -60,7 +61,7 @@ public class LoginActivity extends AppCompatActivity {
         /* facebook and login */
 
         FacebookSdk.sdkInitialize(getApplicationContext());
-        AppEventsLogger.activateApp(this);
+        AppEventsLogger.activateApp(LoginActivity.this);
 
         callbackManager = CallbackManager.Factory.create();
 
@@ -130,12 +131,14 @@ public class LoginActivity extends AppCompatActivity {
         /* mock data */
         database = AppDatabase.getDatabase(getApplicationContext());
 
+        //database.userDao().removeAllUsers();
+
         // add some data
         List<User> users = database.userDao().getAllUser();
         if (users.size()==0) {
-            database.userDao().addUser(new User(1, "harryP", "harry", "potter", "0411854930", "hazP@account", 2, "0"));
-            database.userDao().addUser(new User(2, "ginny_weasley", "ginny", "weasley", "0447893029", "gweasley@gmail", 1, "0"));
-            database.userDao().addUser(new User(3, "hermione", "hermione", "granger", "0478986543", "hgranger@hotmail", 1, "0"));
+            database.userDao().addUser(new User(1, "harryP", "harry", "potter", "0411854930", "hazP@account", "0"));
+            database.userDao().addUser(new User(2, "ginny_weasley", "ginny", "weasley", "0447893029", "gweasley@gmail", "0"));
+            database.userDao().addUser(new User(3, "hermione", "hermione", "granger", "0478986543", "hgranger@hotmail", "0"));
         }
 
     }
@@ -163,7 +166,7 @@ public class LoginActivity extends AppCompatActivity {
                 Log.i("profile", "user : " + user.username);
                 if (Profile.getCurrentProfile().getId().compareTo(user.fb_id) == 0) {
                     LoggedInUser.setUser(user);
-                    startActivity(new Intent(LoginActivity.this, ProfilePageActivity.class));
+                    startActivity(new Intent(LoginActivity.this, MainActivity.class));
                 }
             }
 

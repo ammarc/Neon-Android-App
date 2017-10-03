@@ -4,5 +4,7 @@
         android:id="@+id/settings"
         android:icon="@drawable/settings"
         android:title="@string/menuItem_settings"
-        android:titleCondensed="@string/menuItem_settings"></item>
+        android:titleCondensed="@string/menuItem_settings">
+
+    </item>
 </menu>

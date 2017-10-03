@@ -15,19 +15,19 @@ public class User {
 
     @PrimaryKey
     public final int id;
-    public String username, firstname, lastname, phone, email, fb_id;
-    public int dp;
+    public final String fb_id;
+    public String username, firstname, lastname, phone, email, fullname;
 
 
-    public User(int id, String username, String firstname, String lastname, String phone, String email, int dp, String fb_id) {
+    public User(int id, String username, String firstname, String lastname, String phone, String email, String fb_id) {
         this.id = id;
         this.username = username;
         this.firstname  = firstname;
         this.lastname = lastname;
         this.phone = phone;
         this.email = email;
-        this.dp = dp;
         this.fb_id = fb_id;
+        this.fullname = firstname + " " + lastname;
     }
 
 }
