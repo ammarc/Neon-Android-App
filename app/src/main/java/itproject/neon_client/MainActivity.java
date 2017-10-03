@@ -18,6 +18,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -62,28 +63,17 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        View navbar_top = navigationView.getHeaderView(0);
+        View navbar = navigationView.getHeaderView(0);
 
         /* dp */
-        ImageView userDp = (ImageView) navbar_top.findViewById(R.id.user_dp);
+        ImageView userDp = (ImageView) navbar.findViewById(R.id.user_dp);
         //Bitmap dpBitmap = getFacebookProfilePicture(LoggedInUser.getUser().fb_id);
 
         /* user info */
-        TextView user_name = (TextView) navbar_top.findViewById(R.id.user_name);
+        TextView user_name = (TextView) navbar.findViewById(R.id.user_name);
         user_name.setText(LoggedInUser.getUser().fullname);
-        TextView user_username = (TextView) navbar_top.findViewById(R.id.user_username);
+        TextView user_username = (TextView) navbar.findViewById(R.id.user_username);
         user_username.setText(LoggedInUser.getUser().username);
-
-        
-
-        /* menu functions */
-        /*View logout = (View) findViewById(R.id.logout_button);
-        logout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(MainActivity.this, LoginActivity.class));
-            }
-        });*/
 
 
         /* map */
@@ -107,6 +97,7 @@ public class MainActivity extends AppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
+
         return true;
     }
 
@@ -127,7 +118,7 @@ public class MainActivity extends AppCompatActivity
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
+    public boolean onNavigationItemSelected(MenuItem item) { //TODO set actions
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
