@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -20,8 +21,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 
+import com.facebook.Profile;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -33,11 +37,20 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback {
 
     private GoogleMap mMap;
+
+    public static final String EXTRA_MESSAGE = "itproject.neon_client.MESSAGE";
+
+    private static List<String> friends = new ArrayList<>(Arrays.asList("Ron_Weasley", "Hermione_Granger", "Luna_Lovegood","Neville_Longbottom"));
+    private static List<String> friend_requests = new ArrayList<>(Arrays.asList("Harry_Potter", "Ginny_Weasley"));
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,7 +80,7 @@ public class MainActivity extends AppCompatActivity
 
         /* dp */
         ImageView userDp = (ImageView) navbar.findViewById(R.id.user_dp);
-        //Bitmap dpBitmap = getFacebookProfilePicture(LoggedInUser.getUser().fb_id);
+        //Bitmap dpBitmap = getFacebookProfilePicture(LoggedInUser.getUser().fb_id); // ToDo fb profile picture
 
         /* user info */
         TextView user_name = (TextView) navbar.findViewById(R.id.user_name);
@@ -75,12 +88,14 @@ public class MainActivity extends AppCompatActivity
         TextView user_username = (TextView) navbar.findViewById(R.id.user_username);
         user_username.setText(LoggedInUser.getUser().username);
 
+        //friendsInit();
+
 
         /* map */
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+        /*SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
+        mapFragment.getMapAsync(this);*/
     }
 
     @Override
@@ -122,17 +137,13 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
+        if (id == R.id.nav_friends) {
 
         } else if (id == R.id.nav_manage) {
 
-        } else if (id == R.id.nav_share) {
+        } else if (id == R.id.nav_logout) {
 
-        } else if (id == R.id.nav_send) {
+            startActivity(new Intent(MainActivity.this, LoginActivity.class));
 
         }
 
@@ -177,5 +188,55 @@ public class MainActivity extends AppCompatActivity
             e.printStackTrace();
         }
         return bitmap;
+    }
+
+
+    /* puts friends in table */
+    public void friendsInit() {
+        TableLayout friends_table = (TableLayout) findViewById(R.id.friends_table);
+        for (final String friend : friends) {
+            TableRow tbrow = new TableRow(this);
+            TextView t1v = new TextView(this);
+            t1v.setText(friend);
+            t1v.setMinHeight(100);
+            t1v.setTextSize(15);
+            t1v.setTextColor(Color.WHITE);
+            t1v.setGravity(Gravity.LEFT);
+            tbrow.addView(t1v);
+            tbrow.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    // Code here executes on main thread after user presses button
+                    chat(friend);
+                }
+            });
+            friends_table.addView(tbrow);
+        }
+
+        /*TableLayout friend_requests_table = (TableLayout) findViewById(R.id.friend_requests_table);
+        for (final String friend : friend_requests) {
+            TableRow tbrow = new TableRow(this);
+            TextView t1v = new TextView(this);
+            t1v.setText(friend);
+            t1v.setMinHeight(100);
+            t1v.setTextSize(15);
+            t1v.setTextColor(Color.WHITE);
+            t1v.setGravity(Gravity.LEFT);
+            tbrow.addView(t1v);
+            tbrow.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    // Code here executes on main thread after user presses button
+                    chat(friend);
+                }
+            });
+            friend_requests_table.addView(tbrow);
+        }*/
+    }
+
+    /** Called when the user taps the Send button */
+    public void chat(String friend) {
+        // Do something in response to button
+        Intent intent = new Intent(this, ChatActivity.class);
+        intent.putExtra(EXTRA_MESSAGE, friend);
+        startActivity(intent);
     }
 }
