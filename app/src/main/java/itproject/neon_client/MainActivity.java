@@ -41,10 +41,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback {
 
     private GoogleMap mMap;
+    private Menu sideMenu;
+    private final int MENU_TOP = 2131755394;
 
     public static final String EXTRA_MESSAGE = "itproject.neon_client.MESSAGE";
 
@@ -88,6 +91,9 @@ public class MainActivity extends AppCompatActivity
         TextView user_username = (TextView) navbar.findViewById(R.id.user_username);
         user_username.setText(LoggedInUser.getUser().username);
 
+
+        sideMenu = navigationView.getMenu();
+
         //friendsInit();
 
 
@@ -111,9 +117,70 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
+        getMenuInflater().inflate(R.menu.activity_main_drawer, menu);
+
+        /*MenuItem friends = menu.findItem(R.id.nav_friends);
+        friends.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+                startActivity(new Intent(MainActivity.this, LoginActivity.class));
+                return true;
+            }
+        });*/
+
+        Log.i("profile","size of sideMenu = " + sideMenu.size());
+        MenuItem friends_view = sideMenu.findItem(R.id.nav_friends);
+        MenuItem friend_requests_view = sideMenu.findItem(R.id.nav_friend_requests);
+
+
+        int idx=0;
+        Menu subm = friends_view.getSubMenu(); // get my MenuItem with placeholder submenu
+        subm.clear(); // delete place holder
+
+        for (String friend : friends)
+        {
+            subm.add(0, MENU_TOP+idx, idx, friend); // id is idx+ my constant
+            final MenuItem new_friend = subm.findItem(MENU_TOP+idx);
+            new_friend.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                @Override
+                public boolean onMenuItemClick(MenuItem menuItem) {
+                    String friend_username = (String) new_friend.getTitle();
+                    chat(friend_username);
+                    return false;
+                }
+            });
+            idx++;
+        }
+
+        subm = friend_requests_view.getSubMenu(); // get my MenuItem with placeholder submenu
+        subm.clear(); // delete place holder
+
+        for (String friend : friend_requests)
+        {
+            subm.add(0, MENU_TOP+idx, idx, friend); // id is idx+ my constant
+            idx++;
+        }
 
         return true;
+    }
+
+    /**
+     * Gets called every time the user presses the menu button.
+     * Use if your menu is dynamic.
+     */
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        /*menu.clear();
+        if(enableAdd)
+            menu.add(0, MENU_ADD, Menu.NONE, R.string.your-add-text).setIcon(R.drawable.your-add-icon);
+        if(enableList)
+            menu.add(0, MENU_LIST, Menu.NONE, R.string.your-list-text).setIcon(R.drawable.your-list-icon);
+        if(enableRefresh)
+            menu.add(0, MENU_REFRESH, Menu.NONE, R.string.your-refresh-text).setIcon(R.drawable.your-refresh-icon);
+        if(enableLogin)
+            menu.add(0, MENU_LOGIN, Menu.NONE, R.string.your-login-text).setIcon(R.drawable.your-login-icon);*/
+
+        return super.onPrepareOptionsMenu(menu);
     }
 
     @Override
@@ -122,11 +189,6 @@ public class MainActivity extends AppCompatActivity
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
 
         return super.onOptionsItemSelected(item);
     }
@@ -137,7 +199,29 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_friends) {
+        Log.i("profile","id clicked in list = " + item.getItemId());
+
+        if (id == R.id.nav_friends_show) {
+
+            Log.i("profile","nav_friends_show");
+            MenuItem friends_show = sideMenu.findItem(R.id.nav_friends);
+            if (friends_show.isVisible()) {
+                friends_show.setVisible(false);
+            } else {
+                friends_show.setVisible(true);
+            }
+            return true;
+
+        } else if (id == R.id.nav_friend_requests_show) {
+
+            Log.i("profile","nav_friend_requests_show");
+            MenuItem friend_requests = sideMenu.findItem(R.id.nav_friend_requests);
+            if (friend_requests.isVisible()) {
+                friend_requests.setVisible(false);
+            } else {
+                friend_requests.setVisible(true);
+            }
+            return true;
 
         } else if (id == R.id.nav_manage) {
 

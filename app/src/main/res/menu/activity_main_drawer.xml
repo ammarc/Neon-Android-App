@@ -1,20 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
-
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <group android:checkableBehavior="single">
 
         <item android:title="Friends"
-            android:id="@+id/nav_friends"
+            android:titleCondensed="Friends"
+            android:id="@+id/nav_friends_show"
             android:icon="@drawable/friends_button">
 
-            <menu android:id="@+id/nav_friends_list">
+        </item>
+
+        <item android:title="Friends"
+            android:visible="false"
+            android:id="@+id/nav_friends"
+            android:enabled="true">
+
+            <menu>
                 <item
-                    android:id="@+id/friend"
-                    android:title="friend" /> <!-- TODO -->
+                    android:id="@+id/placeholder_friends"
+                    android:title="friend" />
             </menu>
         </item>
+
+        <item android:title="Friend Requests"
+            android:titleCondensed="Friend Requests"
+            android:id="@+id/nav_friend_requests_show"
+            android:icon="@drawable/friends_button">
+
+        </item>
+
+        <item android:title="Friend Requests"
+            android:visible="false"
+            android:id="@+id/nav_friend_requests"
+            android:enabled="true">
+
+            <menu>
+                <item
+                    android:id="@+id/placeholder_requests"
+                    android:title="friend request" />
+            </menu>
+        </item>
+
     </group>
 
     <item
