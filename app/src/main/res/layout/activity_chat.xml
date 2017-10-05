@@ -47,6 +47,8 @@
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/fab_margin"
         android:background="@color/blue"
+        chatview:layout_editor_absoluteY="16dp"
+        chatview:layout_editor_absoluteX="16dp"
         android:src="@drawable/ic_menu_camera" />
 
     <android.support.design.widget.FloatingActionButton
@@ -55,6 +57,8 @@
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/fab_margin"
         android:layout_marginEnd="@dimen/fab_margin"
+        chatview:layout_editor_absoluteY="16dp"
+        chatview:layout_editor_absoluteX="300dp"
         android:background="@color/blue"
         android:src="@drawable/ic_near_me_black_24dp" />
 

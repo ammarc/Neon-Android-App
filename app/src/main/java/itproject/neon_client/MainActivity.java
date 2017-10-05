@@ -74,6 +74,7 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         View navbar = navigationView.getHeaderView(0);
+        sideMenu = navigationView.getMenu();
 
         /* dp */
         ImageView userDp = (ImageView) navbar.findViewById(R.id.user_dp);
@@ -85,15 +86,10 @@ public class MainActivity extends AppCompatActivity
         TextView user_username = (TextView) navbar.findViewById(R.id.user_username);
         user_username.setText(LoggedInUser.getUser().username);
 
-
-        sideMenu = navigationView.getMenu();
-
-
         /* map */
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        /*SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);*/
+        /*SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);*/ // TODO set up maps
     }
 
     @Override
