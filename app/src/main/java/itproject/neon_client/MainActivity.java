@@ -19,6 +19,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TableLayout;
@@ -58,18 +60,10 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -94,8 +88,6 @@ public class MainActivity extends AppCompatActivity
 
         sideMenu = navigationView.getMenu();
 
-        //friendsInit();
-
 
         /* map */
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
@@ -119,21 +111,10 @@ public class MainActivity extends AppCompatActivity
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.activity_main_drawer, menu);
 
-        /*MenuItem friends = menu.findItem(R.id.nav_friends);
-        friends.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem menuItem) {
-                startActivity(new Intent(MainActivity.this, LoginActivity.class));
-                return true;
-            }
-        });*/
-
-        Log.i("profile","size of sideMenu = " + sideMenu.size());
         MenuItem friends_view = sideMenu.findItem(R.id.nav_friends);
         MenuItem friend_requests_view = sideMenu.findItem(R.id.nav_friend_requests);
 
-
-        int idx=0;
+        int idx=3;
         Menu subm = friends_view.getSubMenu(); // get my MenuItem with placeholder submenu
         subm.clear(); // delete place holder
 
@@ -158,7 +139,7 @@ public class MainActivity extends AppCompatActivity
         for (String friend : friend_requests)
         {
             subm.add(0, MENU_TOP+idx, idx, friend); // id is idx+ my constant
-            idx++;
+            idx++; // TODO set up accepting requests
         }
 
         return true;
@@ -193,9 +174,9 @@ public class MainActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
+
     @Override
-    public boolean onNavigationItemSelected(MenuItem item) { //TODO set actions
+    public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
@@ -222,8 +203,6 @@ public class MainActivity extends AppCompatActivity
                 friend_requests.setVisible(true);
             }
             return true;
-
-        } else if (id == R.id.nav_manage) {
 
         } else if (id == R.id.nav_logout) {
 
@@ -274,47 +253,6 @@ public class MainActivity extends AppCompatActivity
         return bitmap;
     }
 
-
-    /* puts friends in table */
-    public void friendsInit() {
-        TableLayout friends_table = (TableLayout) findViewById(R.id.friends_table);
-        for (final String friend : friends) {
-            TableRow tbrow = new TableRow(this);
-            TextView t1v = new TextView(this);
-            t1v.setText(friend);
-            t1v.setMinHeight(100);
-            t1v.setTextSize(15);
-            t1v.setTextColor(Color.WHITE);
-            t1v.setGravity(Gravity.LEFT);
-            tbrow.addView(t1v);
-            tbrow.setOnClickListener(new View.OnClickListener() {
-                public void onClick(View v) {
-                    // Code here executes on main thread after user presses button
-                    chat(friend);
-                }
-            });
-            friends_table.addView(tbrow);
-        }
-
-        /*TableLayout friend_requests_table = (TableLayout) findViewById(R.id.friend_requests_table);
-        for (final String friend : friend_requests) {
-            TableRow tbrow = new TableRow(this);
-            TextView t1v = new TextView(this);
-            t1v.setText(friend);
-            t1v.setMinHeight(100);
-            t1v.setTextSize(15);
-            t1v.setTextColor(Color.WHITE);
-            t1v.setGravity(Gravity.LEFT);
-            tbrow.addView(t1v);
-            tbrow.setOnClickListener(new View.OnClickListener() {
-                public void onClick(View v) {
-                    // Code here executes on main thread after user presses button
-                    chat(friend);
-                }
-            });
-            friend_requests_table.addView(tbrow);
-        }*/
-    }
 
     /** Called when the user taps the Send button */
     public void chat(String friend) {

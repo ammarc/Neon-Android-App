@@ -1,8 +1,13 @@
 package itproject.neon_client;
 
 import android.content.Intent;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.TextView;
 
 import co.intentservice.chatui.ChatView;
@@ -23,14 +28,21 @@ public class ChatActivity extends AppCompatActivity {
 
         // Get the Intent that started this activity and extract the string
         Intent intent = getIntent();
-        final String friendName = intent.getStringExtra(ProfilePageActivity.EXTRA_MESSAGE);
-        final String userName = "Bryce";
+        final String friendName = intent.getStringExtra(MainActivity.EXTRA_MESSAGE);
 
         // Capture the layout's TextView and set the string as its text
 
         TextView textView = (TextView) findViewById(R.id.textView);
-        textView.setText("Chat with " + friendName);
+        textView.setText(friendName);
         textView.bringToFront();
+
+        FloatingActionButton camera = (FloatingActionButton) findViewById(R.id.camera_view);
+        camera.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                cameraClick();
+            }
+        });
 
         final ChatView chatView = (ChatView) findViewById(R.id.chat_view);
         chatView.addMessage(new ChatMessage("Message received", System.currentTimeMillis(), ChatMessage.Type.RECEIVED));
@@ -56,7 +68,7 @@ public class ChatActivity extends AppCompatActivity {
 
             @Override
             public void onConnect(Socket socket){
-                mySocket.initSocket(friendName,userName);
+                mySocket.initSocket(friendName,LoggedInUser.getUser().username);
             }
 
             @Override
@@ -83,6 +95,12 @@ public class ChatActivity extends AppCompatActivity {
             }
         });*/
 
+    }
+
+    public void cameraClick() {
+        // Do something in response to button
+        Intent intent = new Intent(this, ARSimpleActivity.class);
+        startActivity(intent);
     }
 
     protected void onStop(){
