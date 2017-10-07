@@ -28,6 +28,7 @@ public class Client {
         this.port=port;
     }
 
+    /* Connects to the server and initalises the sockets IO. */
     public void connect(){
         new Thread(new Runnable() {
             @Override
@@ -69,10 +70,14 @@ public class Client {
                 listener.onDisconnect(socket, e.getMessage());
         }
     }
+
+    /* Sends the senders username and the recipients username to the server so that the
+    *  conversation can be set up serverside. */
     public void initSocket(String friendName, String myName){
         send("!!!!INIT!!!! " + friendName + " " + myName + " \n");
     }
 
+    /* Processes incoming messages. */
     private class ReceiveThread extends Thread implements Runnable{
         public void run(){
             String message;

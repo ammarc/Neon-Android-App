@@ -1,17 +1,15 @@
 package itproject.neon_client;
 
-import android.content.Intent;
 import android.os.AsyncTask;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.content.Intent;
+import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
 
 import co.intentservice.chatui.ChatView;
 import co.intentservice.chatui.models.ChatMessage;
 
 import java.net.Socket;
-import java.net.URISyntaxException;
-
 
 public class ChatActivity extends AppCompatActivity {
     static final Client mySocket = new Client("13.65.209.193", 4000);
@@ -38,16 +36,16 @@ public class ChatActivity extends AppCompatActivity {
         chatView.setOnSentMessageListener(new ChatView.OnSentMessageListener() {
             @Override
             public boolean sendMessage(ChatMessage chatMessage) {
+                // Asynchronous call that sends the message to the recipients socket.
                 new SendMessage().execute(chatMessage);
                 return true;
             }
         });
 
-
        mySocket.setClientCallback(new Client.ClientCallback () {
             @Override
             public void onMessage(final String message) {
-                //Need to run the addMessage call on the UI thread as it is modifying the UI
+                // Need to run the addMessage call on the UI thread as it is modifying the UI
                 runOnUiThread(new Runnable(){
                     public void run(){
                         chatView.addMessage(new ChatMessage(message, System.currentTimeMillis(), ChatMessage.Type.RECEIVED));
@@ -57,7 +55,7 @@ public class ChatActivity extends AppCompatActivity {
 
             @Override
             public void onConnect(Socket socket){
-                //Initialises socket with the name of the friend your chatting with and the your userName
+                // Initialises socket with the name of the friend your chatting with and the your userName
                 mySocket.initSocket(friendName, userName);
             }
 
@@ -87,6 +85,7 @@ public class ChatActivity extends AppCompatActivity {
 
     }
 
+    /* Class to handle the asynchronous sending of messages to the server. */
     private class SendMessage extends AsyncTask<ChatMessage, Void, Boolean> {
         protected Boolean doInBackground(ChatMessage... chatMessages) {
             for(ChatMessage chatMessage : chatMessages)
