@@ -1,6 +1,7 @@
 package itproject.neon_client;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.TextView;
@@ -13,7 +14,7 @@ import java.net.URISyntaxException;
 
 
 public class ChatActivity extends AppCompatActivity {
-    static final Client mySocket = new Client("10.0.2.2", 4000);
+    static final Client mySocket = new Client("13.65.209.193", 4000);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,7 +38,7 @@ public class ChatActivity extends AppCompatActivity {
         chatView.setOnSentMessageListener(new ChatView.OnSentMessageListener() {
             @Override
             public boolean sendMessage(ChatMessage chatMessage) {
-                mySocket.send(chatMessage.getMessage()+"\n");
+                new SendMessage().execute(chatMessage);
                 return true;
             }
         });
@@ -84,6 +85,22 @@ public class ChatActivity extends AppCompatActivity {
             }
         });*/
 
+    }
+
+    private class SendMessage extends AsyncTask<ChatMessage, Void, Boolean> {
+        protected Boolean doInBackground(ChatMessage... chatMessages) {
+            for(ChatMessage chatMessage : chatMessages)
+                mySocket.send(chatMessage.getMessage()+"\n");
+            return true;
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... params) { }
+
+        protected void onPostExecute() { }
+
+        @Override
+        protected void onPreExecute() {}
     }
 
     protected void onStop(){
