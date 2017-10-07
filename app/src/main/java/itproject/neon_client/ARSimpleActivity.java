@@ -28,6 +28,7 @@ public class ARSimpleActivity extends ARActivity implements SensorEventListener,
     private boolean hasAccel = false;
     private boolean hasGravity = false;
     private boolean hasCompass = false;
+    private static final int RENDER_LIMIT = 1000;
     // TODO: set the following two constants back to their original values
     private static final int LOCATION_MIN_TIME = 0;
     private static final int LOCATION_MIN_DISTANCE = 0;
@@ -37,16 +38,6 @@ public class ARSimpleActivity extends ARActivity implements SensorEventListener,
     // private static final int LOCATION_MIN_TIME = 30 * 1000;
     // private static final int LOCATION_MIN_DISTANCE = 10;
     private static final int INITIAL_SENSOR_ACTIVITY_NUM = 500;
-    // Gravity for accelerometer data
-    private float[] gravity = new float[3];
-    // magnetic data
-    private float[] geomagnetic = new float[3];
-    // Rotation data
-    private float[] rotation = new float[9];
-    // orientation (azimuth, pitch, roll)
-    private float[] orientation = new float[3];
-    // smoothed values
-    private float[] smoothed = new float[3];
     // sensor manager
     private SensorManager sensorManager;
     // sensor gravity
@@ -58,25 +49,43 @@ public class ARSimpleActivity extends ARActivity implements SensorEventListener,
     private GeomagneticField geomagneticField;
     private double bearing = 0;
     private ARSimpleImageNode targetNode;
-    private float yaw;
+    // private float yaw;
     private boolean initialArrowPosSet;
     private float initialArrowAngleRadians;
-    private int numSensorChanged = 0;
+    private int numSensorChanged;
+
+
+    private float[] gravity;
+    // magnetic data
+    private float[] geomagnetic;
+    // Rotation data
+    private float[] rotation;
+    private float[] orientation;
+    // smoothed values
+    private float[] smoothed;
+    private int renders;
+
 
     @Override
     public void onCreate(Bundle savedInstance)
     {
         super.onCreate(savedInstance);
+        // Gravity for accelerometer data
+        gravity = new float[3];
+        geomagnetic = new float[3];
+        rotation = new float[9];
+        orientation = new float[3];
+        smoothed = new float[3];
         setupObject = new ARSetup();
         setupObject.setupAR();
         PackageManager manager = getPackageManager();
-        yaw = 0.0f;
+        // yaw = 0.0f;
         initialArrowPosSet = false;
         initialArrowAngleRadians = 0.0f;
 
-        // arRenderer.initialise();
-        // Create gesture recogniser to start and stop arbitrack
-        // gestureDetect = new GestureDetectorCompat(this,this);
+        // Set the number of sensor count
+        numSensorChanged = 0;
+        renders = 0;
         if (manager.hasSystemFeature(PackageManager.FEATURE_SENSOR_ACCELEROMETER))
             hasAccel = true;
         if (manager.hasSystemFeature(PackageManager.FEATURE_SENSOR_GYROSCOPE))
@@ -86,11 +95,17 @@ public class ARSimpleActivity extends ARActivity implements SensorEventListener,
     }
 
     @Override
-    public void setup()
-    {
+    public void setup() {
         super.setup();
+        // Initialise ArbiTrack.
+        targetNode = new ARSimpleImageNode("arrow.png");
+        targetNode.rotateByDegrees(90.0f, 1.0f, 0.0f, 0.0f);
+        targetNode.rotateByDegrees(90.0f, 0.0f, 0.0f, 1.0f);
+        targetNode.scaleByUniform(0.3f);
+        initialPropertySet();
+    }
 
-
+    public void initialPropertySet() {
         // Initialise ArbiTrack.
         ARArbiTrack arbiTrack = ARArbiTrack.getInstance();
         arbiTrack.initialise();
@@ -100,14 +115,11 @@ public class ARSimpleActivity extends ARActivity implements SensorEventListener,
         gyroPlaceManager.initialise();
 
         // Create a node to be used as the target.
-        targetNode = new ARSimpleImageNode("arrow.png");
 
         // Add it to the Gyro Placement Manager's world so that it moves with the device's Gyroscope.
         gyroPlaceManager.getWorld().addChild(targetNode);
 
         // Rotate and scale the node to ensure it is displayed correctly.
-        targetNode.rotateByDegrees(90.0f, 1.0f, 0.0f, 0.0f);
-        targetNode.rotateByDegrees(90.0f, 0.0f, 0.0f, 1.0f);
 
         // Rotate the arrow by an initial reading
         if (initialArrowPosSet)
@@ -115,22 +127,10 @@ public class ARSimpleActivity extends ARActivity implements SensorEventListener,
             Log.e(TAG, "Rotating by " + Math.toDegrees(initialArrowAngleRadians));
             targetNode.rotateByDegrees(-(float)Math.toDegrees(initialArrowAngleRadians), 0.0f, 0.0f, 1.0f);
         }
-
-        targetNode.scaleByUniform(0.3f);
-
         // Set the ArbiTracker's target node.
         arbiTrack.setTargetNode(targetNode);
+        initialArrowAngleRadians = 0.0f;
 
-        // To be placed in the setupContent method
-        // Create a node to be tracked.
-        /*ARImageNode trackingNode = new ARImageNode("Cow Tracking.png");
-
-        // Rotate the node to ensure it is displayed correctly.
-        trackingNode.rotateByDegrees(90.0f, 1.0f, 0.0f, 0.0f);
-        trackingNode.rotateByDegrees(180.0f, 0.0f, 1.0f, 0.0f);
-
-        // Add the node as a child of the ArbiTracker's world.
-        arbiTrack.getWorld().addChild(trackingNode);*/
     }
 
     @Override
@@ -230,6 +230,10 @@ public class ARSimpleActivity extends ARActivity implements SensorEventListener,
     @Override
     public void onSensorChanged(SensorEvent event)
     {
+        if(renders == RENDER_LIMIT) {
+            initialPropertySet();
+            renders = 0;
+        }
 
         // get accelerometer data
         if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER
@@ -256,7 +260,7 @@ public class ARSimpleActivity extends ARActivity implements SensorEventListener,
         SensorManager.getOrientation(rotation, orientation);
 
         // TODO: not sure if the coordinates need to be remapped
-        SensorManager.remapCoordinateSystem(rotation, SensorManager.AXIS_X, SensorManager.AXIS_Y, rotation);
+        // SensorManager.remapCoordinateSystem(rotation, SensorManager.AXIS_X, SensorManager.AXIS_Y, rotation);
         // east degrees of true North
         bearing = orientation[0];
         // convert from radians to degrees
@@ -271,8 +275,7 @@ public class ARSimpleActivity extends ARActivity implements SensorEventListener,
             bearing += 360;
 
         // finding the yaw
-        // yaw = (float)Math.atan2(rotation[3],rotation[0]);
-        yaw = (float)Math.atan2(rotation[6],rotation[7]);
+        // yaw = (float)Math.atan2(rotation[6],rotation[7]);
 
         // Log.e(TAG, "Angle from north " + Math.toDegrees(orientation[0]));
 
@@ -281,11 +284,11 @@ public class ARSimpleActivity extends ARActivity implements SensorEventListener,
             numSensorChanged++;
             if (numSensorChanged != INITIAL_SENSOR_ACTIVITY_NUM)
             {
-                Toast.makeText(getApplicationContext(), "Setting up...", Toast.LENGTH_SHORT);
+                //Toast.makeText(getApplicationContext(), "Setting up...", Toast.LENGTH_SHORT).show();
             }
             else
             {
-                Toast.makeText(getApplicationContext(), "Done!", Toast.LENGTH_LONG);
+                Toast.makeText(getApplicationContext(), "Done!", Toast.LENGTH_LONG).show();
             }
         }
 
@@ -295,7 +298,7 @@ public class ARSimpleActivity extends ARActivity implements SensorEventListener,
             initialArrowAngleRadians = orientation[0];
             initialArrowPosSet = true;
         }
-        else if (targetNode != null && numSensorChanged > INITIAL_SENSOR_ACTIVITY_NUM-1)
+        else if (targetNode != null )//&& numSensorChanged > INITIAL_SENSOR_ACTIVITY_NUM-1)
         {
             // targetNode.updateOrientationMatrix(orientation, orientation[0]);
             float currentAngleToDestRadians = 0.0f;
@@ -303,8 +306,10 @@ public class ARSimpleActivity extends ARActivity implements SensorEventListener,
             {
                 currentAngleToDestRadians = (float) Math.toRadians(currentLocation.bearingTo(destLocation));
             }
-            Log.e(TAG, "Offset by "+Math.toDegrees(currentAngleToDestRadians) + " with curr location " + currentLocation);
+            // Log.e(TAG, "Offset by "+Math.toDegrees(currentAngleToDestRadians) + " with curr location " + currentLocation);
             targetNode.updateOrientationMatrix(orientation, orientation[0] - currentAngleToDestRadians);
+            renders++;
+
         }
     }
 
@@ -319,4 +324,16 @@ public class ARSimpleActivity extends ARActivity implements SensorEventListener,
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {}
+
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+        gravity = new float[3];
+        geomagnetic = new float[3];
+        rotation = new float[9];
+        orientation = new float[3];
+        smoothed = new float[3];
+        setupObject = new ARSetup();
+    }
 }

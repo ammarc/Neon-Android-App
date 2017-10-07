@@ -1,8 +1,12 @@
 package itproject.neon_client;
 
+import android.util.Log;
+
 import java.util.Arrays;
 
 import eu.kudan.kudan.ARImageNode;
+
+import static android.content.ContentValues.TAG;
 
 public class ARSimpleImageNode extends ARImageNode
 {
@@ -61,7 +65,7 @@ public class ARSimpleImageNode extends ARImageNode
         {
             if (i == 0)
             {
-                // Log.e(TAG, "The current angle for now is: " + currentAngleRadians);
+                Log.e(TAG, "Degrees to north: " + Math.toDegrees(newYaw));
                 // orientationMatrix[0] = updatedRotationMatrix[0] -  currentAngleRadians;
                 // Log.e(TAG, "The oM is " + orientationMatrix[0]);
                 /////////////////////
