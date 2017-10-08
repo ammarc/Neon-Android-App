@@ -3,12 +3,9 @@ package itproject.neon_client;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.TextView;
 
 import co.intentservice.chatui.ChatView;
@@ -30,6 +27,7 @@ public class ChatActivity extends AppCompatActivity {
         // Get the Intent that started this activity and extract the string
         Intent intent = getIntent();
 
+        //Bit of a hacking making 2 variables for friend name, need to fix
         final String friendName = intent.getStringExtra(MainActivity.EXTRA_MESSAGE);
         gFriendName = friendName;
         final String userName = LoggedInUser.getUser().username;
