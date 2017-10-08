@@ -53,31 +53,36 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
 
-        final ChatView chatView = (ChatView) findViewById(R.id.chat_view);
+        ChatView chatView = (ChatView) findViewById(R.id.chat_view);
         chatView.addMessage(new ChatMessage("Message received", System.currentTimeMillis(), ChatMessage.Type.RECEIVED));
         chatView.setOnSentMessageListener(new ChatView.OnSentMessageListener() {
             @Override
             public boolean sendMessage(ChatMessage chatMessage) {
-                mySocket.send(chatMessage.getMessage()+"\n");
                 return true;
             }
         });
 
-
-       mySocket.setClientCallback(new Client.ClientCallback () {
+        chatView.setTypingListener(new ChatView.TypingListener() {
             @Override
-            public void onMessage(final String message) {
-                System.out.println(message);
-                runOnUiThread(new Runnable(){
-                    public void run(){
-                        chatView.addMessage(new ChatMessage(message, System.currentTimeMillis(), ChatMessage.Type.RECEIVED));
-                    }
-                });
+            public void userStartedTyping() {
+
             }
 
             @Override
-            public void onConnect(Socket socket){
-                mySocket.initSocket(friendName,LoggedInUser.getUser().username);
+            public void userStoppedTyping() {
+
+            }
+        });
+
+
+        mySocket.setClientCallback(new Client.ClientCallback () {
+            @Override
+            public void onMessage(String message) {
+            }
+
+            @Override
+            public void onConnect(Socket socket) {
+                mySocket.send("Hello World!\n");
             }
 
             @Override
@@ -91,19 +96,6 @@ public class ChatActivity extends AppCompatActivity {
         });
 
         mySocket.connect();
-
-        /*chatView.setTypingListener(new ChatView.TypingListener() {
-            @Override
-            public void userStartedTyping() {
-
-            }
-
-            @Override
-            public void userStoppedTyping() {
-
-            }
-        });*/
-
     }
 
     public void mapDirect() {
@@ -128,10 +120,6 @@ public class ChatActivity extends AppCompatActivity {
     }
     protected void onDestroy(){
         super.onDestroy();
-        mySocket.disconnect();
     }
+
 }
-
-
-
-

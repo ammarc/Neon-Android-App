@@ -38,6 +38,7 @@ public class Client {
                     socket.connect(socketAddress);
                     socketOutput = socket.getOutputStream();
                     socketInput = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                    initSocket(10, "Bryce");
 
                     new ReceiveThread().start();
 
@@ -69,8 +70,8 @@ public class Client {
                 listener.onDisconnect(socket, e.getMessage());
         }
     }
-    public void initSocket(String friendName, String myName){
-        send("!!!!INIT!!!! " + friendName + " " + myName + " \n");
+    public void initSocket(int chatID, String name){
+        send("!!!!INIT!!!! " + String.valueOf(chatID) + " " + name);
     }
 
     private class ReceiveThread extends Thread implements Runnable{

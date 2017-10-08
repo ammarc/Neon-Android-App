@@ -31,6 +31,8 @@ public class NewProfileActivity extends AppCompatActivity {
 
     private int id = 0;
     private EditText username, phone_number, email;
+    private AppDatabase database;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

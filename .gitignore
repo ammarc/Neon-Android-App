@@ -30,6 +30,10 @@ app/src/main/res/font/
 
 *.bin
 
+<<<<<<< HEAD
 *.bin
 
 *.bin
+=======
+*.lock
+>>>>>>> master

@@ -43,7 +43,7 @@ public class LoginActivity extends AppCompatActivity {
     Button signUpButton;
     Button signInButton;
 
-    public static AppDatabase database;
+    private AppDatabase database;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -163,7 +163,6 @@ public class LoginActivity extends AppCompatActivity {
             Log.i("profile",Profile.getCurrentProfile().getFirstName());
 
             for (User user : database.userDao().getAllUser()) {
-                Log.i("profile", "user : " + user.username);
                 if (Profile.getCurrentProfile().getId().compareTo(user.fb_id) == 0) {
                     LoggedInUser.setUser(user);
                     startActivity(new Intent(LoginActivity.this, MainActivity.class));
@@ -187,4 +186,3 @@ public class LoginActivity extends AppCompatActivity {
         super.onDestroy();
     }
 }
-
