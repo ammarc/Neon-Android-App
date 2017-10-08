@@ -25,6 +25,7 @@ public class MapToFriendActivity extends AppCompatActivity implements OnMapReady
         Toolbar toolbar = (Toolbar) findViewById(R.id.map_toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle("");
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {

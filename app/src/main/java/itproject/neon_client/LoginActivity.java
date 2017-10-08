@@ -43,7 +43,7 @@ public class LoginActivity extends AppCompatActivity {
     Button signUpButton;
     Button signInButton;
 
-    private AppDatabase database;
+    static AppDatabase database;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
