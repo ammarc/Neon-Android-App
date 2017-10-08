@@ -20,6 +20,8 @@ import java.net.URISyntaxException;
 public class ChatActivity extends AppCompatActivity {
     static final Client mySocket = new Client("10.0.2.2", 3000);
 
+    private String friendName;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -28,19 +30,26 @@ public class ChatActivity extends AppCompatActivity {
 
         // Get the Intent that started this activity and extract the string
         Intent intent = getIntent();
-        final String friendName = intent.getStringExtra(MainActivity.EXTRA_MESSAGE);
+        friendName = intent.getStringExtra(MainActivity.EXTRA_MESSAGE);
 
         // Capture the layout's TextView and set the string as its text
 
-        TextView textView = (TextView) findViewById(R.id.textView);
-        textView.setText(friendName);
-        textView.bringToFront();
+        TextView friend_username = (TextView) findViewById(R.id.friend_username_chat);
+        friend_username.setText(friendName);
 
-        FloatingActionButton camera = (FloatingActionButton) findViewById(R.id.camera_view);
+        FloatingActionButton camera = (FloatingActionButton) findViewById(R.id.camera_view_fab);
         camera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 cameraClick();
+            }
+        });
+
+        FloatingActionButton map = (FloatingActionButton) findViewById(R.id.map_view_fab);
+        map.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mapDirect();
             }
         });
 
@@ -95,6 +104,12 @@ public class ChatActivity extends AppCompatActivity {
             }
         });*/
 
+    }
+
+    public void mapDirect() {
+        Intent intent = new Intent(ChatActivity.this, MapToFriendActivity.class);
+        intent.putExtra(MainActivity.EXTRA_MESSAGE, friendName);
+        startActivity(intent);
     }
 
     public void cameraClick() {

@@ -51,4 +51,5 @@
 
     <string name="nav_friends">Friends</string>
     <string name="nav_logout">Logout</string>
+    <string name="title_activity_map_to_friend">MapToFriendActivity</string>
 </resources>

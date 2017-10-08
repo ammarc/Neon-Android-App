@@ -4,23 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center_horizontal"
     tools:context="itproject.neon_client.ChatActivity"
     style="@style/Widget.AppCompat.ButtonBar">
-
-    <TextView
-            android:id="@+id/textView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="TextView"
-            android:textColor="@color/black"
-            tools:layout_constraintTop_creator="1"
-            tools:layout_constraintRight_creator="1"
-            android:layout_marginTop="38dp"
-            tools:layout_constraintLeft_creator="1"
-            chatview:layout_constraintRight_toRightOf="parent"
-            chatview:layout_constraintLeft_toLeftOf="parent"
-            chatview:layout_constraintTop_toTopOf="parent"/>
 
 
     <co.intentservice.chatui.ChatView
@@ -30,37 +15,82 @@
         android:layout_height="wrap_content"
         chatview:backgroundColor="@color/off_white"
         chatview:bubbleElevation="elevated"
-        chatview:bubbleBackgroundRcv="@color/blue"
-        chatview:bubbleBackgroundSend="@color/white"
-        android:layout_marginTop="0dp"
+        chatview:bubbleBackgroundRcv="@color/colorPrimary"
+        chatview:bubbleBackgroundSend="@color/colorPrimaryDark"
         chatview:layout_constraintTop_toBottomOf="parent"
-        android:layout_marginRight="0dp"
         chatview:layout_constraintRight_toRightOf="parent"
         chatview:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginBottom="0dp"
-        android:layout_marginLeft="0dp"
-        chatview:layout_constraintLeft_toLeftOf="parent"/>
+        chatview:layout_constraintLeft_toLeftOf="parent" />
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/camera_view"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/fab_margin"
-        android:background="@color/blue"
-        chatview:layout_editor_absoluteY="16dp"
-        chatview:layout_editor_absoluteX="16dp"
-        android:src="@drawable/ic_menu_camera" />
+        chatview:layout_constraintTop_toBottomOf="parent"
+        chatview:layout_constraintRight_toRightOf="parent"
+        chatview:layout_constraintLeft_toLeftOf="parent"
+        android:orientation="vertical">
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/map_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/fab_margin"
-        android:layout_marginEnd="@dimen/fab_margin"
-        chatview:layout_editor_absoluteY="16dp"
-        chatview:layout_editor_absoluteX="300dp"
-        android:background="@color/blue"
-        android:src="@drawable/ic_near_me_black_24dp" />
+        <TextView
+            android:id="@+id/friend_username_chat"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:keepScreenOn="true"
+            android:layout_margin="30dp"
+            android:textColor="@color/black"
+            android:textSize="20dp"
+            tools:layout_editor_absoluteY="0dp"
+            tools:layout_editor_absoluteX="8dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_horizontal">
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/camera_view_fab"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="top|start"
+                android:layout_marginEnd="@dimen/fab_margin"
+                android:layout_marginStart="@dimen/fab_margin"
+                android:clickable="true"
+                android:src="@drawable/ic_photo_camera_white_24dp"
+                tools:layout_editor_absoluteY="0dp"
+                tools:layout_editor_absoluteX="0dp" />
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/phone_fab"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="top|start"
+                android:layout_marginEnd="@dimen/fab_margin"
+                android:layout_marginStart="@dimen/fab_margin"
+                android:clickable="true"
+                android:src="@drawable/ic_phone_white_24dp"
+                tools:layout_editor_absoluteY="0dp"
+                tools:layout_editor_absoluteX="0dp" />
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/map_view_fab"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="top|end"
+                android:layout_marginEnd="@dimen/fab_margin"
+                android:layout_marginStart="@dimen/fab_margin"
+                android:src="@drawable/ic_near_me_white_24dp"
+                tools:layout_editor_absoluteY="0dp"
+                tools:layout_editor_absoluteX="0dp" />
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+
+
+
+
 
 
 </android.support.constraint.ConstraintLayout>

@@ -41,11 +41,19 @@
             </menu>
         </item>
 
+        <item android:title="Find Friends"
+            android:id="@+id/nav_find_friends"
+            android:enabled="true"
+            android:icon="@drawable/ic_search_black_24dp">
+
+        </item>
+
     </group>
 
     <item
         android:id="@+id/nav_logout"
         android:title="Logout"
         android:icon="@drawable/ic_perm_identity_black_24dp"/>
+
 
 </menu>
