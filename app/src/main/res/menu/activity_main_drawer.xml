@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+
+        <item android:title="Friends"
+            android:titleCondensed="Friends"
+            android:id="@+id/nav_friends_show"
+            android:icon="@drawable/ic_people_black_24dp">
+
+        </item>
+
+        <item android:title="Friends"
+            android:visible="false"
+            android:id="@+id/nav_friends"
+            android:enabled="true">
+
+            <menu>
+                <item
+                    android:id="@+id/placeholder_friends"
+                    android:title="friend" />
+            </menu>
+        </item>
+
+        <item android:title="Friend Requests"
+            android:titleCondensed="Friend Requests"
+            android:id="@+id/nav_friend_requests_show"
+            android:icon="@drawable/ic_person_add_black_24dp">
+
+        </item>
+
+        <item android:title="Friend Requests"
+            android:visible="false"
+            android:id="@+id/nav_friend_requests"
+            android:enabled="true">
+
+            <menu>
+                <item
+                    android:id="@+id/placeholder_requests"
+                    android:title="friend request" />
+            </menu>
+        </item>
+
+        <item android:title="Find Friends"
+            android:id="@+id/nav_find_friends"
+            android:enabled="true"
+            android:icon="@drawable/ic_search_black_24dp">
+
+        </item>
+
+    </group>
+
+    <item
+        android:id="@+id/nav_logout"
+        android:title="Logout"
+        android:icon="@drawable/ic_perm_identity_black_24dp"/>
+
+
+</menu>

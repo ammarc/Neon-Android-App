@@ -18,27 +18,29 @@
 
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
-    <uses-feature android:name="android.hardware.sensor.accelerometer" android:required="true" />
+    <uses-feature
+        android:name="android.hardware.sensor.accelerometer"
+        android:required="true" />
 
     <application
+        android:name="android.support.multidex.MultiDexApplication"
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
+        android:configChanges="keyboardHidden|orientation"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme"
-        android:configChanges="keyboardHidden|orientation">
-
-        <activity android:name=".ARSimpleActivity"
-                android:configChanges="orientation|screenSize"
-                android:screenOrientation="fullSensor"
-                  android:parentActivityName=".ProfilePageActivity">
-                <meta-data android:name="android.support.PARENT_ACTIVITY"
-                            android:value = ".ARSimpleActivity"/>
+        android:theme="@style/AppTheme">
+        <activity
+            android:name=".ARSimpleActivity"
+            android:configChanges="orientation|screenSize"
+            android:parentActivityName=".MainActivity"
+            android:screenOrientation="fullSensor">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ARSimpleActivity" />
         </activity>
         <activity
             android:name=".LoginActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="Login Page">
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -55,22 +57,13 @@
                 android:value=".LoginActivity" />
         </activity>
         <activity
-            android:name=".ProfilePageActivity"
-            android:parentActivityName=".NewProfileActivity">
-
-            <!-- The meta-data tag is required if you support API level 15 and lower -->
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".NewProfileActivity" />
-        </activity>
-        <activity
             android:name=".ChatActivity"
-            android:parentActivityName=".ProfilePageActivity">
+            android:parentActivityName=".MainActivity">
 
             <!-- The meta-data tag is required if you support API level 15 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ProfilePageActivity" />
+                android:value=".MainActivity" />
         </activity>
 
         <meta-data
@@ -79,8 +72,7 @@
 
         <activity
             android:name="com.facebook.FacebookActivity"
-            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
-            android:label="@string/app_name" /> <!-- todo: replace @string/app_name with app name -->
+            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"></activity>
         <activity
             android:name="com.facebook.CustomTabActivity"
             android:exported="true">
@@ -92,6 +84,36 @@
 
                 <data android:scheme="@string/fb_login_protocol_scheme" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".MainActivity"
+            android:parentActivityName=".LoginActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+
+        </activity>
+        <!--
+             The API key for Google Maps-based APIs is defined as a string resource.
+             (See the file "res/values/google_maps_api.xml").
+             Note that the API key is linked to the encryption key used to sign the APK.
+             You need a different API key for each encryption key, including the release key that is used to
+             sign the APK for publishing.
+             You can define the keys for the debug and release targets in src/debug/ and src/release/. 
+        -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/google_maps_key" />
+
+
+        <activity
+            android:name=".MapToFriendActivity"
+            android:label="@string/title_activity_map_to_friend"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:parentActivityName=".ChatActivity">
+
+            <!-- The meta-data tag is required if you support API level 15 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ChatActivity" />
         </activity>
     </application>
 

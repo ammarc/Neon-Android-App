@@ -1,16 +1,23 @@
 package itproject.neon_client;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import com.facebook.Profile;
+
+import java.io.IOException;
 
 import itproject.neon_client.mock_data.UserDao;
 import itproject.neon_client.mock_data.User;
@@ -22,7 +29,7 @@ import itproject.neon_client.mock_data.AppDatabase;
 
 public class NewProfileActivity extends AppCompatActivity {
 
-    private static int id = 3;
+    private int id = 0;
     private EditText username, phone_number, email;
     private AppDatabase database;
 
@@ -31,10 +38,10 @@ public class NewProfileActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_create_profile);
 
-        /*mock data*/
-        database = AppDatabase.getDatabase(getApplicationContext());
+        Log.i("profile","new profile");
 
         TextView user_info_display = (TextView) findViewById(R.id.user_welcome);
         username = (EditText) findViewById(R.id.username);
@@ -71,15 +78,23 @@ public class NewProfileActivity extends AppCompatActivity {
             return;
         }
 
-        id++;
+        for (User user : LoginActivity.database.userDao().getAllUser()) {
+            id++;
+            Log.i("profile","user :: " + user.username + " id " + user.id);
+        }   id++;
 
         User newUser = new User(id,usernameString,Profile.getCurrentProfile().getFirstName(),Profile.getCurrentProfile().getLastName(),
-                phoneString, emailString, 1, Profile.getCurrentProfile().getId());
+                phoneString, emailString, Profile.getCurrentProfile().getId());
 
-        database.userDao().addUser(newUser);
-        User user = database.userDao().getUser(id).get(0);
+        LoginActivity.database.userDao().addUser(newUser);
+
+        for (User user : LoginActivity.database.userDao().getAllUser()) {
+            Log.i("profile", "user : " + user.username + " id ::: " + user.id);
+        }
+
+        User user = LoginActivity.database.userDao().getUser(id).get(0);
         LoggedInUser.setUser(newUser);
-        Log.i("profile","user " + LoggedInUser.getUser().username + " id " + LoggedInUser.getUser().id);
-        startActivity(new Intent(NewProfileActivity.this, ProfilePageActivity.class));
+        Log.i("profile","user " + user.username + " id " + user.id);
+        startActivity(new Intent(NewProfileActivity.this, MainActivity.class));
     }
 }

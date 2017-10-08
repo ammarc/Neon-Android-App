@@ -42,4 +42,14 @@
     <string name="title_activity_opening_page">OpeningPageActivity</string>
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="title_activity_main">MainActivity</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="title_activity_maps">Map</string>
+
+    <string name="nav_friends">Friends</string>
+    <string name="nav_logout">Logout</string>
+    <string name="title_activity_map_to_friend">MapToFriendActivity</string>
 </resources>
