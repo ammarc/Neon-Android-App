@@ -16,6 +16,8 @@ package itproject.neon_client;
 
 public class Friends {
 
+	static final String address = "http://13.65.209.193:3000/";
+
 	public static JSONArray post(String path, JSONObject jsonObject) {
 		try {
 			URL url = new URL(path);
@@ -106,7 +108,7 @@ public class Friends {
 
 	public static ArrayList<String> get_pending_friends(String username) throws JSONException {
 		ArrayList<String> pending_friends = new ArrayList<String>();
-		String path = "http://13.65.209.193:3000/friend/requests";
+		String path = address + "friend/requests";
 		JSONObject json_message = new JSONObject();
 		json_message.put("username", username);
 
@@ -119,7 +121,7 @@ public class Friends {
 	}
 
 	public void accept_friend_request(String from_user, String to_user) throws JSONException {
-		String path = "http://13.65.209.193:3000/friend/requests/accept";
+		String path = address + "friend/requests/accept";
 		JSONObject post_message = new JSONObject();
 		post_message.put("to_user", to_user);
 		post_message.put("from_user", from_user);
@@ -128,7 +130,7 @@ public class Friends {
 
 	public static ArrayList<String> get_friend_list(String username) throws JSONException {
 		ArrayList<String> friends = new ArrayList<String>();
-		String path = "http://13.65.209.193:3000/friend/list?user=" + username;
+		String path = address + "friend/list?user=" + username;
 		JSONArray friends_json = get(path);
 
 		for (int i = 0; i < friends_json.length(); i ++) {
@@ -139,7 +141,7 @@ public class Friends {
 	}
 
 	public static boolean user_exists(String username) throws JSONException {
-		String path = "http://13.65.209.193:3000/users/all";
+		String path = address + "users/all";
 		JSONArray users = get(path);
 		for (int i=0; i < users.length(); i ++) {
 			if (users.getJSONObject(i).getString("username").equals(username)) {
@@ -161,7 +163,7 @@ public class Friends {
 		if(check_friend_list(friends, to_user)) return "you are already friends with " + to_user;
 		if(!user_exists(to_user)) return "could not find " + to_user;
 
-		String path = "http://13.65.209.193:3000/friend";
+		String path = address + "friend";
 		JSONObject post_message = new JSONObject();
 		post_message.put("to_user", to_user);
 		post_message.put("from_user", from_user);
@@ -181,7 +183,7 @@ public class Friends {
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
-		String path = "http://13.65.209.193:3000/profile";
+		String path = address + "profile";
 		post(path, post_message);
 	}
 
