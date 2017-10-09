@@ -46,6 +46,19 @@
             android:textSize="15dp"
             android:textColor="@color/black"/>
 
+        <Button
+            android:id="@+id/camera"
+            style="?metaButtonBarButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:layout_weight="1"
+            android:background="@color/blue"
+            android:text="Camera"
+            android:onClick="goToCamera"
+            android:textColor="@color/black"
+            android:textSize="15dp" />
+
     </LinearLayout>
 
     <LinearLayout
