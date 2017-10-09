@@ -138,6 +138,12 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
+    public void goToCamera(View view) {
+
+        startActivity(new Intent(LoginActivity.this, NeonARActivity.class));
+
+    }
+
     private void sign_up() {
         Log.i("profile","sign up");
         if (Profile.getCurrentProfile() == null) {

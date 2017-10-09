@@ -8,17 +8,16 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import co.intentservice.chatui.ChatView;
 import co.intentservice.chatui.models.ChatMessage;
 import itproject.neon_client.helper.LoggedInUser;
 import itproject.neon_client.activitys.MainActivity;
 import itproject.neon_client.activitys.MapToFriendActivity;
 import itproject.neon_client.R;
+
+import itproject.neon_client.helper.Tools;
 import itproject.neon_client.activitys.NeonARActivity;
-
 import java.net.Socket;
-
 
 public class ChatActivity extends AppCompatActivity {
 
@@ -204,8 +203,13 @@ public class ChatActivity extends AppCompatActivity {
     /* Class to handle the asynchronous sending of messages to the server. */
     private class SendMessage extends AsyncTask<ChatMessage, Void, Boolean> {
         protected Boolean doInBackground(ChatMessage... chatMessages) {
-            for(ChatMessage chatMessage : chatMessages)
-                mySocket.send(chatMessage.getMessage()+"\n");
+            for(ChatMessage chatMessage : chatMessages) {
+                try {
+                    mySocket.send(chatMessage.getMessage() + "\n");
+                } catch(NullPointerException e) {
+                    Tools.exceptionToast(getApplicationContext(), "Cannot connect to server!");
+                }
+            }
             return true;
         }
 
