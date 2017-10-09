@@ -1,141 +1,23 @@
 package itproject.neon_client.helper;
 
-	import android.os.AsyncTask;
-    import android.util.Log;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
-    import com.facebook.Profile;
-
-    import java.io.BufferedReader;
-	import java.io.DataOutputStream;
-	import java.io.IOException;
-	import java.io.InputStream;
-	import java.io.InputStreamReader;
-	import java.net.HttpURLConnection;
-	import java.net.MalformedURLException;
-	import java.net.URL;
-	import java.util.ArrayList;
-
-	import org.json.JSONArray;
-	import org.json.JSONException;
-	import org.json.JSONObject;
+import java.util.ArrayList;
 
 public class FriendHelper {
 
-	static final String address = "http://13.65.209.193:3000/";
-
-	public static JSONArray post(String path, JSONObject jsonObject) {
-		try {
-			URL url = new URL(path);
-			HttpURLConnection httpURLConnection = (HttpURLConnection)url.openConnection();
-			httpURLConnection.setDoOutput(true);
-			httpURLConnection.setRequestMethod("POST");
-			httpURLConnection.setRequestProperty("Accept", "application/json");
-			httpURLConnection.connect();
-
-			DataOutputStream wr = new DataOutputStream(httpURLConnection.getOutputStream());
-			wr.writeBytes(jsonObject.toString());
-			wr.flush();
-			wr.close();
-
-			if (httpURLConnection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-				String server_response = readStream(httpURLConnection.getInputStream());
-				httpURLConnection.disconnect();
-				if (!(server_response.charAt(0) == '[')) return null;
-				JSONArray response_json_array;
-				response_json_array = new JSONArray(server_response);
-				return response_json_array;
-			}
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
-
-    private class asyncPut extends AsyncTask<String, Void, Void> {
-        protected Void doInBackground(String... operations) {
-            for(String operation : operations) {
-
-            }
-            return null;
-        }
-
-        @Override
-        protected void onProgressUpdate(Void... params) { }
-
-        protected void onPostExecute() { }
-
-        @Override
-        protected void onPreExecute() {}
-    }
-
-
-    public static JSONArray get(String path) {
-		try {
-			URL url = new URL(path);
-			HttpURLConnection httpURLConnection = (HttpURLConnection)url.openConnection();
-			httpURLConnection.connect();
-			if (httpURLConnection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-				String server_response = readStream(httpURLConnection.getInputStream());
-				JSONArray response_json_array;
-				response_json_array = new JSONArray(server_response);
-				return response_json_array;
-			}
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
-
-	public static JSONArray put(String path, JSONObject jsonObject) {
-		try {
-			JSONArray json_output = new JSONArray();
-			URL url = new URL(path);
-			HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
-			httpURLConnection.setDoOutput(true);
-			httpURLConnection.setRequestMethod("PUT");
-			httpURLConnection.setRequestProperty("Accept", "application/json");
-			httpURLConnection.connect();
-
-			DataOutputStream wr = new DataOutputStream(httpURLConnection.getOutputStream());
-			wr.writeBytes(jsonObject.toString());
-			wr.flush();
-			wr.close();
-			httpURLConnection.getInputStream();
-
-			if (httpURLConnection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-				String server_response = readStream(httpURLConnection.getInputStream());
-				httpURLConnection.disconnect();
-				JSONArray response_json_array;
-				response_json_array = new JSONArray(server_response);
-				return response_json_array;
-			}
-			return json_output;
-		}
-		catch (MalformedURLException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
-
+	private static final String address = "http://13.65.209.193:3000";
 	public static ArrayList<String> get_pending_friends(String username) throws JSONException {
 		ArrayList<String> pending_friends = new ArrayList<String>();
 		String path = address + "friend/requests";
 		JSONObject json_message = new JSONObject();
 		json_message.put("username", username);
 
-		JSONArray pending_friends_json = post(path, json_message);
+		DBField field = new DBField(path, json_message);
+		DatabaseConnect.post(field);
+		JSONArray pending_friends_json = DatabaseConnect.post(field);
 		for (int i = 0; i < pending_friends_json.length(); i ++) {
 			JSONObject friend = pending_friends_json.getJSONObject(i);
 			pending_friends.add(friend.getString("from_user"));
@@ -148,13 +30,15 @@ public class FriendHelper {
 		JSONObject post_message = new JSONObject();
 		post_message.put("to_user", to_user);
 		post_message.put("from_user", from_user);
-		post(path, post_message);
+
+		DBField field = new DBField(path, post_message);
+		DatabaseConnect.post(field);
 	}
 
 	public static ArrayList<String> get_friend_list(String username) throws JSONException {
 		ArrayList<String> friends = new ArrayList<String>();
 		String path = address + "friend/list?user=" + username;
-		JSONArray friends_json = get(path);
+		JSONArray friends_json = DatabaseConnect.get(path);
 
 		for (int i = 0; i < friends_json.length(); i ++) {
 			JSONObject friend = friends_json.getJSONObject(i);
@@ -165,7 +49,7 @@ public class FriendHelper {
 
 	public static boolean user_exists(String username) throws JSONException {
 		String path = address + "users/all";
-		JSONArray users = get(path);
+		JSONArray users = DatabaseConnect.get(path);
 		for (int i=0; i < users.length(); i ++) {
 			if (users.getJSONObject(i).getString("username").equals(username)) {
 				return true;
@@ -190,11 +74,12 @@ public class FriendHelper {
 		JSONObject post_message = new JSONObject();
 		post_message.put("to_user", to_user);
 		post_message.put("from_user", from_user);
-		post(path, post_message);
+		DBField field = new DBField(path, post_message);
+		DatabaseConnect.post(field);
 		return "friend request sent to " + to_user;
 	}
 
-	public static void add_user(String username, String first_name, String last_name, String phone_num, String email) {
+	public void add_user(String username, String first_name, String last_name, String phone_num, String email, String fb_id) {
 		JSONObject post_message = new JSONObject();
 		try {
 			post_message.put("username", username);
@@ -202,35 +87,31 @@ public class FriendHelper {
 			post_message.put("last_name", last_name);
 			post_message.put("phone_num", phone_num);
 			post_message.put("email", email);
+			post_message.put("fbID", fb_id);
 
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
 		String path = address + "profile";
-		post(path, post_message);
+
+		DBField field = new DBField(path, post_message);
+		DatabaseConnect.post(field);
 	}
 
-
-	private static String readStream(InputStream in) {
-		BufferedReader reader = null;
-		StringBuffer response = new StringBuffer();
+	public int getFriendshipStatus(String to_user, String from_user) {
 		try {
-			reader = new BufferedReader(new InputStreamReader(in));
-			String line = "";
-			while ((line = reader.readLine()) != null) {
-				response.append(line);
+			ArrayList<String> pending_friends = get_pending_friends(from_user);
+			ArrayList<String> accepted_friends = get_friend_list(from_user);
+			for (String pending_friend: pending_friends) {
+				if (pending_friend.equals(to_user)) return 0;
 			}
-		} catch (IOException e) {
+			for(String accepted_friend: accepted_friends) {
+				if (accepted_friend.equals(to_user)) return 1;
+			}
+		} catch (JSONException e) {
 			e.printStackTrace();
-		} finally {
-			if (reader != null) {
-				try {
-					reader.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
 		}
-		return response.toString();
+
+		return -1;
 	}
 }

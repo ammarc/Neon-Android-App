@@ -29,17 +29,15 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONArray;
 
-import java.io.DataOutputStream;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-
+import itproject.neon_client.helper.DBField;
+import itproject.neon_client.helper.DatabaseConnect;
 import itproject.neon_client.helper.LoggedInUser;
 import itproject.neon_client.R;
+
+import static itproject.neon_client.helper.DatabaseConnect.get;
+import static itproject.neon_client.helper.MapHelper.get_latitude;
+import static itproject.neon_client.helper.MapHelper.get_longitude;
+import static itproject.neon_client.helper.MapHelper.post_location;
 
 public class MapToFriendActivity extends AppCompatActivity implements OnMapReadyCallback {
 
@@ -49,7 +47,6 @@ public class MapToFriendActivity extends AppCompatActivity implements OnMapReady
     protected Context context;
     GoogleApiClient mGoogleApiClient;
     LocationRequest locationRequest;
-    protected static String directory = "http://13.65.209.193:3000";
     private GoogleMap mMap;
 
     @Override
@@ -95,7 +92,7 @@ public class MapToFriendActivity extends AppCompatActivity implements OnMapReady
         mMap.setMinZoomPreference(10);
         mMap.setMaxZoomPreference(20);
     }
-    
+
     public void onConnected(Bundle arg0) {
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
@@ -103,130 +100,26 @@ public class MapToFriendActivity extends AppCompatActivity implements OnMapReady
         mFusedLocactionProviderApi.requestLocationUpdates(mGoogleApiClient, locationRequest, new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
-                
+
                 mLastLocation = location;
                 LatLng myLocation = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
                 post_location(LoggedInUser.getUser().username, mLastLocation.getLatitude(), mLastLocation.getLongitude());
                 mMap.moveCamera(CameraUpdateFactory.newLatLng(myLocation));
                 mMap.moveCamera(CameraUpdateFactory.zoomBy(15));
-                
+
                 Log.d("d", "location changed");
-                
+
             }
         });
     }
-    
+
     void friend_marker(GoogleMap map, String to_user) throws JSONException {
         double latitude = get_latitude(to_user, LoggedInUser.getUser().username);
         double longitude = get_longitude(to_user, LoggedInUser.getUser().username);
-        
-        map.addMarker(new MarkerOptions()
-                      .position(new LatLng(latitude, longitude))
-                      .title(to_user));
-    }
-    
-    static double get_latitude(String to_user, String from_user) throws JSONException {
-        String path = directory + "/gps/friends?user=" + from_user;
-        JSONArray friends_locations = get(path);
-        
-        for (int i = 0; i < friends_locations.length(); i ++) {
-            if (friends_locations.getJSONObject(i).getString("username").equals(to_user)) {
-                return friends_locations.getJSONObject(i).getDouble("latitude");
-            }
-        }
-        return 0;
-    }
-    
-    static double get_longitude(String to_user, String from_user) throws JSONException {
-        String path = directory+ "/gps/friends?user=" + from_user;
-        JSONArray friends_locations = get(path);
-        
-        for (int i = 0; i < friends_locations.length(); i ++) {
-            if (friends_locations.getJSONObject(i).getString("username").equals(to_user)) {
-                return friends_locations.getJSONObject(i).getDouble("longitude");
-            }
-        }
-        return 0;
-    }
-    
-    public static JSONArray post_location(String username, double latitude, double longitude) {
-        try {
-            JSONObject post_message = new JSONObject();
-            post_message.put("username", username);
-            post_message.put("latitude", latitude);
-            post_message.put("longitude", longitude);
-            String path = directory+ "/gps";
-            
-            URL url = new URL(path);
-            HttpURLConnection httpURLConnection = (HttpURLConnection)url.openConnection();
-            httpURLConnection.setDoOutput(true);
-            httpURLConnection.setRequestMethod("POST");
-            httpURLConnection.setRequestProperty("Accept", "application/json");
-            httpURLConnection.connect();
-            
-            DataOutputStream wr = new DataOutputStream(httpURLConnection.getOutputStream());
-            wr.writeBytes(post_message.toString());
-            wr.flush();
-            wr.close();
-            
-            if (httpURLConnection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-                httpURLConnection.disconnect();
-            }
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-    
-    public static JSONArray get(String path) {
-        try {
-            URL url = new URL(path);
-            HttpURLConnection httpURLConnection = (HttpURLConnection)url.openConnection();
-            httpURLConnection.connect();
-            System.out.println("connected");
-            System.out.println(httpURLConnection.getResponseCode());
-            if (httpURLConnection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-                String server_response = readStream(httpURLConnection.getInputStream());
-                System.out.println(server_response);
-                JSONArray response_json_array;
-                response_json_array = new JSONArray(server_response);
-                return response_json_array;
-            }
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-    
-    private static String readStream(InputStream in) {
-        BufferedReader reader = null;
-        StringBuffer response = new StringBuffer();
-        try {
-            reader = new BufferedReader(new InputStreamReader(in));
-            String line = "";
-            while ((line = reader.readLine()) != null) {
-                response.append(line);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            if (reader != null) {
-                try {
-                    reader.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        return response.toString();
-    }
 
+        map.addMarker(new MarkerOptions()
+                .position(new LatLng(latitude, longitude))
+                .title(to_user));
+    }
 }
+
