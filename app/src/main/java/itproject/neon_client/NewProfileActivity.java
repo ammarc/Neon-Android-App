@@ -11,6 +11,8 @@ import android.widget.TextView;
 
 import com.facebook.Profile;
 
+import org.json.JSONException;
+
 import itproject.neon_client.mock_data.UserDao;
 import itproject.neon_client.mock_data.User;
 import itproject.neon_client.mock_data.AppDatabase;
@@ -74,7 +76,15 @@ public class NewProfileActivity extends AppCompatActivity {
             Log.i("profile","user :: " + user.username + " id " + user.id);
         }   id++;*/
 
-        
+        try {
+            Friends.add_user(usernameString,Profile.getCurrentProfile().getFirstName(),Profile.getCurrentProfile().getLastName(),
+                    phoneString,emailString,Profile.getCurrentProfile().getId());
+            if (Friends.user_exists(usernameString)) {
+                Log.i("profile","exists");
+            }
+        } catch (JSONException e) {
+            Log.i("profile","doesn't exist");
+        }
 
         User newUser = new User(id,usernameString,Profile.getCurrentProfile().getFirstName(),Profile.getCurrentProfile().getLastName(),
                 phoneString, emailString, Profile.getCurrentProfile().getId());

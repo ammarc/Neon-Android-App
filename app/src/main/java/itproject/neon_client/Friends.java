@@ -171,7 +171,7 @@ public class Friends {
 		return "friend request sent to " + to_user;
 	}
 
-	public static void add_user(String username, String first_name, String last_name, String phone_num, String email) {
+	public static void add_user(String username, String first_name, String last_name, String phone_num, String email, String fbId) {
 		JSONObject post_message = new JSONObject();
 		try {
 			post_message.put("username", username);
@@ -179,6 +179,7 @@ public class Friends {
 			post_message.put("last_name", last_name);
 			post_message.put("phone_num", phone_num);
 			post_message.put("email", email);
+			post_message.put("fbId",fbId);
 
 		} catch (JSONException e) {
 			e.printStackTrace();

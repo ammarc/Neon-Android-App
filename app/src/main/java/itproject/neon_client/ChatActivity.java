@@ -33,10 +33,15 @@ public class ChatActivity extends AppCompatActivity {
         // Get the Intent that started this activity and extract the string
         Intent intent = getIntent();
 
-        //Bit of a hacking making 2 variables for friend name, need to fix
+        //Bit of a hacking making 2 variables for friend name, need a final and a non-final
         final String friendName = intent.getStringExtra(MainActivity.EXTRA_MESSAGE);
         gFriendName = friendName;
         final String userName = LoggedInUser.getUser().username;
+
+        if (friendName != null) {
+            getSupportActionBar().setTitle(friendName);
+        }
+
 
         // friend request accepted TODO put in proper back end function
         for (String username : MainActivity.friends) {
@@ -45,12 +50,7 @@ public class ChatActivity extends AppCompatActivity {
             }
         }
 
-        // Capture the layout's TextView and set the string as its text
-
-        final TextView friend_username = (TextView) findViewById(R.id.friend_username_chat);
-        if (friend_username != null) {
-            friend_username.setText(friendName);
-        }
+        final TextView message = (TextView) findViewById(R.id.chat_message);
 
         LinearLayout accepted_view = (LinearLayout) findViewById(R.id.accepted_view);
 
@@ -76,7 +76,7 @@ public class ChatActivity extends AppCompatActivity {
                 // TODO put decline function here
                 MainActivity.friend_requests.remove(friendName);
                 String declined_message = "You have declined the friend request from " + friendName;
-                friend_username.setText(declined_message);
+                message.setText(declined_message);
                 not_accepted_view.setVisibility(View.INVISIBLE);
             }
         });
@@ -116,10 +116,8 @@ public class ChatActivity extends AppCompatActivity {
             not_accepted_view.setVisibility(View.VISIBLE);
             chatView.setVisibility(View.INVISIBLE);
             String accept_request_message = friendName + " would like to connect with you";
-            friend_username.setText(accept_request_message);
+            message.setText(accept_request_message);
         }
-
-
 
 
         mySocket.setClientCallback(new Client.ClientCallback () {
