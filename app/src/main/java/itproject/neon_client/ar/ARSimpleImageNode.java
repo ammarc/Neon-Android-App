@@ -80,4 +80,10 @@ public class ARSimpleImageNode extends ARImageNode
         if (initialSettingFlag == -1)
             initialSettingFlag = 1;
     }
+
+    public void resetYaws()
+    {
+        newYaw = orientationMatrix[0];
+        yaw = orientationMatrix[0];
+    }
 }

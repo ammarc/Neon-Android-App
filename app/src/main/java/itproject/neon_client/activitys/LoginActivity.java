@@ -1,4 +1,4 @@
-package itproject.neon_client.activity;
+package itproject.neon_client.activitys;
 
 import android.content.Intent;
 
@@ -21,7 +21,6 @@ import com.facebook.login.widget.LoginButton;
 
 import java.util.List;
 
-import itproject.neon_client.ar.NeonARActivity;
 import itproject.neon_client.helper.LoggedInUser;
 import itproject.neon_client.R;
 import itproject.neon_client.mock_data.AppDatabase;

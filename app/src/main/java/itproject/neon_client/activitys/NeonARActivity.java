@@ -1,4 +1,4 @@
-package itproject.neon_client.ar;
+package itproject.neon_client.activitys;
 
 
 import android.content.Context;
@@ -18,6 +18,8 @@ import android.widget.Toast;
 
 import eu.kudan.kudan.ARArbiTrack;
 import eu.kudan.kudan.ARGyroPlaceManager;
+import itproject.neon_client.ar.ARSetup;
+import itproject.neon_client.ar.ARSimpleImageNode;
 
 import static android.content.ContentValues.TAG;
 
@@ -36,7 +38,7 @@ public class NeonARActivity extends eu.kudan.kudan.ARActivity implements SensorE
     // private static final int LOCATION_MIN_TIME = 30 * 1000;
     // private static final int LOCATION_MIN_DISTANCE = 10;
     private static final int INITIAL_SENSOR_ACTIVITY_NUM = 500;
-    private static final int RENDER_LIMIT = 3000;
+    private static final int RENDER_LIMIT = 1000;
     // sensor manager
     private SensorManager sensorManager;
     // sensor gravity
@@ -51,7 +53,7 @@ public class NeonARActivity extends eu.kudan.kudan.ARActivity implements SensorE
     private boolean initialArrowPosSet;
     private float initialArrowAngleRadians;
     private int numSensorChanged;
-
+    private ARGyroPlaceManager gyroPlaceManager;
 
     private float[] gravity;
     // magnetic data
@@ -69,10 +71,8 @@ public class NeonARActivity extends eu.kudan.kudan.ARActivity implements SensorE
     public void onCreate(Bundle savedInstance)
     {
         super.onCreate(savedInstance);
+        // Initialise gyro placement.
         initialPropertySet();
-        // arRenderer.initialise();
-        // Create gesture recogniser to start and stop arbitrack
-        // gestureDetect = new GestureDetectorCompat(this,this);
     }
 
     @Override
@@ -80,19 +80,18 @@ public class NeonARActivity extends eu.kudan.kudan.ARActivity implements SensorE
     {
         super.setup();
 
-
+        gyroPlaceManager = ARGyroPlaceManager.getInstance();
+        gyroPlaceManager.initialise();
         // Initialise ArbiTrack.
         ARArbiTrack arbiTrack = ARArbiTrack.getInstance();
         arbiTrack.initialise();
 
-        // Initialise gyro placement.
-        ARGyroPlaceManager gyroPlaceManager = ARGyroPlaceManager.getInstance();
-        gyroPlaceManager.initialise();
 
         // Create a node to be used as the target.
         targetNode = new ARSimpleImageNode("arrow.png");
 
         // Add it to the Gyro Placement Manager's world so that it moves with the device's Gyroscope.
+        gyroPlaceManager.getWorld().removeAllChildren();
         gyroPlaceManager.getWorld().addChild(targetNode);
 
         // Rotate and scale the node to ensure it is displayed correctly.
@@ -110,17 +109,6 @@ public class NeonARActivity extends eu.kudan.kudan.ARActivity implements SensorE
 
         // Set the ArbiTracker's target node.
         arbiTrack.setTargetNode(targetNode);
-
-        // To be placed in the setupContent method
-        // Create a node to be tracked.
-        /*ARImageNode trackingNode = new ARImageNode("Cow Tracking.png");
-
-        // Rotate the node to ensure it is displayed correctly.
-        trackingNode.rotateByDegrees(90.0f, 1.0f, 0.0f, 0.0f);
-        trackingNode.rotateByDegrees(180.0f, 0.0f, 1.0f, 0.0f);
-
-        // Add the node as a child of the ArbiTracker's world.
-        arbiTrack.getWorld().addChild(trackingNode);*/
     }
 
     @Override
@@ -220,7 +208,12 @@ public class NeonARActivity extends eu.kudan.kudan.ARActivity implements SensorE
     {
         if(renders == RENDER_LIMIT) {
             initialPropertySet();
-            // renders = 0;
+
+            renders = 0;
+        }
+
+        else {
+            renders++;
         }
         if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER
                             || event.sensor.getType() == Sensor.TYPE_GRAVITY)
@@ -297,16 +290,15 @@ public class NeonARActivity extends eu.kudan.kudan.ARActivity implements SensorE
         // magnetic data
         geomagnetic = new float[9];
         // Rotation data
-        rotation = new float[3];
+        rotation = new float[9];
         orientation = new float[3];
         // smoothed values
         smoothed = new float[3];
         renders = 0;
-        setupObject = new ARSetup();
-        setupObject.setupAR();
         PackageManager manager = getPackageManager();
         initialArrowPosSet = false;
         initialArrowAngleRadians = 0.0f;
+        this.setup();
         if (manager.hasSystemFeature(PackageManager.FEATURE_SENSOR_ACCELEROMETER))
             hasAccel = true;
         if (manager.hasSystemFeature(PackageManager.FEATURE_SENSOR_GYROSCOPE))
