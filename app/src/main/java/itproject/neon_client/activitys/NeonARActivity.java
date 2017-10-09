@@ -36,6 +36,7 @@ public class NeonARActivity extends eu.kudan.kudan.ARActivity implements SensorE
     // private static final int LOCATION_MIN_TIME = 30 * 1000;
     // private static final int LOCATION_MIN_DISTANCE = 10;
     private static final int INITIAL_SENSOR_ACTIVITY_NUM = 500;
+    private static final int RENDER_LIMIT = 3000;
     // sensor manager
     private SensorManager sensorManager;
     // sensor gravity
@@ -68,21 +69,10 @@ public class NeonARActivity extends eu.kudan.kudan.ARActivity implements SensorE
     public void onCreate(Bundle savedInstance)
     {
         super.onCreate(savedInstance);
-        setupObject = new ARSetup();
-        setupObject.setupAR();
-        PackageManager manager = getPackageManager();
-        initialArrowPosSet = false;
-        initialArrowAngleRadians = 0.0f;
-
+        initialPropertySet();
         // arRenderer.initialise();
         // Create gesture recogniser to start and stop arbitrack
         // gestureDetect = new GestureDetectorCompat(this,this);
-        if (manager.hasSystemFeature(PackageManager.FEATURE_SENSOR_ACCELEROMETER))
-            hasAccel = true;
-        if (manager.hasSystemFeature(PackageManager.FEATURE_SENSOR_GYROSCOPE))
-            hasGravity = true;
-        if (manager.hasSystemFeature(PackageManager.FEATURE_SENSOR_COMPASS))
-            hasCompass = true;
     }
 
     @Override
@@ -299,6 +289,30 @@ public class NeonARActivity extends eu.kudan.kudan.ARActivity implements SensorE
             targetNode.updateOrientationMatrix(orientation, orientation[0] -
                                 (float) Math.toRadians(currentLocation.bearingTo(destLocation)));
         }
+    }
+
+    public void initialPropertySet()
+    {
+        gravity = new float[9];
+        // magnetic data
+        geomagnetic = new float[9];
+        // Rotation data
+        rotation = new float[3];
+        orientation = new float[3];
+        // smoothed values
+        smoothed = new float[3];
+        renders = 0;
+        setupObject = new ARSetup();
+        setupObject.setupAR();
+        PackageManager manager = getPackageManager();
+        initialArrowPosSet = false;
+        initialArrowAngleRadians = 0.0f;
+        if (manager.hasSystemFeature(PackageManager.FEATURE_SENSOR_ACCELEROMETER))
+            hasAccel = true;
+        if (manager.hasSystemFeature(PackageManager.FEATURE_SENSOR_GYROSCOPE))
+            hasGravity = true;
+        if (manager.hasSystemFeature(PackageManager.FEATURE_SENSOR_COMPASS))
+            hasCompass = true;
     }
 
     @Override

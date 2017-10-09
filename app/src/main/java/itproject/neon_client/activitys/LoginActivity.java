@@ -21,6 +21,7 @@ import com.facebook.login.widget.LoginButton;
 
 import java.util.List;
 
+import itproject.neon_client.ar.NeonARActivity;
 import itproject.neon_client.helper.LoggedInUser;
 import itproject.neon_client.R;
 import itproject.neon_client.mock_data.AppDatabase;
@@ -140,7 +141,7 @@ public class LoginActivity extends AppCompatActivity {
 
     public void goToCamera(View view) {
 
-        startActivity(new Intent(LoginActivity.this, ARSimpleActivity.class));
+        startActivity(new Intent(LoginActivity.this, NeonARActivity.class));
 
     }
 
