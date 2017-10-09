@@ -30,7 +30,7 @@ public class MapHelper {
         return 0;
     }
 
-    public static JSONArray post_location(String username, double latitude, double longitude) {
+    public static void post_location(String username, double latitude, double longitude) {
         JSONObject post_message = new JSONObject();
 
         try {
@@ -43,6 +43,5 @@ public class MapHelper {
         String path = address + "/gps";
         DBField field = new DBField(path, post_message);
         DatabaseConnect.post(field);
-        return null;
     }
 }
