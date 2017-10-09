@@ -1,4 +1,4 @@
-package itproject.neon_client.ar;
+package itproject.neon_client.activity;
 
 
 import android.content.Context;
@@ -18,6 +18,8 @@ import android.widget.Toast;
 
 import eu.kudan.kudan.ARArbiTrack;
 import eu.kudan.kudan.ARGyroPlaceManager;
+import itproject.neon_client.ar.ARSetup;
+import itproject.neon_client.ar.ARSimpleImageNode;
 
 import static android.content.ContentValues.TAG;
 

@@ -29,13 +29,13 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".ar.NeonARActivity"
+            android:name=".activity.NeonARActivity"
             android:configChanges="orientation|screenSize"
             android:parentActivityName=".activity.MainActivity"
             android:screenOrientation="fullSensor">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ar.NeonARActivity" />
+                android:value=".activity.NeonARActivity" />
         </activity>
         <activity
             android:name=".activity.LoginActivity"

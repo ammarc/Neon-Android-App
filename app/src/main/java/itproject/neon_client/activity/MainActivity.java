@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -22,6 +23,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.IOException;
@@ -34,6 +36,9 @@ import java.util.List;
 import itproject.neon_client.helper.LoggedInUser;
 import itproject.neon_client.R;
 import itproject.neon_client.chat.ChatActivity;
+
+import static android.content.ContentValues.TAG;
+import static itproject.neon_client.R.id.map;
 
 
 public class MainActivity extends AppCompatActivity
@@ -262,11 +267,28 @@ public class MainActivity extends AppCompatActivity
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        // Add a marker in Sydney and move the camera
+        // Add a marker in Melbounre and move the camera
         LatLng melbUni = new LatLng(-37.7964, 144.9612);
         mMap.addMarker(new MarkerOptions().position(melbUni).title("Marker in Melb Uni"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(melbUni));
         mMap.setMinZoomPreference(10);
         mMap.setMaxZoomPreference(20);
+
+        // New popup menu
+        View popUp = getLayoutInflater().inflate(R.layout.activity_main, , false);
+
+        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener()
+              {
+                  @Override
+                  public boolean onMarkerClick(Marker marker)
+                  {
+                      //Log.e(TAG, "The marker was clicked");
+                      RecyclerView recyclerView = new RecyclerView(getApplicationContext());
+                      //ArrayyList
+                      //recyclerView.addFocusables();
+                      return true;
+                  }
+              }
+        );
     }
 }

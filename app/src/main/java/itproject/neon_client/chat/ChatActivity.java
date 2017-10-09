@@ -15,7 +15,7 @@ import itproject.neon_client.helper.LoggedInUser;
 import itproject.neon_client.activity.MainActivity;
 import itproject.neon_client.activity.MapToFriendActivity;
 import itproject.neon_client.R;
-import itproject.neon_client.ar.NeonARActivity;
+import itproject.neon_client.activity.NeonARActivity;
 
 import java.net.Socket;
 
