@@ -6,6 +6,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.android.gms.vision.text.Line;
@@ -21,6 +22,8 @@ public class ChatActivity extends AppCompatActivity {
 
     static final Client mySocket = new Client("13.65.209.193", 4000);
     String gFriendName;
+    Boolean friendshipAccepted = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -80,8 +83,6 @@ public class ChatActivity extends AppCompatActivity {
 
         FloatingActionButton phone = (FloatingActionButton) findViewById(R.id.phone_fab);
 
-        ChatView chat = (ChatView) findViewById(R.id.chat_view);
-
         FloatingActionButton camera = (FloatingActionButton) findViewById(R.id.camera_view_fab);
         camera.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -107,6 +108,19 @@ public class ChatActivity extends AppCompatActivity {
                 return true;
             }
         });
+
+
+        if (!friendshipAccepted) {
+
+            accepted_view.setVisibility(View.INVISIBLE);
+            not_accepted_view.setVisibility(View.VISIBLE);
+            chatView.setVisibility(View.INVISIBLE);
+            String accept_request_message = friendName + " would like to connect with you";
+            friend_username.setText(accept_request_message);
+        }
+
+
+
 
         mySocket.setClientCallback(new Client.ClientCallback () {
             @Override
