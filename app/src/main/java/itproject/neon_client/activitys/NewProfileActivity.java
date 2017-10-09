@@ -1,4 +1,4 @@
-package itproject.neon_client.activity;
+package itproject.neon_client.activitys;
 
 import android.content.Intent;
 import android.os.Bundle;

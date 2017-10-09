@@ -1,4 +1,4 @@
-package itproject.neon_client.activity;
+package itproject.neon_client.activitys;
 
 import android.content.Intent;
 
@@ -135,6 +135,12 @@ public class LoginActivity extends AppCompatActivity {
             database.userDao().addUser(new User(2, "ginny_weasley", "ginny", "weasley", "0447893029", "gweasley@gmail", "0"));
             database.userDao().addUser(new User(3, "hermione", "hermione", "granger", "0478986543", "hgranger@hotmail", "0"));
         }
+
+    }
+
+    public void goToCamera(View view) {
+
+        startActivity(new Intent(LoginActivity.this, NeonARActivity.class));
 
     }
 

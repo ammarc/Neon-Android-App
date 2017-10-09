@@ -1,4 +1,4 @@
-package itproject.neon_client.ar;
+package itproject.neon_client.activitys;
 
 
 import android.content.Context;
@@ -18,6 +18,8 @@ import android.widget.Toast;
 
 import eu.kudan.kudan.ARArbiTrack;
 import eu.kudan.kudan.ARGyroPlaceManager;
+import itproject.neon_client.ar.ARSetup;
+import itproject.neon_client.ar.ARSimpleImageNode;
 
 import static android.content.ContentValues.TAG;
 
@@ -36,16 +38,7 @@ public class NeonARActivity extends eu.kudan.kudan.ARActivity implements SensorE
     // private static final int LOCATION_MIN_TIME = 30 * 1000;
     // private static final int LOCATION_MIN_DISTANCE = 10;
     private static final int INITIAL_SENSOR_ACTIVITY_NUM = 500;
-    // Gravity for accelerometer data
-    private float[] gravity = new float[3];
-    // magnetic data
-    private float[] geomagnetic = new float[3];
-    // Rotation data
-    private float[] rotation = new float[9];
-    // orientation (azimuth, pitch, roll)
-    private float[] orientation = new float[3];
-    // smoothed values
-    private float[] smoothed = new float[3];
+    private static final int RENDER_LIMIT = 1000;
     // sensor manager
     private SensorManager sensorManager;
     // sensor gravity
@@ -57,31 +50,29 @@ public class NeonARActivity extends eu.kudan.kudan.ARActivity implements SensorE
     private GeomagneticField geomagneticField;
     private double bearing = 0;
     private ARSimpleImageNode targetNode;
-    private float yaw;
     private boolean initialArrowPosSet;
     private float initialArrowAngleRadians;
-    private int numSensorChanged = 0;
+    private int numSensorChanged;
+    private ARGyroPlaceManager gyroPlaceManager;
+
+    private float[] gravity;
+    // magnetic data
+    private float[] geomagnetic;
+    // Rotation data
+    private float[] rotation;
+    private float[] orientation;
+    // smoothed values
+    private float[] smoothed;
+    private int renders;
+    private int count = 0;
+
 
     @Override
     public void onCreate(Bundle savedInstance)
     {
         super.onCreate(savedInstance);
-        setupObject = new ARSetup();
-        setupObject.setupAR();
-        PackageManager manager = getPackageManager();
-        yaw = 0.0f;
-        initialArrowPosSet = false;
-        initialArrowAngleRadians = 0.0f;
-
-        // arRenderer.initialise();
-        // Create gesture recogniser to start and stop arbitrack
-        // gestureDetect = new GestureDetectorCompat(this,this);
-        if (manager.hasSystemFeature(PackageManager.FEATURE_SENSOR_ACCELEROMETER))
-            hasAccel = true;
-        if (manager.hasSystemFeature(PackageManager.FEATURE_SENSOR_GYROSCOPE))
-            hasGravity = true;
-        if (manager.hasSystemFeature(PackageManager.FEATURE_SENSOR_COMPASS))
-            hasCompass = true;
+        // Initialise gyro placement.
+        initialPropertySet();
     }
 
     @Override
@@ -89,19 +80,18 @@ public class NeonARActivity extends eu.kudan.kudan.ARActivity implements SensorE
     {
         super.setup();
 
-
+        gyroPlaceManager = ARGyroPlaceManager.getInstance();
+        gyroPlaceManager.initialise();
         // Initialise ArbiTrack.
         ARArbiTrack arbiTrack = ARArbiTrack.getInstance();
         arbiTrack.initialise();
 
-        // Initialise gyro placement.
-        ARGyroPlaceManager gyroPlaceManager = ARGyroPlaceManager.getInstance();
-        gyroPlaceManager.initialise();
 
         // Create a node to be used as the target.
         targetNode = new ARSimpleImageNode("arrow.png");
 
         // Add it to the Gyro Placement Manager's world so that it moves with the device's Gyroscope.
+        gyroPlaceManager.getWorld().removeAllChildren();
         gyroPlaceManager.getWorld().addChild(targetNode);
 
         // Rotate and scale the node to ensure it is displayed correctly.
@@ -119,17 +109,6 @@ public class NeonARActivity extends eu.kudan.kudan.ARActivity implements SensorE
 
         // Set the ArbiTracker's target node.
         arbiTrack.setTargetNode(targetNode);
-
-        // To be placed in the setupContent method
-        // Create a node to be tracked.
-        /*ARImageNode trackingNode = new ARImageNode("Cow Tracking.png");
-
-        // Rotate the node to ensure it is displayed correctly.
-        trackingNode.rotateByDegrees(90.0f, 1.0f, 0.0f, 0.0f);
-        trackingNode.rotateByDegrees(180.0f, 0.0f, 1.0f, 0.0f);
-
-        // Add the node as a child of the ArbiTracker's world.
-        arbiTrack.getWorld().addChild(trackingNode);*/
     }
 
     @Override
@@ -227,8 +206,15 @@ public class NeonARActivity extends eu.kudan.kudan.ARActivity implements SensorE
     @Override
     public void onSensorChanged(SensorEvent event)
     {
+        if(renders == RENDER_LIMIT) {
+            initialPropertySet();
 
-        // get accelerometer data
+            renders = 0;
+        }
+
+        else {
+            renders++;
+        }
         if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER
                             || event.sensor.getType() == Sensor.TYPE_GRAVITY)
         {
@@ -249,11 +235,10 @@ public class NeonARActivity extends eu.kudan.kudan.ARActivity implements SensorE
 
         // get rotation matrix to get gravity and magnetic data
         SensorManager.getRotationMatrix(rotation, null, gravity, geomagnetic);
+
         // get bearing to target
         SensorManager.getOrientation(rotation, orientation);
 
-        // TODO: not sure if the coordinates need to be remapped
-        SensorManager.remapCoordinateSystem(rotation, SensorManager.AXIS_X, SensorManager.AXIS_Y, rotation);
         // east degrees of true North
         bearing = orientation[0];
         // convert from radians to degrees
@@ -267,11 +252,9 @@ public class NeonARActivity extends eu.kudan.kudan.ARActivity implements SensorE
         if (bearing < 0)
             bearing += 360;
 
-        // finding the yaw
-        // yaw = (float)Math.atan2(rotation[3],rotation[0]);
-        yaw = (float)Math.atan2(rotation[6],rotation[7]);
-
-        // Log.e(TAG, "Angle from north " + Math.toDegrees(orientation[0]));
+        if(count%1000 == 0)
+            Log.e(TAG, "Pitch is " + Math.toDegrees(orientation[1]));
+        count++;
 
         if (numSensorChanged <= INITIAL_SENSOR_ACTIVITY_NUM)
         {
@@ -301,6 +284,29 @@ public class NeonARActivity extends eu.kudan.kudan.ARActivity implements SensorE
         }
     }
 
+    public void initialPropertySet()
+    {
+        gravity = new float[9];
+        // magnetic data
+        geomagnetic = new float[9];
+        // Rotation data
+        rotation = new float[9];
+        orientation = new float[3];
+        // smoothed values
+        smoothed = new float[3];
+        renders = 0;
+        PackageManager manager = getPackageManager();
+        initialArrowPosSet = false;
+        initialArrowAngleRadians = 0.0f;
+        this.setup();
+        if (manager.hasSystemFeature(PackageManager.FEATURE_SENSOR_ACCELEROMETER))
+            hasAccel = true;
+        if (manager.hasSystemFeature(PackageManager.FEATURE_SENSOR_GYROSCOPE))
+            hasGravity = true;
+        if (manager.hasSystemFeature(PackageManager.FEATURE_SENSOR_COMPASS))
+            hasCompass = true;
+    }
+
     @Override
     public void onStatusChanged(String provider, int status, Bundle extras) {}
 
@@ -312,4 +318,25 @@ public class NeonARActivity extends eu.kudan.kudan.ARActivity implements SensorE
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {}
+
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+        gravity = new float[3];
+        geomagnetic = new float[3];
+        rotation = new float[9];
+        orientation = new float[3];
+        smoothed = new float[3];
+        setupObject = new ARSetup();
+        sensorManager.registerListener(this, sensorGravity, SensorManager.SENSOR_DELAY_NORMAL);
+        sensorManager.registerListener(this, sensorMagnetic, SensorManager.SENSOR_DELAY_NORMAL);
+    }
+
+    @Override
+    public void onPause()
+    {
+        super.onPause();
+        sensorManager.unregisterListener(this);
+    }
 }
