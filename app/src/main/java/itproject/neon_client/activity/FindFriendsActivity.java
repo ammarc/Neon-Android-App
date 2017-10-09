@@ -1,4 +1,4 @@
-package itproject.neon_client;
+package itproject.neon_client.activity;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -22,7 +22,7 @@ public class FindFriendsActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("Find Friends");
+        getSupportActionBar().setTitle("Find FriendHelper");
 
 
         LinearLayout ListLayout = (LinearLayout) findViewById(id.search_display);

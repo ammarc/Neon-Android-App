@@ -1,4 +1,4 @@
-package itproject.neon_client;
+package itproject.neon_client.chat;
 
 import java.io.BufferedReader;
 import java.io.IOException;

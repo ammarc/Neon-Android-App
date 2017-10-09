@@ -1,4 +1,4 @@
-package itproject.neon_client;
+package itproject.neon_client.activity;
 
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -37,6 +37,9 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+
+import itproject.neon_client.helper.LoggedInUser;
+import itproject.neon_client.R;
 
 public class MapToFriendActivity extends AppCompatActivity implements OnMapReadyCallback {
 

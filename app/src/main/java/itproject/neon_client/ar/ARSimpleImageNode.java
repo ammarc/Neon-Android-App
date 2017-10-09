@@ -1,4 +1,4 @@
-package itproject.neon_client;
+package itproject.neon_client.ar;
 
 import java.util.Arrays;
 

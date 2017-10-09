@@ -1,4 +1,4 @@
-package itproject.neon_client;
+package itproject.neon_client.activity;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -30,6 +30,10 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import itproject.neon_client.helper.LoggedInUser;
+import itproject.neon_client.R;
+import itproject.neon_client.chat.ChatActivity;
 
 
 public class MainActivity extends AppCompatActivity

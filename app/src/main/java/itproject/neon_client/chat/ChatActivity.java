@@ -1,4 +1,4 @@
-package itproject.neon_client;
+package itproject.neon_client.chat;
 
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -9,13 +9,15 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.google.android.gms.vision.text.Line;
-
 import co.intentservice.chatui.ChatView;
 import co.intentservice.chatui.models.ChatMessage;
+import itproject.neon_client.helper.LoggedInUser;
+import itproject.neon_client.activity.MainActivity;
+import itproject.neon_client.activity.MapToFriendActivity;
+import itproject.neon_client.R;
+import itproject.neon_client.ar.NeonARActivity;
 
 import java.net.Socket;
-import java.net.URISyntaxException;
 
 
 public class ChatActivity extends AppCompatActivity {
@@ -195,7 +197,7 @@ public class ChatActivity extends AppCompatActivity {
 
     public void cameraClick() {
         // Do something in response to button
-        Intent intent = new Intent(this, ARSimpleActivity.class);
+        Intent intent = new Intent(this, NeonARActivity.class);
         startActivity(intent);
     }
 

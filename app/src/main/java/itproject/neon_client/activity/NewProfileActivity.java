@@ -1,4 +1,4 @@
-package itproject.neon_client;
+package itproject.neon_client.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,9 +11,9 @@ import android.widget.TextView;
 
 import com.facebook.Profile;
 
-import itproject.neon_client.mock_data.UserDao;
+import itproject.neon_client.helper.LoggedInUser;
+import itproject.neon_client.R;
 import itproject.neon_client.mock_data.User;
-import itproject.neon_client.mock_data.AppDatabase;
 
 /**
  * Created by soe on 25/9/17.

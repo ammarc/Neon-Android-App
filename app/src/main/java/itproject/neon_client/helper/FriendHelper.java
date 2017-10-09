@@ -1,4 +1,4 @@
-package itproject.neon_client;
+package itproject.neon_client.helper;
 
 	import java.io.BufferedReader;
 	import java.io.DataOutputStream;
@@ -14,7 +14,7 @@ package itproject.neon_client;
 	import org.json.JSONException;
 	import org.json.JSONObject;
 
-public class Friends {
+public class FriendHelper {
 
 	static final String address = "http://13.65.209.193:3000/";
 
