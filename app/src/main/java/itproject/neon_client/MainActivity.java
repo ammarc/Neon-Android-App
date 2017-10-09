@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.ArrayRes;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.util.Log;
@@ -56,8 +57,9 @@ public class MainActivity extends AppCompatActivity
 
     public static final String EXTRA_MESSAGE = "itproject.neon_client.MESSAGE";
 
-    private static List<String> friends = new ArrayList<>(Arrays.asList("Ron_Weasley", "Hermione_Granger", "Luna_Lovegood","Neville_Longbottom"));
-    private static List<String> friend_requests = new ArrayList<>(Arrays.asList("Harry_Potter", "Ginny_Weasley"));
+    public static List<String> friends = new ArrayList<>(Arrays.asList("Ron_Weasley", "Hermione_Granger", "Luna_Lovegood","Neville_Longbottom"));
+    public static List<String> friend_requests = new ArrayList<>(Arrays.asList("Harry_Potter", "Ginny_Weasley"));
+    public static List<String> all_users = new ArrayList<>(Arrays.asList("draco_m","hagrid_has_scary_pets","he_who_must_not_be_named","ratty","shaggy_dog","lupin_howles"));
 
 
     @Override
@@ -126,7 +128,7 @@ public class MainActivity extends AppCompatActivity
                 public boolean onMenuItemClick(MenuItem menuItem) {
                     String friend_username = (String) new_friend.getTitle();
                     chat(friend_username);
-                    return false;
+                    return true;
                 }
             });
             friend_insert_counter++;
@@ -138,6 +140,15 @@ public class MainActivity extends AppCompatActivity
         for (String friend : friend_requests)
         {
             subm.add(0, MENU_DYNAMIC+friend_insert_counter, friend_insert_counter, friend); // id is idx+ my constant
+            final MenuItem new_friend = subm.findItem(MENU_DYNAMIC+friend_insert_counter);
+            new_friend.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                @Override
+                public boolean onMenuItemClick(MenuItem menuItem) {
+                    String friend_username = (String) new_friend.getTitle();
+                    chat(friend_username);
+                    return true;
+                }
+            });
             friend_insert_counter++; // TODO set up accepting requests
         }
 
@@ -206,6 +217,10 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_logout) {
 
             startActivity(new Intent(MainActivity.this, LoginActivity.class));
+
+        } else if (id == R.id.nav_find_friends) {
+
+            startActivity(new Intent(MainActivity.this,FindFriendsActivity.class));
 
         } else if (id >= MENU_DYNAMIC && id <= MENU_DYNAMIC + friend_insert_counter) {
             // clicked on a friend to chat, or friend to accept
