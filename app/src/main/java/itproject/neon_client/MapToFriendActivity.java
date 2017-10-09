@@ -48,6 +48,7 @@ public class MapToFriendActivity extends AppCompatActivity implements OnMapReady
     LocationRequest locationRequest;
     protected static String directory = "http://13.65.209.193:3000";
     private GoogleMap mMap;
+    private String friendName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,14 +58,10 @@ public class MapToFriendActivity extends AppCompatActivity implements OnMapReady
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+        final String friendName = getIntent().getStringExtra(MainActivity.EXTRA_MESSAGE);
+        String headerTitle = "Map to " + friendName;
+        getSupportActionBar().setTitle(headerTitle);
+
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()

@@ -5,18 +5,18 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="itproject.neon_client.ChatActivity"
-    style="@style/Widget.AppCompat.ButtonBar">
+    style="@style/chatStyle">
 
 
     <co.intentservice.chatui.ChatView
-        style="@style/Widget.AppCompat.ButtonBar"
+        style="@style/chatStyle"
         android:id="@+id/chat_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        chatview:backgroundColor="@color/white"
+        chatview:backgroundColor="@color/grey"
         chatview:bubbleElevation="elevated"
         chatview:bubbleBackgroundRcv="@color/colorPrimary"
-        chatview:bubbleBackgroundSend="@color/colorPrimaryDark"
+        chatview:bubbleBackgroundSend="@color/colorSecondaryAccent"
         chatview:layout_constraintTop_toBottomOf="parent"
         chatview:layout_constraintRight_toRightOf="parent"
         chatview:layout_constraintBottom_toBottomOf="parent"

@@ -42,7 +42,6 @@ public class ChatActivity extends AppCompatActivity {
             getSupportActionBar().setTitle(friendName);
         }
 
-
         // friend request accepted TODO put in proper back end function
         for (String username : MainActivity.friends) {
             if (friendName.equals(username)) {
