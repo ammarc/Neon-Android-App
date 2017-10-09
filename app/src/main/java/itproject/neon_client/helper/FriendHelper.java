@@ -1,6 +1,11 @@
 package itproject.neon_client.helper;
 
-	import java.io.BufferedReader;
+	import android.os.AsyncTask;
+    import android.util.Log;
+
+    import com.facebook.Profile;
+
+    import java.io.BufferedReader;
 	import java.io.DataOutputStream;
 	import java.io.IOException;
 	import java.io.InputStream;
@@ -50,7 +55,25 @@ public class FriendHelper {
 		return null;
 	}
 
-	public static JSONArray get(String path) {
+    private class asyncPut extends AsyncTask<String, Void, Void> {
+        protected Void doInBackground(String... operations) {
+            for(String operation : operations) {
+
+            }
+            return null;
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... params) { }
+
+        protected void onPostExecute() { }
+
+        @Override
+        protected void onPreExecute() {}
+    }
+
+
+    public static JSONArray get(String path) {
 		try {
 			URL url = new URL(path);
 			HttpURLConnection httpURLConnection = (HttpURLConnection)url.openConnection();

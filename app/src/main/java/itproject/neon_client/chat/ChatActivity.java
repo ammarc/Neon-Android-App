@@ -16,6 +16,7 @@ import itproject.neon_client.activity.MainActivity;
 import itproject.neon_client.activity.MapToFriendActivity;
 import itproject.neon_client.R;
 import itproject.neon_client.ar.NeonARActivity;
+import itproject.neon_client.helper.Tools;
 
 import java.net.Socket;
 
@@ -204,8 +205,13 @@ public class ChatActivity extends AppCompatActivity {
     /* Class to handle the asynchronous sending of messages to the server. */
     private class SendMessage extends AsyncTask<ChatMessage, Void, Boolean> {
         protected Boolean doInBackground(ChatMessage... chatMessages) {
-            for(ChatMessage chatMessage : chatMessages)
-                mySocket.send(chatMessage.getMessage()+"\n");
+            for(ChatMessage chatMessage : chatMessages) {
+                try {
+                    mySocket.send(chatMessage.getMessage() + "\n");
+                } catch(NullPointerException e) {
+                    Tools.exceptionToast(getApplicationContext(), "Cannot connect to server!");
+                }
+            }
             return true;
         }
 
