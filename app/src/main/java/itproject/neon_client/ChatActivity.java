@@ -46,7 +46,9 @@ public class ChatActivity extends AppCompatActivity {
         // Capture the layout's TextView and set the string as its text
 
         final TextView friend_username = (TextView) findViewById(R.id.friend_username_chat);
-        friend_username.setText(friendName);
+        if (friend_username != null) {
+            friend_username.setText(friendName);
+        }
 
         LinearLayout accepted_view = (LinearLayout) findViewById(R.id.accepted_view);
 
