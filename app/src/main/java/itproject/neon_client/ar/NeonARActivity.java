@@ -36,16 +36,6 @@ public class NeonARActivity extends eu.kudan.kudan.ARActivity implements SensorE
     // private static final int LOCATION_MIN_TIME = 30 * 1000;
     // private static final int LOCATION_MIN_DISTANCE = 10;
     private static final int INITIAL_SENSOR_ACTIVITY_NUM = 500;
-    // Gravity for accelerometer data
-    private float[] gravity = new float[3];
-    // magnetic data
-    private float[] geomagnetic = new float[3];
-    // Rotation data
-    private float[] rotation = new float[9];
-    // orientation (azimuth, pitch, roll)
-    private float[] orientation = new float[3];
-    // smoothed values
-    private float[] smoothed = new float[3];
     // sensor manager
     private SensorManager sensorManager;
     // sensor gravity
@@ -57,12 +47,6 @@ public class NeonARActivity extends eu.kudan.kudan.ARActivity implements SensorE
     private GeomagneticField geomagneticField;
     private double bearing = 0;
     private ARSimpleImageNode targetNode;
-<<<<<<< Updated upstream:app/src/main/java/itproject/neon_client/ar/NeonARActivity.java
-    private float yaw;
-    private boolean initialArrowPosSet;
-    private float initialArrowAngleRadians;
-    private int numSensorChanged = 0;
-=======
     private boolean initialArrowPosSet;
     private float initialArrowAngleRadians;
     private int numSensorChanged;
@@ -79,7 +63,6 @@ public class NeonARActivity extends eu.kudan.kudan.ARActivity implements SensorE
     private int renders;
     private int count = 0;
 
->>>>>>> Stashed changes:app/src/main/java/itproject/neon_client/ARSimpleActivity.java
 
     @Override
     public void onCreate(Bundle savedInstance)
@@ -88,10 +71,6 @@ public class NeonARActivity extends eu.kudan.kudan.ARActivity implements SensorE
         setupObject = new ARSetup();
         setupObject.setupAR();
         PackageManager manager = getPackageManager();
-<<<<<<< Updated upstream:app/src/main/java/itproject/neon_client/ar/NeonARActivity.java
-        yaw = 0.0f;
-=======
->>>>>>> Stashed changes:app/src/main/java/itproject/neon_client/ARSimpleActivity.java
         initialArrowPosSet = false;
         initialArrowAngleRadians = 0.0f;
 
@@ -249,15 +228,10 @@ public class NeonARActivity extends eu.kudan.kudan.ARActivity implements SensorE
     @Override
     public void onSensorChanged(SensorEvent event)
     {
-<<<<<<< Updated upstream:app/src/main/java/itproject/neon_client/ar/NeonARActivity.java
-=======
         if(renders == RENDER_LIMIT) {
             initialPropertySet();
             // renders = 0;
         }
->>>>>>> Stashed changes:app/src/main/java/itproject/neon_client/ARSimpleActivity.java
-
-        // get accelerometer data
         if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER
                             || event.sensor.getType() == Sensor.TYPE_GRAVITY)
         {
@@ -282,11 +256,6 @@ public class NeonARActivity extends eu.kudan.kudan.ARActivity implements SensorE
         // get bearing to target
         SensorManager.getOrientation(rotation, orientation);
 
-<<<<<<< Updated upstream:app/src/main/java/itproject/neon_client/ar/NeonARActivity.java
-        // TODO: not sure if the coordinates need to be remapped
-        SensorManager.remapCoordinateSystem(rotation, SensorManager.AXIS_X, SensorManager.AXIS_Y, rotation);
-=======
->>>>>>> Stashed changes:app/src/main/java/itproject/neon_client/ARSimpleActivity.java
         // east degrees of true North
         bearing = orientation[0];
         // convert from radians to degrees
@@ -300,17 +269,9 @@ public class NeonARActivity extends eu.kudan.kudan.ARActivity implements SensorE
         if (bearing < 0)
             bearing += 360;
 
-<<<<<<< Updated upstream:app/src/main/java/itproject/neon_client/ar/NeonARActivity.java
-        // finding the yaw
-        // yaw = (float)Math.atan2(rotation[3],rotation[0]);
-        yaw = (float)Math.atan2(rotation[6],rotation[7]);
-
-        // Log.e(TAG, "Angle from north " + Math.toDegrees(orientation[0]));
-=======
         if(count%1000 == 0)
             Log.e(TAG, "Pitch is " + Math.toDegrees(orientation[1]));
         count++;
->>>>>>> Stashed changes:app/src/main/java/itproject/neon_client/ARSimpleActivity.java
 
         if (numSensorChanged <= INITIAL_SENSOR_ACTIVITY_NUM)
         {
@@ -351,8 +312,6 @@ public class NeonARActivity extends eu.kudan.kudan.ARActivity implements SensorE
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {}
-<<<<<<< Updated upstream:app/src/main/java/itproject/neon_client/ar/NeonARActivity.java
-=======
 
     @Override
     public void onResume()
@@ -374,5 +333,4 @@ public class NeonARActivity extends eu.kudan.kudan.ARActivity implements SensorE
         super.onPause();
         sensorManager.unregisterListener(this);
     }
->>>>>>> Stashed changes:app/src/main/java/itproject/neon_client/ARSimpleActivity.java
 }
