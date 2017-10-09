@@ -12,10 +12,10 @@ import android.widget.TextView;
 import co.intentservice.chatui.ChatView;
 import co.intentservice.chatui.models.ChatMessage;
 import itproject.neon_client.helper.LoggedInUser;
-import itproject.neon_client.activity.MainActivity;
-import itproject.neon_client.activity.MapToFriendActivity;
+import itproject.neon_client.activitys.MainActivity;
+import itproject.neon_client.activitys.MapToFriendActivity;
 import itproject.neon_client.R;
-import itproject.neon_client.ar.NeonARActivity;
+import itproject.neon_client.activitys.NeonARActivity;
 
 import java.net.Socket;
 
