@@ -1,4 +1,4 @@
-package itproject.neon_client;
+package itproject.neon_client.mock_data.chat;
 
 import java.io.BufferedReader;
 import java.io.IOException;

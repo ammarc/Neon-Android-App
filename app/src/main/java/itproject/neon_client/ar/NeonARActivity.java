@@ -1,4 +1,4 @@
-package itproject.neon_client;
+package itproject.neon_client.mock_data.ar;
 
 
 import android.content.Context;
@@ -16,13 +16,12 @@ import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.widget.Toast;
 
-import eu.kudan.kudan.ARActivity;
 import eu.kudan.kudan.ARArbiTrack;
 import eu.kudan.kudan.ARGyroPlaceManager;
 
 import static android.content.ContentValues.TAG;
 
-public class ARSimpleActivity extends ARActivity implements SensorEventListener, LocationListener
+public class NeonARActivity extends eu.kudan.kudan.ARActivity implements SensorEventListener, LocationListener
 {
     private ARSetup setupObject;
     private boolean hasAccel = false;

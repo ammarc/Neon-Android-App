@@ -1,4 +1,4 @@
-package itproject.neon_client;
+package itproject.neon_client.mock_data.ar;
 
 import java.util.Arrays;
 
