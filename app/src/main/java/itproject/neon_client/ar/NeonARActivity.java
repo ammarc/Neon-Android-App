@@ -57,10 +57,29 @@ public class NeonARActivity extends eu.kudan.kudan.ARActivity implements SensorE
     private GeomagneticField geomagneticField;
     private double bearing = 0;
     private ARSimpleImageNode targetNode;
+<<<<<<< Updated upstream:app/src/main/java/itproject/neon_client/ar/NeonARActivity.java
     private float yaw;
     private boolean initialArrowPosSet;
     private float initialArrowAngleRadians;
     private int numSensorChanged = 0;
+=======
+    private boolean initialArrowPosSet;
+    private float initialArrowAngleRadians;
+    private int numSensorChanged;
+
+
+    private float[] gravity;
+    // magnetic data
+    private float[] geomagnetic;
+    // Rotation data
+    private float[] rotation;
+    private float[] orientation;
+    // smoothed values
+    private float[] smoothed;
+    private int renders;
+    private int count = 0;
+
+>>>>>>> Stashed changes:app/src/main/java/itproject/neon_client/ARSimpleActivity.java
 
     @Override
     public void onCreate(Bundle savedInstance)
@@ -69,7 +88,10 @@ public class NeonARActivity extends eu.kudan.kudan.ARActivity implements SensorE
         setupObject = new ARSetup();
         setupObject.setupAR();
         PackageManager manager = getPackageManager();
+<<<<<<< Updated upstream:app/src/main/java/itproject/neon_client/ar/NeonARActivity.java
         yaw = 0.0f;
+=======
+>>>>>>> Stashed changes:app/src/main/java/itproject/neon_client/ARSimpleActivity.java
         initialArrowPosSet = false;
         initialArrowAngleRadians = 0.0f;
 
@@ -227,6 +249,13 @@ public class NeonARActivity extends eu.kudan.kudan.ARActivity implements SensorE
     @Override
     public void onSensorChanged(SensorEvent event)
     {
+<<<<<<< Updated upstream:app/src/main/java/itproject/neon_client/ar/NeonARActivity.java
+=======
+        if(renders == RENDER_LIMIT) {
+            initialPropertySet();
+            // renders = 0;
+        }
+>>>>>>> Stashed changes:app/src/main/java/itproject/neon_client/ARSimpleActivity.java
 
         // get accelerometer data
         if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER
@@ -249,11 +278,15 @@ public class NeonARActivity extends eu.kudan.kudan.ARActivity implements SensorE
 
         // get rotation matrix to get gravity and magnetic data
         SensorManager.getRotationMatrix(rotation, null, gravity, geomagnetic);
+
         // get bearing to target
         SensorManager.getOrientation(rotation, orientation);
 
+<<<<<<< Updated upstream:app/src/main/java/itproject/neon_client/ar/NeonARActivity.java
         // TODO: not sure if the coordinates need to be remapped
         SensorManager.remapCoordinateSystem(rotation, SensorManager.AXIS_X, SensorManager.AXIS_Y, rotation);
+=======
+>>>>>>> Stashed changes:app/src/main/java/itproject/neon_client/ARSimpleActivity.java
         // east degrees of true North
         bearing = orientation[0];
         // convert from radians to degrees
@@ -267,11 +300,17 @@ public class NeonARActivity extends eu.kudan.kudan.ARActivity implements SensorE
         if (bearing < 0)
             bearing += 360;
 
+<<<<<<< Updated upstream:app/src/main/java/itproject/neon_client/ar/NeonARActivity.java
         // finding the yaw
         // yaw = (float)Math.atan2(rotation[3],rotation[0]);
         yaw = (float)Math.atan2(rotation[6],rotation[7]);
 
         // Log.e(TAG, "Angle from north " + Math.toDegrees(orientation[0]));
+=======
+        if(count%1000 == 0)
+            Log.e(TAG, "Pitch is " + Math.toDegrees(orientation[1]));
+        count++;
+>>>>>>> Stashed changes:app/src/main/java/itproject/neon_client/ARSimpleActivity.java
 
         if (numSensorChanged <= INITIAL_SENSOR_ACTIVITY_NUM)
         {
@@ -312,4 +351,28 @@ public class NeonARActivity extends eu.kudan.kudan.ARActivity implements SensorE
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {}
+<<<<<<< Updated upstream:app/src/main/java/itproject/neon_client/ar/NeonARActivity.java
+=======
+
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+        gravity = new float[3];
+        geomagnetic = new float[3];
+        rotation = new float[9];
+        orientation = new float[3];
+        smoothed = new float[3];
+        setupObject = new ARSetup();
+        sensorManager.registerListener(this, sensorGravity, SensorManager.SENSOR_DELAY_NORMAL);
+        sensorManager.registerListener(this, sensorMagnetic, SensorManager.SENSOR_DELAY_NORMAL);
+    }
+
+    @Override
+    public void onPause()
+    {
+        super.onPause();
+        sensorManager.unregisterListener(this);
+    }
+>>>>>>> Stashed changes:app/src/main/java/itproject/neon_client/ARSimpleActivity.java
 }
