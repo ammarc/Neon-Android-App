@@ -1,4 +1,4 @@
-package itproject.neon_client.activity;
+package itproject.neon_client.activitys;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -36,9 +36,6 @@ import java.util.List;
 import itproject.neon_client.helper.LoggedInUser;
 import itproject.neon_client.R;
 import itproject.neon_client.chat.ChatActivity;
-
-import static android.content.ContentValues.TAG;
-import static itproject.neon_client.R.id.map;
 
 
 public class MainActivity extends AppCompatActivity
@@ -275,7 +272,7 @@ public class MainActivity extends AppCompatActivity
         mMap.setMaxZoomPreference(20);
 
         // New popup menu
-        View popUp = getLayoutInflater().inflate(R.layout.activity_main, , false);
+        //View popUp = getLayoutInflater().inflate(R.layout.activity_main, , false);
 
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener()
               {
