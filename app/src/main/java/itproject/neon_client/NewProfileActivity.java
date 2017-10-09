@@ -1,23 +1,15 @@
 package itproject.neon_client;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
-import android.text.Editable;
 import android.util.Log;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import com.facebook.Profile;
-
-import java.io.IOException;
 
 import itproject.neon_client.mock_data.UserDao;
 import itproject.neon_client.mock_data.User;
@@ -31,7 +23,6 @@ public class NewProfileActivity extends AppCompatActivity {
 
     private int id = 0;
     private EditText username, phone_number, email;
-    private AppDatabase database;
 
 
     @Override
@@ -78,19 +69,21 @@ public class NewProfileActivity extends AppCompatActivity {
             return;
         }
 
-        for (User user : LoginActivity.database.userDao().getAllUser()) {
+        /*for (User user : LoginActivity.database.userDao().getAllUser()) {
             id++;
             Log.i("profile","user :: " + user.username + " id " + user.id);
-        }   id++;
+        }   id++;*/
+
+        
 
         User newUser = new User(id,usernameString,Profile.getCurrentProfile().getFirstName(),Profile.getCurrentProfile().getLastName(),
                 phoneString, emailString, Profile.getCurrentProfile().getId());
 
         LoginActivity.database.userDao().addUser(newUser);
 
-        for (User user : LoginActivity.database.userDao().getAllUser()) {
+        /*for (User user : LoginActivity.database.userDao().getAllUser()) {
             Log.i("profile", "user : " + user.username + " id ::: " + user.id);
-        }
+        }*/
 
         User user = LoginActivity.database.userDao().getUser(id).get(0);
         LoggedInUser.setUser(newUser);
