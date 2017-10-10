@@ -8,7 +8,8 @@ import java.util.ArrayList;
 
 public class FriendHelper {
 
-	private static final String address = "http://13.65.209.193:3000";
+	private static final String address = "http://13.65.209.193:3000/";
+
 	public static ArrayList<String> get_pending_friends(String username) throws JSONException {
 		ArrayList<String> pending_friends = new ArrayList<String>();
 		String path = address + "friend/requests";
@@ -32,7 +33,7 @@ public class FriendHelper {
 		post_message.put("from_user", from_user);
 
 		DBField field = new DBField(path, post_message);
-		DatabaseConnect.post(field);
+		DatabaseConnect.put(field);
 	}
 
 	public static ArrayList<String> get_friend_list(String username) throws JSONException {
@@ -60,7 +61,7 @@ public class FriendHelper {
 
 	public static boolean check_friend_list(ArrayList<String> friends, String friend_username) throws JSONException {
 		for(String friend: friends) {
-			if(friend == friend_username) return true;
+			if(friend.equals(friend_username)) return true;
 		}
 		return false;
 	}
@@ -70,7 +71,7 @@ public class FriendHelper {
 		if(check_friend_list(friends, to_user)) return "you are already friends with " + to_user;
 		if(!user_exists(to_user)) return "could not find " + to_user;
 
-		String path = address + "friend";
+		String path = address + "/friend";
 		JSONObject post_message = new JSONObject();
 		post_message.put("to_user", to_user);
 		post_message.put("from_user", from_user);
