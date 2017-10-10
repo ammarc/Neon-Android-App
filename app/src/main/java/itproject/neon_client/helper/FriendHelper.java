@@ -17,7 +17,6 @@ public class FriendHelper {
 		json_message.put("username", username);
 
 		DBField field = new DBField(path, json_message);
-		DatabaseConnect.post(field);
 		JSONArray pending_friends_json = DatabaseConnect.post(field);
 		for (int i = 0; i < pending_friends_json.length(); i ++) {
 			JSONObject friend = pending_friends_json.getJSONObject(i);
@@ -27,11 +26,10 @@ public class FriendHelper {
 	}
 
 	public static void accept_friend_request(String from_user, String to_user) throws JSONException {
-		String path = address + "friend/requests/accept";
+		String path = address + "friend";
 		JSONObject post_message = new JSONObject();
 		post_message.put("to_user", to_user);
 		post_message.put("from_user", from_user);
-
 		DBField field = new DBField(path, post_message);
 		DatabaseConnect.put(field);
 	}
@@ -71,7 +69,7 @@ public class FriendHelper {
 		if(check_friend_list(friends, to_user)) return "you are already friends with " + to_user;
 		if(!user_exists(to_user)) return "could not find " + to_user;
 
-		String path = address + "/friend";
+		String path = address + "friend";
 		JSONObject post_message = new JSONObject();
 		post_message.put("to_user", to_user);
 		post_message.put("from_user", from_user);
@@ -88,7 +86,7 @@ public class FriendHelper {
 			post_message.put("last_name", last_name);
 			post_message.put("phone_num", phone_num);
 			post_message.put("email", email);
-			post_message.put("fbID", fb_id);
+			post_message.put("fbId", fb_id);
 
 		} catch (JSONException e) {
 			e.printStackTrace();
@@ -97,6 +95,21 @@ public class FriendHelper {
 
 		DBField field = new DBField(path, post_message);
 		DatabaseConnect.post(field);
+	}
+
+	public static ArrayList<String> all_users() {
+		ArrayList<String> users = new ArrayList<String>();
+		String path = address + "users/all";
+		JSONArray all_users = DatabaseConnect.get(path);
+
+		for (int i = 0; i < all_users.length(); i ++) {
+			try {
+				users.add(all_users.getJSONObject(i).getString("username"));
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+		}
+		return users;
 	}
 
 	public static int getFriendshipStatus(String to_user, String from_user) {
