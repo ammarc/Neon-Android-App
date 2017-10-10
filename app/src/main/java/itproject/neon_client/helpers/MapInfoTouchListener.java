@@ -20,6 +20,7 @@ public abstract class MapInfoTouchListener implements OnTouchListener {
 
     private Marker marker;
     private boolean pressed = false;
+    private View changedView;
 
     public MapInfoTouchListener(View view)
     {
@@ -54,14 +55,12 @@ public abstract class MapInfoTouchListener implements OnTouchListener {
         Log.e(TAG, "vvs y is " + vv.getY() + " views Y is " + view.getY() + " views height is " + view.getHeight());
         Log.e(TAG, "Views x bounds are: " + (vv.getX() + view.getX()) + " " + (vv.getX() + view.getWidth() + view.getX()));
 
-        //if (view.getX() + vv.getX() <= event.getRawX() && view.getWidth() + view.getX() + vv.getX() >= event.getRawX())// &&
-                //view.getY() + vv.getY() <= event.getY() && event.getY() <= view.getHeight() + view.getY() + vv.getY())
-            if (0 <= event.getX() && event.getX() <= view.getWidth() &&
-                    0 <= event.getY() && event.getY() <= vv.getHeight())
+        if (0 <= event.getX() && event.getX() <= view.getWidth() && 0 <= event.getY()
+                && event.getY() <= vv.getHeight())
         {
             Log.e(TAG, "onTouch: Button's onTouch is called");
             switch (event.getActionMasked()) {
-                case MotionEvent.ACTION_DOWN: startPress(); break;
+                case MotionEvent.ACTION_DOWN: startPress(vv); break;
 
                 // We need to delay releasing of the view a little so it shows the pressed
                 // state on the screen
@@ -80,10 +79,12 @@ public abstract class MapInfoTouchListener implements OnTouchListener {
         return false;
     }
 
-    private void startPress() {
+    private void startPress(View v) {
         if (!pressed) {
             pressed = true;
             handler.removeCallbacks(confirmClickRunnable);
+            v.setVisibility(View.INVISIBLE);
+            changedView = v;
             if (marker != null)
                 marker.showInfoWindow();
         }
@@ -93,6 +94,10 @@ public abstract class MapInfoTouchListener implements OnTouchListener {
         if (pressed) {
             this.pressed = false;
             handler.removeCallbacks(confirmClickRunnable);
+            if(changedView != null) {
+                changedView.setVisibility(View.VISIBLE);
+                changedView = null;
+            }
             if (marker != null)
                 marker.showInfoWindow();
             return true;

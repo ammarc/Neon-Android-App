@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.location.Geocoder;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -17,10 +18,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.identity.intents.Address;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -29,6 +33,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -55,6 +60,7 @@ public class MainActivity extends AppCompatActivity
     private MapInfoTouchListener cameraButtonListener;
     private MapInfoTouchListener mapButtonListener;
     private MapLayout mapLayout;
+    private ArrayList<Marker> listOfAllMarkers;
 
     private GoogleMap mMap;
     private Menu sideMenu;
@@ -72,6 +78,8 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        listOfAllMarkers = new ArrayList<>();
 
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -107,7 +115,7 @@ public class MainActivity extends AppCompatActivity
 
 
         this.infoWindow = (ViewGroup)getLayoutInflater().inflate(R.layout.info_balloon, null);
-        this.infoTitle = (TextView)infoWindow.findViewById(R.id.title);
+        this.infoTitle = (TextView)infoWindow.findViewById(R.id.friend_name);
         //this.infoSnippet = (TextView)infoWindow.findViewById(R.id.details);
 
         this.chatButton = (Button)infoWindow.findViewById(R.id.button_chat);
@@ -121,7 +129,10 @@ public class MainActivity extends AppCompatActivity
             @Override
             protected void onClickConfirmed(View v, Marker marker) {
                 // Here we can perform some action triggered after clicking the button
+                //chat(marker.getTitle());
                 Toast.makeText(MainActivity.this, marker.getTitle() + " chat button clicked", Toast.LENGTH_SHORT).show();
+                chatButton.setBackgroundColor(getResources().getColor(R.color.dark_gray));
+                chatButton.setBackgroundColor(getResources().getColor(R.color.white));
             }
         };
         this.chatButton.setOnTouchListener(chatButtonListener);
@@ -323,22 +334,25 @@ public class MainActivity extends AppCompatActivity
         mMap = googleMap;
 
         // Let's add a couple of markers
-        mMap.addMarker(new MarkerOptions()
-                .title("Prague")
-                .snippet("Czech Republic")
-                .position(new LatLng(50.08, 14.43)));
+        // TODO: add markers from the friends obtained from the backend
+        listOfAllMarkers.add(mMap.addMarker(new MarkerOptions().title("Ron_Weasley").snippet("Czech Republic").
+                                        position(new LatLng(50.08, 14.43))));
 
-        mMap.addMarker(new MarkerOptions()
+
+        listOfAllMarkers.add(mMap.addMarker(new MarkerOptions()
                 .title("Paris")
                 .snippet("France")
-                .position(new LatLng(48.86,2.33)));
+                .position(new LatLng(48.86,2.33))));
 
-        mMap.addMarker(new MarkerOptions()
+
+        listOfAllMarkers.add(mMap.addMarker(new MarkerOptions()
                 .title("Melbourne")
                 .snippet("Australia")
-                .position(new LatLng(-37.7964,144.9612)));
+                .position(new LatLng(-37.7964,144.9612))));
 
 
+
+        // TODO: make these numbers final and static
         // where 20 is offset between info bottom edge and content's bottom edge
         // and 40 is the marker height
         mapLayout = (MapLayout) findViewById(R.id.map_container);
@@ -353,7 +367,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public View getInfoContents(Marker marker) {
                 // Setting up the infoWindow with current's marker info
-                //infoTitle.setText(marker.getTitle());
+                infoTitle.setText(marker.getTitle());
                 //infoSnippet.setText(marker.getSnippet());
                 chatButtonListener.setMarker(marker);
                 cameraButtonListener.setMarker(marker);
@@ -367,41 +381,32 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-
-        // Add a marker in Melbourne and move the camera
-        /*LatLng melbUni = new LatLng(-37.7964, 144.9612);
-        mMap.addMarker(new MarkerOptions().position(melbUni).title("Marker in Melb Uni"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(melbUni));
-        mMap.setMinZoomPreference(10);
-        mMap.setMaxZoomPreference(20);*/
-
-        // New popup menu
-        /*PopupMenu menu = new PopupMenu(getApplicationContext(), new View(getApplicationContext()));
-        View popUp =
-
-        MapView map = (MapView) findViewById(R.id.map_main_view);
-        MapView.LayoutParams mapParams = new MapView.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT);
-        //map.addView(popUp, mapParams);
-        */
-        /*final MainActivity mainActivity = this;
-        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener()
-              {
-                  @Override
-                  public boolean onMarkerClick(Marker marker)
-                  {
-                      Log.e(TAG, marker.getPosition().toString());
-                      Log.e(TAG, "The marker was clicked");
-
-                      return true;
-                  }
-              }
-        );*/
-
     }
 
     public static int getPixelsFromDp(Context context, float dp) {
         final float scale = context.getResources().getDisplayMetrics().density;
         return (int)(dp * scale + 0.5f);
+    }
+
+    public void onMapSearch(View view) {
+        EditText locationSearch = (EditText) findViewById(R.id.search_box);
+        String query = locationSearch.getText().toString();
+        Marker marker = null;
+
+        if (query != null || !query.equals("")) {
+
+            for (Marker m : listOfAllMarkers) {
+                if (m.getTitle().equals(query)) {
+                    marker = m;
+                    break;
+                }
+            }
+
+            //Address address = addressList.get(0);
+            //LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
+            //mMap.addMarker(new MarkerOptions().position(latLng).title("Marker"));
+            mMap.animateCamera(CameraUpdateFactory.newLatLng(marker.getPosition()));
+            marker.showInfoWindow();
+        }
     }
 }

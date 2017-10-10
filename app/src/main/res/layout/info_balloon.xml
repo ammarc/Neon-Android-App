@@ -10,8 +10,7 @@
     <TextView
         android:id="@+id/friend_name"
         android:layout_height="37dp"
-        android:layout_width="52dp"
-        android:text="Luca"
+        android:layout_width="90dp"
         android:gravity="center"
         android:background="@color/white"/>
 
