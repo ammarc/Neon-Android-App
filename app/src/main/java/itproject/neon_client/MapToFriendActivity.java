@@ -1,5 +1,6 @@
 package itproject.neon_client;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -54,14 +55,8 @@ public class MapToFriendActivity extends AppCompatActivity implements OnMapReady
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map_to_friend);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.map_toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        final String friendName = getIntent().getStringExtra(MainActivity.EXTRA_MESSAGE);
-        String headerTitle = "Map to " + friendName;
-        getSupportActionBar().setTitle(headerTitle);
-
+        friendName = getIntent().getStringExtra(MainActivity.EXTRA_MESSAGE);
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -221,6 +216,15 @@ public class MapToFriendActivity extends AppCompatActivity implements OnMapReady
             }
         }
         return response.toString();
+    }
+
+    @Override
+    public void onBackPressed()
+    {
+        Log.i("profile","new intent happened");
+        Intent backToChatIntent = new Intent(MapToFriendActivity.this, ChatActivity.class);
+        backToChatIntent.putExtra(MainActivity.EXTRA_MESSAGE, friendName);
+        startActivity(backToChatIntent);
     }
 
 }

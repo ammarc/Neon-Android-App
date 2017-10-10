@@ -71,29 +71,14 @@ public class NewProfileActivity extends AppCompatActivity {
             return;
         }
 
-        /*for (User user : LoginActivity.database.userDao().getAllUser()) {
-            id++;
-            Log.i("profile","user :: " + user.username + " id " + user.id);
-        }   id++;*/
-
-        try {
-            Friends.add_user(usernameString,Profile.getCurrentProfile().getFirstName(),Profile.getCurrentProfile().getLastName(),
-                    phoneString,emailString,Profile.getCurrentProfile().getId());
-            if (Friends.user_exists(usernameString)) {
-                Log.i("profile","exists");
-            }
-        } catch (JSONException e) {
-            Log.i("profile","doesn't exist");
-        }
-
         User newUser = new User(id,usernameString,Profile.getCurrentProfile().getFirstName(),Profile.getCurrentProfile().getLastName(),
                 phoneString, emailString, Profile.getCurrentProfile().getId());
 
         LoginActivity.database.userDao().addUser(newUser);
 
-        /*for (User user : LoginActivity.database.userDao().getAllUser()) {
+        for (User user : LoginActivity.database.userDao().getAllUser()) {
             Log.i("profile", "user : " + user.username + " id ::: " + user.id);
-        }*/
+        }
 
         User user = LoginActivity.database.userDao().getUser(id).get(0);
         LoggedInUser.setUser(newUser);

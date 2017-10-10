@@ -21,7 +21,7 @@ import java.net.URISyntaxException;
 public class ChatActivity extends AppCompatActivity {
 
     static final Client mySocket = new Client("13.65.209.193", 4000);
-    String gFriendName;
+    static String gFriendName;
     Boolean friendshipAccepted = false;
 
     @Override

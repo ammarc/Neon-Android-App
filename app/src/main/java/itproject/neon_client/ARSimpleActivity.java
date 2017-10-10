@@ -2,6 +2,7 @@ package itproject.neon_client;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.hardware.GeomagneticField;
 import android.hardware.Sensor;
@@ -62,6 +63,7 @@ public class ARSimpleActivity extends ARActivity implements SensorEventListener,
     private boolean initialArrowPosSet;
     private float initialArrowAngleRadians;
     private int numSensorChanged = 0;
+    private String friendName;
 
     @Override
     public void onCreate(Bundle savedInstance)
@@ -73,6 +75,8 @@ public class ARSimpleActivity extends ARActivity implements SensorEventListener,
         yaw = 0.0f;
         initialArrowPosSet = false;
         initialArrowAngleRadians = 0.0f;
+
+        friendName = getIntent().getStringExtra(MainActivity.EXTRA_MESSAGE);
 
         // arRenderer.initialise();
         // Create gesture recogniser to start and stop arbitrack
@@ -313,4 +317,13 @@ public class ARSimpleActivity extends ARActivity implements SensorEventListener,
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {}
+
+    @Override
+    public void onBackPressed()
+    {
+        Log.i("profile","new intent happened");
+        Intent backToChatIntent = new Intent(ARSimpleActivity.this, ChatActivity.class);
+        backToChatIntent.putExtra(MainActivity.EXTRA_MESSAGE, friendName);
+        startActivity(backToChatIntent);
+    }
 }
