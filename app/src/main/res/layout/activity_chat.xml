@@ -8,35 +8,15 @@
     android:background="@color/grey">
 
 
-    <android.support.design.widget.AppBarLayout
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:theme="@style/AppTheme.AppBarOverlay"
-        chatview:layout_constraintTop_toBottomOf="parent"
-        chatview:layout_constraintRight_toRightOf="parent"
-        chatview:layout_constraintBottom_toBottomOf="parent"
-        chatview:layout_constraintLeft_toLeftOf="parent">
-
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/chat_toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            chatview:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-            android:theme="@style/ThemeOverlay.AppCompat.ActionBar"/>
-
-    </android.support.design.widget.AppBarLayout>
-
-
     <co.intentservice.chatui.ChatView
         style="@style/Widget.AppCompat.ButtonBar"
         android:id="@+id/chat_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        chatview:backgroundColor="@color/white"
+        chatview:backgroundColor="@color/grey"
         chatview:bubbleElevation="elevated"
-        chatview:bubbleBackgroundRcv="@color/colorPrimary"
-        chatview:bubbleBackgroundSend="@color/grey"
+        chatview:bubbleBackgroundRcv="@color/colorPrimaryLight"
+        chatview:bubbleBackgroundSend="@color/colorPrimary"
         chatview:layout_constraintTop_toBottomOf="parent"
         chatview:layout_constraintRight_toRightOf="parent"
         chatview:layout_constraintBottom_toBottomOf="parent"

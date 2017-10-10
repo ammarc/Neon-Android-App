@@ -53,9 +53,7 @@ public class ChatActivity extends AppCompatActivity {
             }
         }
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.chat_toolbar);
-        toolbar.setTitle(friendName);
-        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle(friendName);
 
         // Capture the layout's TextView and set the string as its text
 

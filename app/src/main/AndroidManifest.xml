@@ -60,7 +60,7 @@
         <activity
             android:name=".chat.ChatActivity"
             android:parentActivityName=".activitys.MainActivity"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme">
 
             <!-- The meta-data tag is required if you support API level 15 and lower -->
             <meta-data
