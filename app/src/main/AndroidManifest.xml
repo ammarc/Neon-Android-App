@@ -29,38 +29,41 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".ARSimpleActivity"
+            android:name=".activitys.NeonARActivity"
             android:configChanges="orientation|screenSize"
-            android:parentActivityName=".ChatActivity"
+            android:parentActivityName=".activitys.MainActivity"
             android:screenOrientation="fullSensor">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ChatActivity" />
+                android:value=".activitys.NeonARActivity" />
         </activity>
         <activity
-            android:name=".LoginActivity"
+            android:name=".activitys.LoginActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
-            android:name=".NewProfileActivity"
-            android:parentActivityName=".LoginActivity">
+            android:name=".activitys.NewProfileActivity"
+            android:parentActivityName=".activitys.LoginActivity">
 
             <!-- The meta-data tag is required if you support API level 15 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".LoginActivity" />
+                android:value=".activitys.LoginActivity" />
         </activity>
         <activity
-            android:name=".ChatActivity"
-            android:parentActivityName=".MainActivity">
+            android:name=".chat.ChatActivity"
+            android:parentActivityName=".activitys.MainActivity">
+
+            <!-- The meta-data tag is required if you support API level 15 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" />
+                android:value=".activitys.MainActivity" />
         </activity>
 
         <meta-data
@@ -83,12 +86,9 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MainActivity"
-            android:parentActivityName=".LoginActivity"
+            android:name=".activitys.MainActivity"
+            android:parentActivityName=".activitys.LoginActivity"
             android:theme="@style/AppTheme.NoActionBar">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".LoginActivity" />
         </activity>
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
@@ -102,27 +102,28 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
+
         <activity
-            android:name=".MapToFriendActivity"
+            android:name=".activitys.MapToFriendActivity"
             android:label="@string/title_activity_map_to_friend"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:parentActivityName=".ChatActivity">
+            android:parentActivityName=".chat.ChatActivity"
+            android:theme="@style/AppTheme.NoActionBar">
 
             <!-- The meta-data tag is required if you support API level 15 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ChatActivity" />
+                android:value=".chat.ChatActivity" />
         </activity>
         <activity
-            android:name=".FindFriendsActivity"
+            android:name=".activitys.FindFriendsActivity"
             android:label="@string/title_activity_find_friends"
             android:theme="@style/AppTheme.NoActionBar"
-            android:parentActivityName=".MainActivity">
+            android:parentActivityName=".activitys.MainActivity">
 
             <!-- The meta-data tag is required if you support API level 15 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" />
+                android:value=".activitys.MainActivity" />
         </activity>
     </application>
 

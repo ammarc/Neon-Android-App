@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="itproject.neon_client.MainActivity">
-
+    tools:context="itproject.neon_client.activitys.MainActivity">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
