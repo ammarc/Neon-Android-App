@@ -82,7 +82,7 @@ public class DatabaseConnect {
         } catch (ExecutionException e) {
             e.printStackTrace();
         }
-        return result;
+        return null;
     }
 
     private static class asyncGet extends AsyncTask<String, Void, JSONArray> {
