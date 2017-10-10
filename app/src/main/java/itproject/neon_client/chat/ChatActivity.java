@@ -141,11 +141,12 @@ public class ChatActivity extends AppCompatActivity {
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
+                Log.d("test",json.get("type").toString());
                 if(json.get("type").toString().equals("previous")){
                     if(json.get("toUser").toString().equals(friendName)){
                         addMessage((String) json.get("data"), Long.parseLong(String.valueOf(json.get("time"))), ChatMessage.Type.SENT);
                     }
-                    else if(json.get("fromUser").toString().equals(userName)){
+                    else if(json.get("toUser").toString().equals(userName)){
                         addMessage((String) json.get("data"), Long.parseLong(String.valueOf(json.get("time"))), ChatMessage.Type.RECEIVED);
                     }
                 }
@@ -214,7 +215,7 @@ public class ChatActivity extends AppCompatActivity {
         protected Boolean doInBackground(String... chatMessages) {
             for(String chatMessage : chatMessages) {
                 try {
-                    mySocket.send(chatMessage);
+                    mySocket.send(chatMessage + "\n");
                 } catch(NullPointerException e) {
                     Tools.exceptionToast(getApplicationContext(), "Cannot connect to server!");
                 }
