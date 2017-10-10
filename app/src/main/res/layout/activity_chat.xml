@@ -7,12 +7,15 @@
     tools:context="itproject.neon_client.chat.ChatActivity"
     android:background="@color/grey">
 
+
     <android.support.design.widget.AppBarLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:theme="@style/AppTheme.AppBarOverlay"
-        tools:layout_editor_absoluteY="0dp"
-        tools:layout_editor_absoluteX="8dp">
+        chatview:layout_constraintTop_toBottomOf="parent"
+        chatview:layout_constraintRight_toRightOf="parent"
+        chatview:layout_constraintBottom_toBottomOf="parent"
+        chatview:layout_constraintLeft_toLeftOf="parent">
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/chat_toolbar"
@@ -43,11 +46,11 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
         chatview:layout_constraintTop_toBottomOf="parent"
         chatview:layout_constraintRight_toRightOf="parent"
         chatview:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginTop="30dp"
-        android:layout_gravity="center_horizontal"
+        android:layout_gravity="center"
         android:id="@+id/accepted_view">
 
         <android.support.design.widget.FloatingActionButton
@@ -58,7 +61,9 @@
             android:layout_marginEnd="@dimen/fab_margin"
             android:layout_marginStart="@dimen/fab_margin"
             android:clickable="true"
-            android:src="@drawable/ic_photo_camera_black_24dp" />
+            android:src="@drawable/ic_photo_camera_black_24dp"
+            tools:layout_editor_absoluteY="0dp"
+            tools:layout_editor_absoluteX="0dp" />
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/phone_fab"
@@ -87,19 +92,17 @@
     </LinearLayout>
 
 
-
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         chatview:layout_constraintTop_toBottomOf="parent"
         chatview:layout_constraintRight_toRightOf="parent"
         chatview:layout_constraintLeft_toLeftOf="parent"
-        android:orientation="vertical"
-        android:layout_marginTop="30dp">
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/chat_view_message"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
             android:keepScreenOn="true"
@@ -109,9 +112,11 @@
             tools:layout_editor_absoluteY="0dp"
             tools:layout_editor_absoluteX="8dp" />
 
+
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             chatview:layout_constraintTop_toBottomOf="parent"
             chatview:layout_constraintRight_toRightOf="parent"
             chatview:layout_constraintLeft_toLeftOf="parent"
@@ -120,36 +125,33 @@
             android:id="@+id/not_accepted_view">
 
             <android.support.design.widget.FloatingActionButton
-                android:id="@+id/phone_fab"
+                android:id="@+id/accept_fab"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="top|start"
                 android:layout_marginEnd="@dimen/fab_margin"
                 android:layout_marginStart="@dimen/fab_margin"
                 android:clickable="true"
-                android:src="@drawable/ic_phone_white_24dp"
+                android:src="@drawable/ic_done_black_24dp"
                 tools:layout_editor_absoluteY="0dp"
                 tools:layout_editor_absoluteX="0dp" />
 
             <android.support.design.widget.FloatingActionButton
-                android:id="@+id/map_view_fab"
+                android:id="@+id/decline_fab"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="top|end"
                 android:layout_marginEnd="@dimen/fab_margin"
                 android:layout_marginStart="@dimen/fab_margin"
-                android:src="@drawable/ic_near_me_white_24dp"
+                android:src="@drawable/ic_clear_black_24dp"
                 tools:layout_editor_absoluteY="0dp"
                 tools:layout_editor_absoluteX="0dp" />
 
-
         </LinearLayout>
-
-
     </LinearLayout>
 
 
 
 
-
 </android.support.constraint.ConstraintLayout>
+
