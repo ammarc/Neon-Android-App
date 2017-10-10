@@ -59,9 +59,9 @@ public class MapLayout extends RelativeLayout
     public boolean dispatchTouchEvent(MotionEvent e)
     {
         boolean toReturn = false;
-        Log.e("MapLayout", "Dispatching touch event like a boss!");
+        //Log.e("MapLayout", "Dispatching touch event like a boss!");
 
-        Log.e("MapLayout", marker.isInfoWindowShown() + " for info window");
+        //Log.e("MapLayout", marker.isInfoWindowShown() + " for info window");
 
         // Being wary of any null pointers
         if (marker != null && marker.isInfoWindowShown() && mMap != null && infoWindow != null)
