@@ -5,7 +5,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
+<<<<<<< HEAD
     tools:context="itproject.neon_client.activities.MainActivity"
+=======
+    tools:context="itproject.neon_client.MainActivity"
+>>>>>>> parent of 895f39e... Merge branch 'master' into base-UI
     tools:showIn="@layout/app_bar_main">
 
     <FrameLayout
