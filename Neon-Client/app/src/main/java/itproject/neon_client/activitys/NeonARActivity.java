@@ -1,4 +1,4 @@
-package itproject.neon_client.activitys;
+package itproject.neon_client.activities;
 
 
 import android.content.Context;

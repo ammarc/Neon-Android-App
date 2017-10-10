@@ -1,4 +1,4 @@
-package itproject.neon_client.activitys;
+package itproject.neon_client.activities;
 
 
 import android.content.Context;
@@ -21,6 +21,7 @@ import eu.kudan.kudan.ARArbiTrack;
 import eu.kudan.kudan.ARGyroPlaceManager;
 import itproject.neon_client.ar.ARSetup;
 import itproject.neon_client.ar.ARSimpleImageNode;
+import itproject.neon_client.chat.ChatActivity;
 
 import static android.content.ContentValues.TAG;
 
@@ -327,12 +328,12 @@ public class NeonARActivity extends eu.kudan.kudan.ARActivity implements SensorE
 
     @Override
 
-    public void onBackPressed()
-    {
-        Log.i("profile","new intent happened");
-        Intent backToChatIntent = new Intent(ARSimpleActivity.this, ChatActivity.class);
+    public void onBackPressed() {
+        Log.i("profile", "new intent happened");
+        Intent backToChatIntent = new Intent(NeonARActivity.this, ChatActivity.class);
         backToChatIntent.putExtra(MainActivity.EXTRA_MESSAGE, friendName);
         startActivity(backToChatIntent);
+    }
 
     public void onResume()
     {

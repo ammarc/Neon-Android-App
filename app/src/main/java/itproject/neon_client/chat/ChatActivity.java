@@ -17,11 +17,11 @@ import org.json.simple.parser.ParseException;
 import co.intentservice.chatui.ChatView;
 import co.intentservice.chatui.models.ChatMessage;
 import itproject.neon_client.helper.LoggedInUser;
-import itproject.neon_client.activitys.MainActivity;
-import itproject.neon_client.activitys.MapToFriendActivity;
+import itproject.neon_client.activities.MainActivity;
+import itproject.neon_client.activities.MapToFriendActivity;
 import itproject.neon_client.R;
 import itproject.neon_client.helper.Tools;
-import itproject.neon_client.activitys.NeonARActivity;
+import itproject.neon_client.activities.NeonARActivity;
 import java.net.Socket;
 
 public class ChatActivity extends AppCompatActivity {
@@ -45,6 +45,8 @@ public class ChatActivity extends AppCompatActivity {
         gFriendName = friendName;
         final String userName = LoggedInUser.getUser().username;
 
+        getSupportActionBar().setTitle(friendName);
+
         // friend request accepted TODO put in proper back end function
         for (String username : MainActivity.friends) {
             if (friendName.equals(username)) {
@@ -54,10 +56,7 @@ public class ChatActivity extends AppCompatActivity {
 
         // Capture the layout's TextView and set the string as its text
 
-        final TextView friend_username = (TextView) findViewById(R.id.friend_username_chat);
-        if (friend_username != null) {
-            friend_username.setText(friendName);
-        }
+        final TextView message = (TextView) findViewById(R.id.chat_message);
 
         LinearLayout accepted_view = (LinearLayout) findViewById(R.id.accepted_view);
 
@@ -83,7 +82,7 @@ public class ChatActivity extends AppCompatActivity {
                 // TODO put decline function here
                 MainActivity.friend_requests.remove(friendName);
                 String declined_message = "You have declined the friend request from " + friendName;
-                friend_username.setText(declined_message);
+                message.setText(declined_message);
                 not_accepted_view.setVisibility(View.INVISIBLE);
             }
         });
@@ -125,7 +124,7 @@ public class ChatActivity extends AppCompatActivity {
             not_accepted_view.setVisibility(View.VISIBLE);
             chatView.setVisibility(View.INVISIBLE);
             String accept_request_message = friendName + " would like to connect with you";
-            friend_username.setText(accept_request_message);
+            message.setText(accept_request_message);
         }
 
 

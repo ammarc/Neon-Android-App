@@ -1,12 +1,8 @@
-package itproject.neon_client.activitys;
+package itproject.neon_client.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.view.View;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -27,15 +23,11 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.json.JSONException;
-import org.json.JSONObject;
-import org.json.JSONArray;
 
-import itproject.neon_client.helper.DBField;
-import itproject.neon_client.helper.DatabaseConnect;
+import itproject.neon_client.chat.ChatActivity;
 import itproject.neon_client.helper.LoggedInUser;
 import itproject.neon_client.R;
 
-import static itproject.neon_client.helper.DatabaseConnect.get;
 import static itproject.neon_client.helper.MapHelper.get_latitude;
 import static itproject.neon_client.helper.MapHelper.get_longitude;
 import static itproject.neon_client.helper.MapHelper.post_location;
@@ -114,85 +106,6 @@ public class MapToFriendActivity extends AppCompatActivity implements OnMapReady
                 .title(to_user));
     }
 
-    public static JSONArray post_location(String username, double latitude, double longitude) {
-        try {
-            JSONObject post_message = new JSONObject();
-            post_message.put("username", username);
-            post_message.put("latitude", latitude);
-            post_message.put("longitude", longitude);
-            String path = directory+ "/gps";
-
-            URL url = new URL(path);
-            HttpURLConnection httpURLConnection = (HttpURLConnection)url.openConnection();
-            httpURLConnection.setDoOutput(true);
-            httpURLConnection.setRequestMethod("POST");
-            httpURLConnection.setRequestProperty("Accept", "application/json");
-            httpURLConnection.connect();
-
-            DataOutputStream wr = new DataOutputStream(httpURLConnection.getOutputStream());
-            wr.writeBytes(post_message.toString());
-            wr.flush();
-            wr.close();
-
-            if (httpURLConnection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-                httpURLConnection.disconnect();
-            }
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    public static JSONArray get(String path) {
-        try {
-            URL url = new URL(path);
-            HttpURLConnection httpURLConnection = (HttpURLConnection)url.openConnection();
-            httpURLConnection.connect();
-            System.out.println("connected");
-            System.out.println(httpURLConnection.getResponseCode());
-            if (httpURLConnection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-                String server_response = readStream(httpURLConnection.getInputStream());
-                System.out.println(server_response);
-                JSONArray response_json_array;
-                response_json_array = new JSONArray(server_response);
-                return response_json_array;
-            }
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    private static String readStream(InputStream in) {
-        BufferedReader reader = null;
-        StringBuffer response = new StringBuffer();
-        try {
-            reader = new BufferedReader(new InputStreamReader(in));
-            String line = "";
-            while ((line = reader.readLine()) != null) {
-                response.append(line);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            if (reader != null) {
-                try {
-                    reader.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        return response.toString();
-    }
 
     @Override
     public void onBackPressed()
