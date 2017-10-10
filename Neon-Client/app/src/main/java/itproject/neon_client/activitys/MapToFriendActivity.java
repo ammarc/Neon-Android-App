@@ -1,4 +1,4 @@
-package itproject.neon_client.activities;
+package itproject.neon_client.activitys;
 
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;

@@ -4,11 +4,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-<<<<<<< HEAD
-    tools:context="itproject.neon_client.activities.NewProfileActivity"
-=======
     tools:context="itproject.neon_client.NewProfileActivity"
->>>>>>> parent of 895f39e... Merge branch 'master' into base-UI
     android:background="@color/black">
 
     <TextView

@@ -1,8 +1,4 @@
-<<<<<<< HEAD:Neon-Client/app/src/main/java/itproject/neon_client/activitys/FindFriendsActivity.java
-package itproject.neon_client.activities;
-=======
 package itproject.neon_client;
->>>>>>> parent of 895f39e... Merge branch 'master' into base-UI:app/src/main/java/itproject/neon_client/FindFriendsActivity.java
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;

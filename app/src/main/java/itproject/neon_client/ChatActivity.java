@@ -13,16 +13,6 @@ import com.google.android.gms.vision.text.Line;
 
 import co.intentservice.chatui.ChatView;
 import co.intentservice.chatui.models.ChatMessage;
-<<<<<<< HEAD:Neon-Client/app/src/main/java/itproject/neon_client/chat/ChatActivity.java
-import itproject.neon_client.helper.LoggedInUser;
-import itproject.neon_client.activities.MainActivity;
-import itproject.neon_client.activities.MapToFriendActivity;
-import itproject.neon_client.R;
-import itproject.neon_client.helper.Tools;
-import itproject.neon_client.activities.NeonARActivity;
-=======
-
->>>>>>> parent of 895f39e... Merge branch 'master' into base-UI:app/src/main/java/itproject/neon_client/ChatActivity.java
 import java.net.Socket;
 import java.net.URISyntaxException;
 

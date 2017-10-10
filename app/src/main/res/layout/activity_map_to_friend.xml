@@ -4,13 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-<<<<<<< HEAD
     style="@style/AppTheme"
-    tools:context="itproject.neon_client.activities.MapToFriendActivity">
-=======
-    tools:context="itproject.neon_client.MapToFriendActivity"
-    style="@style/AppTheme">
->>>>>>> parent of 895f39e... Merge branch 'master' into base-UI
+    tools:context="itproject.neon_client.MapToFriendActivity">
 
     <include layout="@layout/content_map_to_friend" />
 

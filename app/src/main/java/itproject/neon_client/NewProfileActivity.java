@@ -1,8 +1,4 @@
-<<<<<<< HEAD:Neon-Client/app/src/main/java/itproject/neon_client/activitys/NewProfileActivity.java
-package itproject.neon_client.activities;
-=======
 package itproject.neon_client;
->>>>>>> parent of 895f39e... Merge branch 'master' into base-UI:app/src/main/java/itproject/neon_client/NewProfileActivity.java
 
 import android.content.Intent;
 import android.os.Bundle;

@@ -29,71 +29,38 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-<<<<<<< HEAD
-            android:name=".activities.NeonARActivity"
-            android:configChanges="orientation|screenSize"
-            android:parentActivityName=".activities.MainActivity"
-            android:screenOrientation="fullSensor">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activities.NeonARActivity" />
-        </activity>
-        <activity
-            android:name=".activities.LoginActivity"
-=======
             android:name=".ARSimpleActivity"
             android:configChanges="orientation|screenSize"
-            android:parentActivityName=".MainActivity"
+            android:parentActivityName=".ChatActivity"
             android:screenOrientation="fullSensor">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ARSimpleActivity" />
+                android:value=".ChatActivity" />
         </activity>
         <activity
             android:name=".LoginActivity"
->>>>>>> parent of 895f39e... Merge branch 'master' into base-UI
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
-<<<<<<< HEAD
-            android:name=".activities.NewProfileActivity"
-            android:parentActivityName=".activities.LoginActivity">
-=======
             android:name=".NewProfileActivity"
             android:parentActivityName=".LoginActivity">
->>>>>>> parent of 895f39e... Merge branch 'master' into base-UI
 
             <!-- The meta-data tag is required if you support API level 15 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-<<<<<<< HEAD
-                android:value=".activities.LoginActivity" />
-        </activity>
-        <activity
-            android:name=".chat.ChatActivity"
-            android:parentActivityName=".activities.MainActivity">
-=======
                 android:value=".LoginActivity" />
         </activity>
         <activity
             android:name=".ChatActivity"
             android:parentActivityName=".MainActivity">
->>>>>>> parent of 895f39e... Merge branch 'master' into base-UI
-
-            <!-- The meta-data tag is required if you support API level 15 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-<<<<<<< HEAD
-                android:value=".activities.MainActivity" />
-=======
                 android:value=".MainActivity" />
->>>>>>> parent of 895f39e... Merge branch 'master' into base-UI
         </activity>
 
         <meta-data
@@ -116,14 +83,12 @@
             </intent-filter>
         </activity>
         <activity
-<<<<<<< HEAD
-            android:name=".activities.MainActivity"
-            android:parentActivityName=".activities.LoginActivity"
-=======
             android:name=".MainActivity"
             android:parentActivityName=".LoginActivity"
->>>>>>> parent of 895f39e... Merge branch 'master' into base-UI
             android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".LoginActivity" />
         </activity>
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
@@ -138,14 +103,10 @@
             android:value="@string/google_maps_key" />
 
         <activity
-<<<<<<< HEAD
-            android:name=".activities.MapToFriendActivity"
-=======
             android:name=".MapToFriendActivity"
->>>>>>> parent of 895f39e... Merge branch 'master' into base-UI
             android:label="@string/title_activity_map_to_friend"
-            android:parentActivityName=".ChatActivity"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar"
+            android:parentActivityName=".ChatActivity">
 
             <!-- The meta-data tag is required if you support API level 15 and lower -->
             <meta-data
@@ -153,26 +114,15 @@
                 android:value=".ChatActivity" />
         </activity>
         <activity
-<<<<<<< HEAD
-            android:name=".activities.FindFriendsActivity"
-            android:label="@string/title_activity_find_friends"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:parentActivityName=".activities.MainActivity">
-=======
             android:name=".FindFriendsActivity"
             android:label="@string/title_activity_find_friends"
             android:theme="@style/AppTheme.NoActionBar"
             android:parentActivityName=".MainActivity">
->>>>>>> parent of 895f39e... Merge branch 'master' into base-UI
 
             <!-- The meta-data tag is required if you support API level 15 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-<<<<<<< HEAD
-                android:value=".activities.MainActivity" />
-=======
                 android:value=".MainActivity" />
->>>>>>> parent of 895f39e... Merge branch 'master' into base-UI
         </activity>
     </application>
 

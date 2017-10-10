@@ -5,11 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-<<<<<<< HEAD
-    tools:context="itproject.neon_client.activities.FindFriendsActivity"
-=======
     tools:context="itproject.neon_client.FindFriendsActivity"
->>>>>>> parent of 895f39e... Merge branch 'master' into base-UI
     tools:showIn="@layout/activity_find_friends">
 
 

@@ -69,14 +69,15 @@ public class ARSimpleActivity extends ARActivity implements SensorEventListener,
     public void onCreate(Bundle savedInstance)
     {
         super.onCreate(savedInstance);
+
+        friendName = getIntent().getStringExtra(MainActivity.EXTRA_MESSAGE);
+
         setupObject = new ARSetup();
         setupObject.setupAR();
         PackageManager manager = getPackageManager();
         yaw = 0.0f;
         initialArrowPosSet = false;
         initialArrowAngleRadians = 0.0f;
-
-        friendName = getIntent().getStringExtra(MainActivity.EXTRA_MESSAGE);
 
         // arRenderer.initialise();
         // Create gesture recogniser to start and stop arbitrack

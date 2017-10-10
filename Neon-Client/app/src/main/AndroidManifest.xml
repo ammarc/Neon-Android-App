@@ -29,16 +29,16 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".activities.NeonARActivity"
+            android:name=".activitys.NeonARActivity"
             android:configChanges="orientation|screenSize"
-            android:parentActivityName=".activities.MainActivity"
+            android:parentActivityName=".activitys.MainActivity"
             android:screenOrientation="fullSensor">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activities.NeonARActivity" />
+                android:value=".activitys.NeonARActivity" />
         </activity>
         <activity
-            android:name=".activities.LoginActivity"
+            android:name=".activitys.LoginActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -48,22 +48,22 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activities.NewProfileActivity"
-            android:parentActivityName=".activities.LoginActivity">
+            android:name=".activitys.NewProfileActivity"
+            android:parentActivityName=".activitys.LoginActivity">
 
             <!-- The meta-data tag is required if you support API level 15 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activities.LoginActivity" />
+                android:value=".activitys.LoginActivity" />
         </activity>
         <activity
             android:name=".chat.ChatActivity"
-            android:parentActivityName=".activities.MainActivity">
+            android:parentActivityName=".activitys.MainActivity">
 
             <!-- The meta-data tag is required if you support API level 15 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activities.MainActivity" />
+                android:value=".activitys.MainActivity" />
         </activity>
 
         <meta-data
@@ -86,8 +86,8 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activities.MainActivity"
-            android:parentActivityName=".activities.LoginActivity"
+            android:name=".activitys.MainActivity"
+            android:parentActivityName=".activitys.LoginActivity"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <!--
@@ -104,7 +104,7 @@
 
 
         <activity
-            android:name=".activities.MapToFriendActivity"
+            android:name=".activitys.MapToFriendActivity"
             android:label="@string/title_activity_map_to_friend"
             android:parentActivityName=".chat.ChatActivity"
             android:theme="@style/AppTheme.NoActionBar">
@@ -115,15 +115,15 @@
                 android:value=".chat.ChatActivity" />
         </activity>
         <activity
-            android:name=".activities.FindFriendsActivity"
+            android:name=".activitys.FindFriendsActivity"
             android:label="@string/title_activity_find_friends"
             android:theme="@style/AppTheme.NoActionBar"
-            android:parentActivityName=".activities.MainActivity">
+            android:parentActivityName=".activitys.MainActivity">
 
             <!-- The meta-data tag is required if you support API level 15 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activities.MainActivity" />
+                android:value=".activitys.MainActivity" />
         </activity>
     </application>
 
