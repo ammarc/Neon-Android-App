@@ -1,5 +1,7 @@
 package itproject.neon_client.chat;
 
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -74,7 +76,9 @@ public class Client {
     /* Sends the senders username and the recipients username to the server so that the
     *  conversation can be set up serverside. */
     public void initSocket(String friendName, String myName){
-        send("!!!!INIT!!!! " + friendName + " " + myName + " \n");
+        Message newMessage = new Message("init", "", myName, friendName, -1);
+        JSONObject messageJson = newMessage.buildJson();
+        send(messageJson.toString());
     }
 
     /* Processes incoming messages. */

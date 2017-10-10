@@ -5,9 +5,15 @@ import android.os.AsyncTask;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
 import co.intentservice.chatui.ChatView;
 import co.intentservice.chatui.models.ChatMessage;
 import itproject.neon_client.helper.LoggedInUser;
@@ -21,6 +27,7 @@ import java.net.Socket;
 public class ChatActivity extends AppCompatActivity {
 
     static final Client mySocket = new Client("13.65.209.193", 4000);
+    //static final Client mySocket = new Client("10.0.2.2", 4000);
     String gFriendName;
     Boolean friendshipAccepted = false;
 
@@ -104,7 +111,9 @@ public class ChatActivity extends AppCompatActivity {
             @Override
             public boolean sendMessage(ChatMessage chatMessage) {
                 // Asynchronous call that sends the message to the recipients socket.
-                new SendMessage().execute(chatMessage);
+                Message newMessage = new Message("live", chatMessage.getMessage(), friendName, userName, -1);
+                org.json.JSONObject messageJson = newMessage.buildJson();
+                new SendMessage().execute(messageJson.toString());
                 return true;
             }
         });
@@ -125,24 +134,25 @@ public class ChatActivity extends AppCompatActivity {
         mySocket.setClientCallback(new Client.ClientCallback () {
             @Override
             public void onMessage(final String message) {
-                String messageParts[] = message.split("\\s+");
-                if(messageParts[0].equals("##!!!!LAST10!!!!##")){
-                    /* Since messages that have spaces in them are split by the above code,
-                           they need to be stitched together again. */
-                    String wholeMessage = new String(messageParts[3]);
-                    for(int i = 4; i < messageParts.length; i++){
-                        wholeMessage = wholeMessage + " " +  messageParts[i];
+                JSONParser parser = new JSONParser();
+                JSONObject json = null;
+                try {
+                    json = (JSONObject) parser.parse(message);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                if(json.get("type").toString().equals("previous")){
+                    if(json.get("toUser").toString().equals(friendName)){
+                        addMessage((String) json.get("data"), Long.parseLong(String.valueOf(json.get("time"))), ChatMessage.Type.SENT);
                     }
-                    if(messageParts[1].equals(userName)){
-                        addMessage(wholeMessage, Long.parseLong(messageParts[2]), ChatMessage.Type.RECEIVED);
-                    }
-                    else if(messageParts[1].equals(friendName)){
-                        addMessage(wholeMessage, Long.parseLong(messageParts[2]), ChatMessage.Type.SENT);
+                    else if(json.get("fromUser").toString().equals(userName)){
+                        addMessage((String) json.get("data"), Long.parseLong(String.valueOf(json.get("time"))), ChatMessage.Type.RECEIVED);
                     }
                 }
-                else{
-                    addMessage(message, System.currentTimeMillis(), ChatMessage.Type.RECEIVED);
+                else if(json.get("type").toString().equals("live")){
+                    addMessage((String) json.get("data"), System.currentTimeMillis(), ChatMessage.Type.RECEIVED);
                 }
+
             }
 
             public void addMessage(final String message, final long time, final ChatMessage.Type type){
@@ -200,11 +210,11 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     /* Class to handle the asynchronous sending of messages to the server. */
-    private class SendMessage extends AsyncTask<ChatMessage, Void, Boolean> {
-        protected Boolean doInBackground(ChatMessage... chatMessages) {
-            for(ChatMessage chatMessage : chatMessages) {
+    private class SendMessage extends AsyncTask<String, Void, Boolean> {
+        protected Boolean doInBackground(String... chatMessages) {
+            for(String chatMessage : chatMessages) {
                 try {
-                    mySocket.send(chatMessage.getMessage() + "\n");
+                    mySocket.send(chatMessage);
                 } catch(NullPointerException e) {
                     Tools.exceptionToast(getApplicationContext(), "Cannot connect to server!");
                 }
