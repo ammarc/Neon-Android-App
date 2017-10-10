@@ -207,7 +207,7 @@ public class NeonARActivity extends eu.kudan.kudan.ARActivity implements SensorE
     public void onSensorChanged(SensorEvent event)
     {
         if(renders == RENDER_LIMIT) {
-            initialPropertySet();
+            //initialPropertySet();
 
             renders = 0;
         }

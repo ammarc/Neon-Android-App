@@ -59,9 +59,14 @@ public class MapLayout extends RelativeLayout
     public boolean dispatchTouchEvent(MotionEvent e)
     {
         boolean toReturn = false;
-        //Log.e("MapLayout", "Dispatching touch event like a boss!");
 
-        //Log.e("MapLayout", marker.isInfoWindowShown() + " for info window");
+        // Be wary here, this produces a null pointer exception!
+        if (marker != null)
+            Log.e("MapLayout", marker.isInfoWindowShown() + " for info window");
+
+        //Log.e("MapLayout", mMap.toString() + " is the map");
+        if (infoWindow != null)
+            Log.e("MapLayout", infoWindow.toString() + " is the infoWindow");
 
         // Being wary of any null pointers
         if (marker != null && marker.isInfoWindowShown() && mMap != null && infoWindow != null)
@@ -73,10 +78,10 @@ public class MapLayout extends RelativeLayout
             copyEv.offsetLocation(-point.x + (infoWindow.getWidth() / 2),
                     -point.y + infoWindow.getHeight() + bottomOffsetInPixels);
 
-            toReturn = infoWindow.dispatchTouchEvent(e);
-            Button infoButton = (Button)infoWindow.findViewById(R.id.button);
-            infoButton.dispatchTouchEvent(e);
-            Log.e("MapLayout", "The button to press is: " + infoButton.toString());
+            toReturn = infoWindow.dispatchTouchEvent(copyEv);
+            //Button infoButton = (Button)infoWindow.findViewById(R.id.button_chat);
+            //infoButton.dispatchTouchEvent(copyEv);
+            //Log.e("MapLayout", "The button to press is: " + infoButton.toString());
             Log.e("MapLayout", "Dispatching touch event that will make me look like a boss!");
 
         }

@@ -21,7 +21,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -49,8 +48,12 @@ public class MainActivity extends AppCompatActivity
     private ViewGroup infoWindow;
     private TextView infoTitle;
     private TextView infoSnippet;
-    private Button infoButton;
-    private MapInfoTouchListener moreInfoListener;
+    private Button chatButton;
+    private Button cameraButton;
+    private Button mapButton;
+    private MapInfoTouchListener chatButtonListener;
+    private MapInfoTouchListener cameraButtonListener;
+    private MapInfoTouchListener mapButtonListener;
     private MapLayout mapLayout;
 
     private GoogleMap mMap;
@@ -101,28 +104,47 @@ public class MainActivity extends AppCompatActivity
         MapFragment mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.map_main_view);
         mapFragment.getMapAsync(this);
 
-        // where 20 is offset between info bottom edge and content's bottom edge
-        // and 40 is the marker height
-        mapLayout = (MapLayout) findViewById(R.id.map_container);
-        mapLayout.initialize(mMap, getPixelsFromDp(this, 39 + 20));
 
 
         this.infoWindow = (ViewGroup)getLayoutInflater().inflate(R.layout.info_balloon, null);
         this.infoTitle = (TextView)infoWindow.findViewById(R.id.title);
-        this.infoSnippet = (TextView)infoWindow.findViewById(R.id.details);
-        this.infoButton = (Button)infoWindow.findViewById(R.id.button);
+        //this.infoSnippet = (TextView)infoWindow.findViewById(R.id.details);
+
+        this.chatButton = (Button)infoWindow.findViewById(R.id.button_chat);
+        this.cameraButton = (Button)infoWindow.findViewById(R.id.button_camera);
+        this.mapButton = (Button)infoWindow.findViewById(R.id.button_map);
 
         // Setting custom OnTouchListener which deals with the pressed state
         // so it shows up
-        this.moreInfoListener = new MapInfoTouchListener(infoButton)
+        this.chatButtonListener = new MapInfoTouchListener(infoWindow)
         {
             @Override
             protected void onClickConfirmed(View v, Marker marker) {
                 // Here we can perform some action triggered after clicking the button
-                Toast.makeText(MainActivity.this, marker.getTitle() + " button clicked", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, marker.getTitle() + " chat button clicked", Toast.LENGTH_SHORT).show();
             }
         };
-        this.infoButton.setOnTouchListener(moreInfoListener);
+        this.chatButton.setOnTouchListener(chatButtonListener);
+
+        this.cameraButtonListener = new MapInfoTouchListener(infoWindow)
+        {
+            @Override
+            protected void onClickConfirmed(View v, Marker marker) {
+                // Here we can perform some action triggered after clicking the button
+                Toast.makeText(MainActivity.this, marker.getTitle() + " camera button clicked", Toast.LENGTH_SHORT).show();
+            }
+        };
+        this.cameraButton.setOnTouchListener(cameraButtonListener);
+
+        this.mapButtonListener = new MapInfoTouchListener(infoWindow)
+        {
+            @Override
+            protected void onClickConfirmed(View v, Marker marker) {
+                // Here we can perform some action triggered after clicking the button
+                Toast.makeText(MainActivity.this, marker.getTitle() + " map button clicked", Toast.LENGTH_SHORT).show();
+            }
+        };
+        this.mapButton.setOnTouchListener(mapButtonListener);
     }
 
     @Override
@@ -317,6 +339,11 @@ public class MainActivity extends AppCompatActivity
                 .position(new LatLng(-37.7964,144.9612)));
 
 
+        // where 20 is offset between info bottom edge and content's bottom edge
+        // and 40 is the marker height
+        mapLayout = (MapLayout) findViewById(R.id.map_container);
+        mapLayout.initialize(mMap, getPixelsFromDp(this, 39 + 20));
+
         mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
             @Override
             public View getInfoWindow(Marker marker) {
@@ -326,9 +353,11 @@ public class MainActivity extends AppCompatActivity
             @Override
             public View getInfoContents(Marker marker) {
                 // Setting up the infoWindow with current's marker info
-                infoTitle.setText(marker.getTitle());
-                infoSnippet.setText(marker.getSnippet());
-                moreInfoListener.setMarker(marker);
+                //infoTitle.setText(marker.getTitle());
+                //infoSnippet.setText(marker.getSnippet());
+                chatButtonListener.setMarker(marker);
+                cameraButtonListener.setMarker(marker);
+                mapButtonListener.setMarker(marker);
 
                 // We must call this to set the current marker and infoWindow references
                 // to the MapWrapperLayout
