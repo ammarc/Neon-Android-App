@@ -5,6 +5,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 public class MapHelper {
     private static final String address = "http://13.65.209.193:3000";
@@ -96,4 +97,14 @@ public class MapHelper {
             e.printStackTrace();
         }
     }
+
+ /*   public static void update_location(String username) {
+        while(true) {
+            latitude = update_latitiude();
+            longitude = update_longitude();
+            post_location(username, latitude, longitude);
+            TimeUnit.SECONDS.sleep(5);
+        }
+    }
+*/
 }
