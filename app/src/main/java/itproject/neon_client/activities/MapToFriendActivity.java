@@ -1,4 +1,4 @@
-package itproject.neon_client.activitys;
+package itproject.neon_client.activities;
 
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -26,19 +26,14 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.json.JSONException;
-import org.json.JSONObject;
-import org.json.JSONArray;
 
-import itproject.neon_client.helper.DBField;
-import itproject.neon_client.helper.DatabaseConnect;
-import itproject.neon_client.helper.LoggedInUser;
+import itproject.neon_client.helpers.LoggedInUser;
 import itproject.neon_client.R;
 
 import static android.content.ContentValues.TAG;
-import static itproject.neon_client.helper.DatabaseConnect.get;
-import static itproject.neon_client.helper.MapHelper.get_latitude;
-import static itproject.neon_client.helper.MapHelper.get_longitude;
-import static itproject.neon_client.helper.MapHelper.post_location;
+import static itproject.neon_client.helpers.MapHelper.get_latitude;
+import static itproject.neon_client.helpers.MapHelper.get_longitude;
+import static itproject.neon_client.helpers.MapHelper.post_location;
 
 public class MapToFriendActivity extends AppCompatActivity implements OnMapReadyCallback {
 

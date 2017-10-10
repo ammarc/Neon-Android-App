@@ -1,10 +1,10 @@
-package itproject.neon_client.activitys;
+package itproject.neon_client.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -15,8 +15,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -33,18 +36,28 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import itproject.neon_client.helper.LoggedInUser;
+import itproject.neon_client.helpers.LoggedInUser;
 import itproject.neon_client.R;
 import itproject.neon_client.chat.ChatActivity;
+import itproject.neon_client.helpers.MapInfoTouchListener;
+import itproject.neon_client.helpers.MapLayout;
 
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback {
 
+    private ViewGroup infoWindow;
+    private TextView infoTitle;
+    private TextView infoSnippet;
+    private Button infoButton;
+    private MapInfoTouchListener moreInfoListener;
+    private MapLayout mapLayout;
+
     private GoogleMap mMap;
     private Menu sideMenu;
     private final int MENU_DYNAMIC = 2131755500;
     private int friend_insert_counter = 0;
+    private static final String TAG = "MainActivity";
 
     public static final String EXTRA_MESSAGE = "itproject.neon_client.MESSAGE";
 
@@ -87,6 +100,29 @@ public class MainActivity extends AppCompatActivity
 
         MapFragment mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.map_main_view);
         mapFragment.getMapAsync(this);
+
+        // where 20 is offset between info bottom edge and content's bottom edge
+        // and 40 is the marker height
+        mapLayout = (MapLayout) findViewById(R.id.map_container);
+        mapLayout.initialize(mMap, getPixelsFromDp(this, 39 + 20));
+
+
+        this.infoWindow = (ViewGroup)getLayoutInflater().inflate(R.layout.info_balloon, null);
+        this.infoTitle = (TextView)infoWindow.findViewById(R.id.title);
+        this.infoSnippet = (TextView)infoWindow.findViewById(R.id.details);
+        this.infoButton = (Button)infoWindow.findViewById(R.id.button);
+
+        // Setting custom OnTouchListener which deals with the pressed state
+        // so it shows up
+        this.moreInfoListener = new MapInfoTouchListener(infoButton)
+        {
+            @Override
+            protected void onClickConfirmed(View v, Marker marker) {
+                // Here we can perform some action triggered after clicking the button
+                Toast.makeText(MainActivity.this, marker.getTitle() + " button clicked", Toast.LENGTH_SHORT).show();
+            }
+        };
+        this.infoButton.setOnTouchListener(moreInfoListener);
     }
 
     @Override
@@ -264,28 +300,79 @@ public class MainActivity extends AppCompatActivity
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        // Add a marker in Melbounre and move the camera
-        LatLng melbUni = new LatLng(-37.7964, 144.9612);
+        // Let's add a couple of markers
+        mMap.addMarker(new MarkerOptions()
+                .title("Prague")
+                .snippet("Czech Republic")
+                .position(new LatLng(50.08, 14.43)));
+
+        mMap.addMarker(new MarkerOptions()
+                .title("Paris")
+                .snippet("France")
+                .position(new LatLng(48.86,2.33)));
+
+        mMap.addMarker(new MarkerOptions()
+                .title("Melbourne")
+                .snippet("Australia")
+                .position(new LatLng(-37.7964,144.9612)));
+
+
+        mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+            @Override
+            public View getInfoWindow(Marker marker) {
+                return null;
+            }
+
+            @Override
+            public View getInfoContents(Marker marker) {
+                // Setting up the infoWindow with current's marker info
+                infoTitle.setText(marker.getTitle());
+                infoSnippet.setText(marker.getSnippet());
+                moreInfoListener.setMarker(marker);
+
+                // We must call this to set the current marker and infoWindow references
+                // to the MapWrapperLayout
+                Log.e(TAG, "Setting the marker which is: " + marker);
+                mapLayout.setMarkerWithInfoWindow(marker, infoWindow);
+                return infoWindow;
+            }
+        });
+
+
+        // Add a marker in Melbourne and move the camera
+        /*LatLng melbUni = new LatLng(-37.7964, 144.9612);
         mMap.addMarker(new MarkerOptions().position(melbUni).title("Marker in Melb Uni"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(melbUni));
         mMap.setMinZoomPreference(10);
-        mMap.setMaxZoomPreference(20);
+        mMap.setMaxZoomPreference(20);*/
 
         // New popup menu
-        //View popUp = getLayoutInflater().inflate(R.layout.activity_main, , false);
+        /*PopupMenu menu = new PopupMenu(getApplicationContext(), new View(getApplicationContext()));
+        View popUp =
 
+        MapView map = (MapView) findViewById(R.id.map_main_view);
+        MapView.LayoutParams mapParams = new MapView.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT);
+        //map.addView(popUp, mapParams);
+        */
+        /*final MainActivity mainActivity = this;
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener()
               {
                   @Override
                   public boolean onMarkerClick(Marker marker)
                   {
-                      //Log.e(TAG, "The marker was clicked");
-                      RecyclerView recyclerView = new RecyclerView(getApplicationContext());
-                      //ArrayyList
-                      //recyclerView.addFocusables();
+                      Log.e(TAG, marker.getPosition().toString());
+                      Log.e(TAG, "The marker was clicked");
+
                       return true;
                   }
               }
-        );
+        );*/
+
+    }
+
+    public static int getPixelsFromDp(Context context, float dp) {
+        final float scale = context.getResources().getDisplayMetrics().density;
+        return (int)(dp * scale + 0.5f);
     }
 }
