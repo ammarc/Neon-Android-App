@@ -25,7 +25,7 @@ public class FriendHelper {
 		return pending_friends;
 	}
 
-	public void accept_friend_request(String from_user, String to_user) throws JSONException {
+	public static void accept_friend_request(String from_user, String to_user) throws JSONException {
 		String path = address + "friend/requests/accept";
 		JSONObject post_message = new JSONObject();
 		post_message.put("to_user", to_user);
@@ -79,7 +79,7 @@ public class FriendHelper {
 		return "friend request sent to " + to_user;
 	}
 
-	public void add_user(String username, String first_name, String last_name, String phone_num, String email, String fb_id) {
+	public static void add_user(String username, String first_name, String last_name, String phone_num, String email, String fb_id) {
 		JSONObject post_message = new JSONObject();
 		try {
 			post_message.put("username", username);
@@ -98,7 +98,7 @@ public class FriendHelper {
 		DatabaseConnect.post(field);
 	}
 
-	public int getFriendshipStatus(String to_user, String from_user) {
+	public static int getFriendshipStatus(String to_user, String from_user) {
 		try {
 			ArrayList<String> pending_friends = get_pending_friends(from_user);
 			ArrayList<String> accepted_friends = get_friend_list(from_user);
