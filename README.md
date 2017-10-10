@@ -23,5 +23,5 @@ Currently the app runs only through the Android Studio IDE. For detailed
 pre-requirements for installting that IDE, go to https://developer.android.com/studio/index.html
 
 ## Testing
-To run tests the tests just go the itproject.neon\_client > tests. And then
-click right-click > Run <test-name>.
+To run the unit-tests just go the itproject.neon\_client > tests. And then
+click right-click > Run <test-name> to run the individual tests.
