@@ -17,3 +17,11 @@ Ideally, the user will first use the built-in Google Maps to find each other
 when they are further away and then they can use the AR which points
 them to the person they are trying to find. Note that the arrow points
 directly towards the other user (in straight line).
+
+## Pre-requirements
+Currently the app runs only through the Android Studio IDE. For detailed
+pre-requirements for installting that IDE, go to https://developer.android.com/studio/index.html
+
+## Testing
+To run tests the tests just go the itproject.neon\_client > tests. And then
+click right-click > Run <test-name>.
