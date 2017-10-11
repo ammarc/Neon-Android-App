@@ -17,9 +17,12 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -43,8 +46,11 @@ import java.util.List;
 import itproject.neon_client.helpers.LoggedInUser;
 import itproject.neon_client.R;
 import itproject.neon_client.chat.ChatActivity;
+import itproject.neon_client.helpers.MapAutoCompleteCustomArrayAdapter;
 import itproject.neon_client.helpers.MapInfoTouchListener;
 import itproject.neon_client.helpers.MapLayout;
+import itproject.neon_client.helpers.MapSearchAutoCompleteTextChangedListener;
+import itproject.neon_client.helpers.MapSearchAutoCompleteView;
 
 
 public class MainActivity extends AppCompatActivity
@@ -60,7 +66,13 @@ public class MainActivity extends AppCompatActivity
     private MapInfoTouchListener cameraButtonListener;
     private MapInfoTouchListener mapButtonListener;
     private MapLayout mapLayout;
+
+
     private ArrayList<Marker> listOfAllMarkers;
+
+    private MapSearchAutoCompleteView mapSearchAutoCompleteView;
+
+    private ArrayAdapter<String> autoCompleteArrayAdapter;
 
     private GoogleMap mMap;
     private Menu sideMenu;
@@ -75,6 +87,29 @@ public class MainActivity extends AppCompatActivity
     public static List<String> all_users = new ArrayList<>(Arrays.asList("draco_m","hagrid_has_scary_pets","he_who_must_not_be_named","ratty","shaggy_dog","lupin_howles"));
 
 
+    public MapSearchAutoCompleteView getMapSearchAutoCompleteView()
+    {
+        return mapSearchAutoCompleteView;
+    }
+
+    public String[] getListOfAllMarkers()
+    {
+        String[] toReturn = new String[listOfAllMarkers.size()];
+        for(int i = 0; i < listOfAllMarkers.size(); i++)
+            toReturn[i] = listOfAllMarkers.get(i).getTitle();
+        return toReturn;
+    }
+
+    public ArrayAdapter<String> getAutoCompleteArrayAdapter()
+    {
+        return autoCompleteArrayAdapter;
+    }
+
+    public void setAutoCompleteArrayAdapter(ArrayAdapter<String> autoCompleteArrayAdapter)
+    {
+        this.autoCompleteArrayAdapter = autoCompleteArrayAdapter;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,6 +119,30 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        mapSearchAutoCompleteView = (MapSearchAutoCompleteView) findViewById(R.id.search_box);
+
+        mapSearchAutoCompleteView.setOnItemClickListener(new AdapterView.OnItemClickListener()
+        {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l)
+            {
+                RelativeLayout rl = (RelativeLayout) view;
+                TextView tv = (TextView) rl.getChildAt(0);
+                mapSearchAutoCompleteView.setText(tv.getText().toString());
+            }
+        });
+
+        mapSearchAutoCompleteView.addTextChangedListener(new MapSearchAutoCompleteTextChangedListener(this));
+
+        // this is initially empty
+        // TODO: need to change this to actual values
+        String[] userNameList = {"Paris", "Melbourne", "Ron_Weasley"};
+
+        // set the custom ArrayAdapter
+        autoCompleteArrayAdapter = new MapAutoCompleteCustomArrayAdapter(this,
+                                        R.layout.auto_complete_view_row, userNameList);
+        mapSearchAutoCompleteView.setAdapter(autoCompleteArrayAdapter);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -405,8 +464,14 @@ public class MainActivity extends AppCompatActivity
             //Address address = addressList.get(0);
             //LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
             //mMap.addMarker(new MarkerOptions().position(latLng).title("Marker"));
-            mMap.animateCamera(CameraUpdateFactory.newLatLng(marker.getPosition()));
-            marker.showInfoWindow();
+            if (marker != null) {
+                mMap.animateCamera(CameraUpdateFactory.newLatLng(marker.getPosition()));
+                marker.showInfoWindow();
+            }
+            else
+            {
+                Toast.makeText(this.getApplicationContext(), "No user exists with that name", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 }

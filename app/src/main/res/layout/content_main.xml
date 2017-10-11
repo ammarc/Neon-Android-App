@@ -31,9 +31,8 @@
             android:layout_width="match_parent"
             tools:layout_editor_absoluteY="0dp"
             tools:layout_editor_absoluteX="8dp"
-            android:layout_alignTop="@+id/linearLayout"
-            android:layout_alignEnd="@+id/linearLayout"
-            android:layout_marginTop="10dp" />
+            android:layout_below="@+id/linearLayout"
+            android:layout_alignParentStart="true" />
 
         <!--<searchable xmlns:android="http://schemas.android.com/apk/res/android"
             android:label="@string/app_label"
@@ -52,15 +51,28 @@
 
         </LinearLayout>
 
-        <EditText
+        <itproject.neon_client.helpers.MapSearchAutoCompleteView
             android:id="@+id/search_box"
             android:layout_width="wrap_content"
             android:layout_height="40dp"
-            android:layout_marginTop="234dp"
             android:layout_weight="4"
+            android:completionThreshold="10"
             android:background="@color/white"
             android:hint="Search Location Here"
-            android:layout_alignTop="@+id/map_main_view" />
+            android:layout_marginStart="12dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignStart="@+id/linearLayout"
+            android:layout_marginBottom="224dp" />
+        
+        <!--<itproject.neon_client.helpers.MapSearchAutoCompleteView
+            android:id="@+id/map_search_auto_complete"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:completionThreshold="10"
+            android:layout_alignTop="@+id/map_main_view"
+            android:layout_alignStart="@+id/linearLayout"
+            android:background="@color/white"
+            android:layout_marginTop="189dp" />-->
 
         <Button
             android:id="@+id/map_search_button"
@@ -69,8 +81,9 @@
             android:layout_weight="0.5"
             android:onClick="onMapSearch"
             android:text="Search"
-            android:layout_alignBottom="@+id/search_box"
-            android:layout_toEndOf="@+id/search_box" />
+            android:layout_alignLeft="@id/search_box"
+            android:layout_alignTop="@+id/search_box"
+            android:layout_alignEnd="@+id/map_main_view" />
 
 
     </itproject.neon_client.helpers.MapLayout>
