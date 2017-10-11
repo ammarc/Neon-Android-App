@@ -11,7 +11,9 @@ import android.widget.TextView;
 
 import com.facebook.Profile;
 
+import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import itproject.neon_client.helper.FriendHelper;
 import itproject.neon_client.helper.LoggedInUser;
@@ -77,24 +79,22 @@ public class NewProfileActivity extends AppCompatActivity {
             Log.i("profile","user :: " + user.username + " id " + user.id);
         }   id++;*/
 
-
-
-        FriendHelper.add_user(usernameString,Profile.getCurrentProfile().getFirstName(),Profile.getCurrentProfile().getLastName(),
-                phoneString, emailString, Profile.getCurrentProfile().getId());
-
-
         try {
             if (FriendHelper.user_exists(usernameString)) {
                 Log.i("profile",usernameString + " exists!");
             }
             else {
                 Log.i("profile",usernameString + " doesn't exist");
+                JSONArray result = FriendHelper.add_user(usernameString,Profile.getCurrentProfile().getFirstName(),Profile.getCurrentProfile().getLastName(),
+                        phoneString, emailString, Profile.getCurrentProfile().getId());
+                Log.i("profile", result.toString());
+                Log.i("profile", "user added!");
             }
         } catch (JSONException e) {
         }
 
 
-        /*User newUser = new User(id,usernameString,Profile.getCurrentProfile().getFirstName(),Profile.getCurrentProfile().getLastName(),
+        User newUser = new User(id,usernameString,Profile.getCurrentProfile().getFirstName(),Profile.getCurrentProfile().getLastName(),
                 phoneString, emailString, Profile.getCurrentProfile().getId());
 
         LoginActivity.database.userDao().addUser(newUser);
@@ -105,7 +105,7 @@ public class NewProfileActivity extends AppCompatActivity {
 
         User user = LoginActivity.database.userDao().getUser(id).get(0);
         LoggedInUser.setUser(newUser);
-        Log.i("profile","user " + user.username + " id " + user.id); */
+        Log.i("profile","user " + user.username + " id " + user.id);
 
 
 

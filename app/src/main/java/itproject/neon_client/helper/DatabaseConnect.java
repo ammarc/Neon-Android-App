@@ -1,6 +1,7 @@
 package itproject.neon_client.helper;
 
 import android.os.AsyncTask;
+import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -22,7 +23,7 @@ import java.util.concurrent.ExecutionException;
 
 public class DatabaseConnect {
     public static JSONArray post(DBField field) {
-        JSONArray result = null;
+        JSONArray result = new JSONArray();
         try {
             result = new asyncPost().execute(field).get();
         } catch (InterruptedException e) {
@@ -74,7 +75,7 @@ public class DatabaseConnect {
     }
 
     public static JSONArray get(String path) {
-        JSONArray result = null;
+        JSONArray result = new JSONArray();
         try {
             result = new asyncGet().execute(path).get();
         } catch (InterruptedException e) {
@@ -82,18 +83,20 @@ public class DatabaseConnect {
         } catch (ExecutionException e) {
             e.printStackTrace();
         }
-        return null;
+        return result;
     }
 
     private static class asyncGet extends AsyncTask<String, Void, JSONArray> {
         protected JSONArray doInBackground(String... strings) {
             for(String string : strings){
+                Log.i("test",string);
                 String path = string;
                 try {
                     URL url = new URL(path);
                     HttpURLConnection httpURLConnection = (HttpURLConnection)url.openConnection();
                     httpURLConnection.connect();
                     if (httpURLConnection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                        Log.i("test", "made it!");
                         String server_response = readStream(httpURLConnection.getInputStream());
                         JSONArray response_json_array;
                         response_json_array = new JSONArray(server_response);

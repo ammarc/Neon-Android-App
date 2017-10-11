@@ -1,5 +1,7 @@
 package itproject.neon_client.helper;
 
+import android.util.Log;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -78,7 +80,7 @@ public class FriendHelper {
 		return "friend request sent to " + to_user;
 	}
 
-	public static void add_user(String username, String first_name, String last_name, String phone_num, String email, String fb_id) {
+	public static JSONArray add_user(String username, String first_name, String last_name, String phone_num, String email, String fb_id) {
 		JSONObject post_message = new JSONObject();
 		try {
 			post_message.put("username", username);
@@ -92,9 +94,9 @@ public class FriendHelper {
 			e.printStackTrace();
 		}
 		String path = address + "profile";
-
+        Log.i("test",post_message.toString());
 		DBField field = new DBField(path, post_message);
-		DatabaseConnect.post(field);
+		return DatabaseConnect.post(field);
 	}
 
 	public static ArrayList<String> all_users() {
