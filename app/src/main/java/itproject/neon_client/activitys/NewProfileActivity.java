@@ -87,7 +87,12 @@ public class NewProfileActivity extends AppCompatActivity {
                 Log.i("profile",usernameString + " doesn't exist");
                 JSONArray result = FriendHelper.add_user(usernameString,Profile.getCurrentProfile().getFirstName(),Profile.getCurrentProfile().getLastName(),
                         phoneString, emailString, Profile.getCurrentProfile().getId());
-                Log.i("profile", result.toString());
+                if(result!=null){
+                    Log.i("profile", result.toString());
+                }
+                else{
+                    Log.i("profile", "no response from server!");
+                }
                 Log.i("profile", "user added!");
             }
         } catch (JSONException e) {
