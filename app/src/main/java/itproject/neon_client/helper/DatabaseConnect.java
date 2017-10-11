@@ -7,11 +7,15 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -39,40 +43,26 @@ public class DatabaseConnect {
             for(DBField field : fields){
                 JSONObject jsonObject = field.getJsonObject();
                 String path = field.getPath();
+                OutputStream out = null;
                 try {
                     URL url = new URL(path);
-                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                    conn.setRequestProperty("Content-Type", "application/json");
-                    conn.setDoOutput(true);
-                    conn.setDoInput(true);
-                    conn.setRequestMethod("POST");
-                    conn.connect();
-
-                    DataOutputStream wr = new DataOutputStream(conn.getOutputStream());
-                    wr.writeBytes(jsonObject.toString());
-                    wr.flush();
-                    wr.close();
-
-                    if (conn.getResponseCode() == HttpURLConnection.HTTP_OK) {
-                        String server_response = readStream(conn.getInputStream());
-                        conn.disconnect();
-                        if (!(server_response.charAt(0) == '[')) return null;
-                        JSONArray response_json_array;
-                        response_json_array = new JSONArray(server_response);
-                        return response_json_array;
-                    }
-                } catch (MalformedURLException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                    HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+                    out = new BufferedOutputStream(urlConnection.getOutputStream());
+                    BufferedWriter writer = new BufferedWriter (new OutputStreamWriter(out, "UTF-8"));
+                    Log.i("test",jsonObject.toString());
+                    writer.write(jsonObject.toString());
+                    writer.flush();
+                    writer.close();
+                    out.close();
+                    urlConnection.connect();
+                } catch (Exception e) {
+                    System.out.println(e.getMessage());
                 }
-                return null;
             }
             return null;
         }
     }
+
 
     public static JSONArray get(String path) {
         JSONArray result = new JSONArray();
