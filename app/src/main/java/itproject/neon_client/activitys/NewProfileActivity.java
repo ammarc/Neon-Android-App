@@ -19,7 +19,7 @@ import itproject.neon_client.R;
 import itproject.neon_client.mock_data.User;
 
 /**
- * Created by soe on 25/9/17.
+ * Created by kit on 25/9/17.
  */
 
 public class NewProfileActivity extends AppCompatActivity {
@@ -77,8 +77,11 @@ public class NewProfileActivity extends AppCompatActivity {
             Log.i("profile","user :: " + user.username + " id " + user.id);
         }   id++;*/
 
+
+
         FriendHelper.add_user(usernameString,Profile.getCurrentProfile().getFirstName(),Profile.getCurrentProfile().getLastName(),
                 phoneString, emailString, Profile.getCurrentProfile().getId());
+
 
         try {
             if (FriendHelper.user_exists(usernameString)) {
@@ -91,18 +94,21 @@ public class NewProfileActivity extends AppCompatActivity {
         }
 
 
-        User newUser = new User(id,usernameString,Profile.getCurrentProfile().getFirstName(),Profile.getCurrentProfile().getLastName(),
+        /*User newUser = new User(id,usernameString,Profile.getCurrentProfile().getFirstName(),Profile.getCurrentProfile().getLastName(),
                 phoneString, emailString, Profile.getCurrentProfile().getId());
 
         LoginActivity.database.userDao().addUser(newUser);
 
-        /*for (User user : LoginActivity.database.userDao().getAllUser()) {
+        for (User user : LoginActivity.database.userDao().getAllUser()) {
             Log.i("profile", "user : " + user.username + " id ::: " + user.id);
-        }*/
+        }
 
         User user = LoginActivity.database.userDao().getUser(id).get(0);
         LoggedInUser.setUser(newUser);
-        Log.i("profile","user " + user.username + " id " + user.id);
+        Log.i("profile","user " + user.username + " id " + user.id); */
+
+
+
         startActivity(new Intent(NewProfileActivity.this, MainActivity.class));
     }
 }

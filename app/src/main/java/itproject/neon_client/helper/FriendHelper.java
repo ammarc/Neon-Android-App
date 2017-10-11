@@ -49,13 +49,11 @@ public class FriendHelper {
 	public static boolean user_exists(String username) throws JSONException {
 		String path = address + "users/all";
 		JSONArray users = DatabaseConnect.get(path);
-        if (users != null) {
-            for (int i = 0; i < users.length(); i++) {
-                if (users.getJSONObject(i).getString("username").equals(username)) {
-                    return true;
-                }
-            }
-        }
+		for (int i=0; i < users.length(); i ++) {
+			if (users.getJSONObject(i).getString("username").equals(username)) {
+				return true;
+			}
+		}
 		return false;
 	}
 

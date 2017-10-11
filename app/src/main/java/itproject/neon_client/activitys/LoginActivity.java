@@ -129,12 +129,12 @@ public class LoginActivity extends AppCompatActivity {
         database.userDao().removeAllUsers();
 
         // add some data
-        List<User> users = database.userDao().getAllUser();
+        /*List<User> users = database.userDao().getAllUser();
         if (users.size()==0) {
             database.userDao().addUser(new User(1, "harryP", "harry", "potter", "0411854930", "hazP@account", Profile.getCurrentProfile().getId()));
             database.userDao().addUser(new User(2, "ginny_weasley", "ginny", "weasley", "0447893029", "gweasley@gmail", "0"));
             database.userDao().addUser(new User(3, "hermione", "hermione", "granger", "0478986543", "hgranger@hotmail", "0"));
-        }
+        }*/
 
     }
 
