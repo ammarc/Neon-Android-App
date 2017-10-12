@@ -11,13 +11,11 @@ import android.widget.TextView;
 
 import com.facebook.Profile;
 
+import org.json.JSONException;
 import itproject.neon_client.helpers.LoggedInUser;
+import itproject.neon_client.helpers.FriendHelper;
 import itproject.neon_client.R;
 import itproject.neon_client.mock_data.User;
-
-/**
- * Created by soe on 25/9/17.
- */
 
 public class NewProfileActivity extends AppCompatActivity {
 
@@ -74,7 +72,19 @@ public class NewProfileActivity extends AppCompatActivity {
             Log.i("profile","user :: " + user.username + " id " + user.id);
         }   id++;*/
 
-        
+        FriendHelper.add_user(usernameString,Profile.getCurrentProfile().getFirstName(),Profile.getCurrentProfile().getLastName(),
+                phoneString, emailString, Profile.getCurrentProfile().getId());
+
+        try {
+            if (FriendHelper.user_exists(usernameString)) {
+                Log.i("profile",usernameString + " exists!");
+            }
+            else {
+                Log.i("profile",usernameString + " doesn't exist");
+            }
+        } catch (JSONException e) {
+        }
+
 
         User newUser = new User(id,usernameString,Profile.getCurrentProfile().getFirstName(),Profile.getCurrentProfile().getLastName(),
                 phoneString, emailString, Profile.getCurrentProfile().getId());

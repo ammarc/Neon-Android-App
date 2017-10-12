@@ -22,7 +22,7 @@ public class FindFriendsActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("Find FriendHelper");
+        getSupportActionBar().setTitle("Find Friends");
 
 
         LinearLayout ListLayout = (LinearLayout) findViewById(id.search_display);

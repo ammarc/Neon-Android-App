@@ -5,9 +5,16 @@ import android.os.AsyncTask;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
 import co.intentservice.chatui.ChatView;
 import co.intentservice.chatui.models.ChatMessage;
 import itproject.neon_client.helpers.LoggedInUser;
@@ -22,6 +29,7 @@ import java.net.Socket;
 public class ChatActivity extends AppCompatActivity {
 
     static final Client mySocket = new Client("13.65.209.193", 4000);
+    //static final Client mySocket = new Client("10.0.2.2", 4000);
     String gFriendName;
     Boolean friendshipAccepted = false;
 
@@ -46,12 +54,11 @@ public class ChatActivity extends AppCompatActivity {
             }
         }
 
+        getSupportActionBar().setTitle(friendName);
+
         // Capture the layout's TextView and set the string as its text
 
-        final TextView friend_username = (TextView) findViewById(R.id.friend_username_chat);
-        if (friend_username != null) {
-            friend_username.setText(friendName);
-        }
+        final TextView message = (TextView) findViewById(R.id.chat_view_message);
 
         LinearLayout accepted_view = (LinearLayout) findViewById(R.id.accepted_view);
 
@@ -77,7 +84,7 @@ public class ChatActivity extends AppCompatActivity {
                 // TODO put decline function here
                 MainActivity.friend_requests.remove(friendName);
                 String declined_message = "You have declined the friend request from " + friendName;
-                friend_username.setText(declined_message);
+                message.setText(declined_message);
                 not_accepted_view.setVisibility(View.INVISIBLE);
             }
         });
@@ -105,7 +112,9 @@ public class ChatActivity extends AppCompatActivity {
             @Override
             public boolean sendMessage(ChatMessage chatMessage) {
                 // Asynchronous call that sends the message to the recipients socket.
-                new SendMessage().execute(chatMessage);
+                Message newMessage = new Message("live", chatMessage.getMessage(), friendName, userName, -1);
+                org.json.JSONObject messageJson = newMessage.buildJson();
+                new SendMessage().execute(messageJson.toString());
                 return true;
             }
         });
@@ -117,7 +126,7 @@ public class ChatActivity extends AppCompatActivity {
             not_accepted_view.setVisibility(View.VISIBLE);
             chatView.setVisibility(View.INVISIBLE);
             String accept_request_message = friendName + " would like to connect with you";
-            friend_username.setText(accept_request_message);
+            message.setText(accept_request_message);
         }
 
 
@@ -126,24 +135,26 @@ public class ChatActivity extends AppCompatActivity {
         mySocket.setClientCallback(new Client.ClientCallback () {
             @Override
             public void onMessage(final String message) {
-                String messageParts[] = message.split("\\s+");
-                if(messageParts[0].equals("##!!!!LAST10!!!!##")){
-                    /* Since messages that have spaces in them are split by the above code,
-                           they need to be stitched together again. */
-                    String wholeMessage = new String(messageParts[3]);
-                    for(int i = 4; i < messageParts.length; i++){
-                        wholeMessage = wholeMessage + " " +  messageParts[i];
+                JSONParser parser = new JSONParser();
+                JSONObject json = null;
+                try {
+                    json = (JSONObject) parser.parse(message);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                Log.d("test",json.get("type").toString());
+                if(json.get("type").toString().equals("previous")){
+                    if(json.get("toUser").toString().equals(friendName)){
+                        addMessage((String) json.get("data"), Long.parseLong(String.valueOf(json.get("time"))), ChatMessage.Type.SENT);
                     }
-                    if(messageParts[1].equals(userName)){
-                        addMessage(wholeMessage, Long.parseLong(messageParts[2]), ChatMessage.Type.RECEIVED);
-                    }
-                    else if(messageParts[1].equals(friendName)){
-                        addMessage(wholeMessage, Long.parseLong(messageParts[2]), ChatMessage.Type.SENT);
+                    else if(json.get("toUser").toString().equals(userName)){
+                        addMessage((String) json.get("data"), Long.parseLong(String.valueOf(json.get("time"))), ChatMessage.Type.RECEIVED);
                     }
                 }
-                else{
-                    addMessage(message, System.currentTimeMillis(), ChatMessage.Type.RECEIVED);
+                else if(json.get("type").toString().equals("live")){
+                    addMessage((String) json.get("data"), System.currentTimeMillis(), ChatMessage.Type.RECEIVED);
                 }
+
             }
 
             public void addMessage(final String message, final long time, final ChatMessage.Type type){
@@ -201,11 +212,11 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     /* Class to handle the asynchronous sending of messages to the server. */
-    private class SendMessage extends AsyncTask<ChatMessage, Void, Boolean> {
-        protected Boolean doInBackground(ChatMessage... chatMessages) {
-            for(ChatMessage chatMessage : chatMessages) {
+    private class SendMessage extends AsyncTask<String, Void, Boolean> {
+        protected Boolean doInBackground(String... chatMessages) {
+            for(String chatMessage : chatMessages) {
                 try {
-                    mySocket.send(chatMessage.getMessage() + "\n");
+                    mySocket.send(chatMessage + "\n");
                 } catch(NullPointerException e) {
                     Tools.exceptionToast(getApplicationContext(), "Cannot connect to server!");
                 }

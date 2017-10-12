@@ -16,10 +16,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.concurrent.ExecutionException;
 
-/**
- * Created by lachlanthomas on 9/10/17.
- */
-
 public class DatabaseConnect {
     public static JSONArray post(DBField field) {
         JSONArray result = null;
@@ -40,20 +36,21 @@ public class DatabaseConnect {
                 String path = field.getPath();
                 try {
                     URL url = new URL(path);
-                    HttpURLConnection httpURLConnection = (HttpURLConnection)url.openConnection();
-                    httpURLConnection.setDoOutput(true);
-                    httpURLConnection.setRequestMethod("POST");
-                    httpURLConnection.setRequestProperty("Accept", "application/json");
-                    httpURLConnection.connect();
+                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                    conn.setRequestProperty("Content-Type", "application/json");
+                    conn.setDoOutput(true);
+                    conn.setDoInput(true);
+                    conn.setRequestMethod("POST");
+                    conn.connect();
 
-                    DataOutputStream wr = new DataOutputStream(httpURLConnection.getOutputStream());
+                    DataOutputStream wr = new DataOutputStream(conn.getOutputStream());
                     wr.writeBytes(jsonObject.toString());
                     wr.flush();
                     wr.close();
 
-                    if (httpURLConnection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-                        String server_response = readStream(httpURLConnection.getInputStream());
-                        httpURLConnection.disconnect();
+                    if (conn.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                        String server_response = readStream(conn.getInputStream());
+                        conn.disconnect();
                         if (!(server_response.charAt(0) == '[')) return null;
                         JSONArray response_json_array;
                         response_json_array = new JSONArray(server_response);
@@ -131,21 +128,22 @@ public class DatabaseConnect {
                 try {
                     JSONArray json_output = new JSONArray();
                     URL url = new URL(path);
-                    HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
-                    httpURLConnection.setDoOutput(true);
-                    httpURLConnection.setRequestMethod("PUT");
-                    httpURLConnection.setRequestProperty("Accept", "application/json");
-                    httpURLConnection.connect();
+                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                    conn.setRequestProperty("Content-Type", "application/json");
+                    conn.setDoOutput(true);
+                    conn.setDoInput(true);
+                    conn.setRequestMethod("PUT");
+                    conn.connect();
 
-                    DataOutputStream wr = new DataOutputStream(httpURLConnection.getOutputStream());
+                    DataOutputStream wr = new DataOutputStream(conn.getOutputStream());
                     wr.writeBytes(jsonObject.toString());
                     wr.flush();
                     wr.close();
-                    httpURLConnection.getInputStream();
 
-                    if (httpURLConnection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-                        String server_response = readStream(httpURLConnection.getInputStream());
-                        httpURLConnection.disconnect();
+                    if (conn.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                        String server_response = readStream(conn.getInputStream());
+                        conn.disconnect();
+                        if (!(server_response.charAt(0) == '[')) return null;
                         JSONArray response_json_array;
                         response_json_array = new JSONArray(server_response);
                         return response_json_array;

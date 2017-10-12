@@ -8,7 +8,8 @@ import java.util.ArrayList;
 
 public class FriendHelper {
 
-	private static final String address = "http://13.65.209.193:3000";
+	private static final String address = "http://13.65.209.193:3000/";
+
 	public static ArrayList<String> get_pending_friends(String username) throws JSONException {
 		ArrayList<String> pending_friends = new ArrayList<String>();
 		String path = address + "friend/requests";
@@ -16,7 +17,6 @@ public class FriendHelper {
 		json_message.put("username", username);
 
 		DBField field = new DBField(path, json_message);
-		DatabaseConnect.post(field);
 		JSONArray pending_friends_json = DatabaseConnect.post(field);
 		for (int i = 0; i < pending_friends_json.length(); i ++) {
 			JSONObject friend = pending_friends_json.getJSONObject(i);
@@ -25,14 +25,13 @@ public class FriendHelper {
 		return pending_friends;
 	}
 
-	public void accept_friend_request(String from_user, String to_user) throws JSONException {
-		String path = address + "friend/requests/accept";
+	public static void accept_friend_request(String from_user, String to_user) throws JSONException {
+		String path = address + "friend";
 		JSONObject post_message = new JSONObject();
 		post_message.put("to_user", to_user);
 		post_message.put("from_user", from_user);
-
 		DBField field = new DBField(path, post_message);
-		DatabaseConnect.post(field);
+		DatabaseConnect.put(field);
 	}
 
 	public static ArrayList<String> get_friend_list(String username) throws JSONException {
@@ -50,17 +49,19 @@ public class FriendHelper {
 	public static boolean user_exists(String username) throws JSONException {
 		String path = address + "users/all";
 		JSONArray users = DatabaseConnect.get(path);
-		for (int i=0; i < users.length(); i ++) {
-			if (users.getJSONObject(i).getString("username").equals(username)) {
-				return true;
-			}
-		}
+        if (users != null) {
+            for (int i = 0; i < users.length(); i++) {
+                if (users.getJSONObject(i).getString("username").equals(username)) {
+                    return true;
+                }
+            }
+        }
 		return false;
 	}
 
 	public static boolean check_friend_list(ArrayList<String> friends, String friend_username) throws JSONException {
 		for(String friend: friends) {
-			if(friend == friend_username) return true;
+			if(friend.equals(friend_username)) return true;
 		}
 		return false;
 	}
@@ -79,7 +80,7 @@ public class FriendHelper {
 		return "friend request sent to " + to_user;
 	}
 
-	public void add_user(String username, String first_name, String last_name, String phone_num, String email, String fb_id) {
+	public static void add_user(String username, String first_name, String last_name, String phone_num, String email, String fb_id) {
 		JSONObject post_message = new JSONObject();
 		try {
 			post_message.put("username", username);
@@ -87,7 +88,7 @@ public class FriendHelper {
 			post_message.put("last_name", last_name);
 			post_message.put("phone_num", phone_num);
 			post_message.put("email", email);
-			post_message.put("fbID", fb_id);
+			post_message.put("fbId", fb_id);
 
 		} catch (JSONException e) {
 			e.printStackTrace();
@@ -98,7 +99,22 @@ public class FriendHelper {
 		DatabaseConnect.post(field);
 	}
 
-	public int getFriendshipStatus(String to_user, String from_user) {
+	public static ArrayList<String> all_users() {
+		ArrayList<String> users = new ArrayList<String>();
+		String path = address + "users/all";
+		JSONArray all_users = DatabaseConnect.get(path);
+
+		for (int i = 0; i < all_users.length(); i ++) {
+			try {
+				users.add(all_users.getJSONObject(i).getString("username"));
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+		}
+		return users;
+	}
+
+	public static int getFriendshipStatus(String to_user, String from_user) {
 		try {
 			ArrayList<String> pending_friends = get_pending_friends(from_user);
 			ArrayList<String> accepted_friends = get_friend_list(from_user);

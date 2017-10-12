@@ -6,10 +6,6 @@ import java.util.List;
 
 import itproject.neon_client.mock_data.User;
 
-/**
- * Created by kit on 10/9/17.
- */
-
 public class LoggedInUser {
     private static User user;
     private static List<String> friends = new ArrayList<>(Arrays.asList("lucy_green", "Stacey_Jane", "Adam_Ryan", "Samuel_Smith", "Ron_Weasley", "Hermione_Granger"));
