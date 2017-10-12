@@ -1,7 +1,5 @@
 package itproject.neon_client.helper;
 
-import android.util.Log;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -15,9 +13,7 @@ public class FriendHelper {
 	public static ArrayList<String> get_pending_friends(String username) throws JSONException {
 		ArrayList<String> pending_friends = new ArrayList<String>();
 		String path = address + "friend/requests";
-		JSONObject json_message = new JSONObject();
-		json_message.put("username", username);
-
+		String json_message = "{\"username\":\"" + username + "\"}";
 		DBField field = new DBField(path, json_message);
 		JSONArray pending_friends_json = DatabaseConnect.post(field);
 		for (int i = 0; i < pending_friends_json.length(); i ++) {
@@ -29,9 +25,7 @@ public class FriendHelper {
 
 	public static void accept_friend_request(String from_user, String to_user) throws JSONException {
 		String path = address + "friend";
-		JSONObject post_message = new JSONObject();
-		post_message.put("to_user", to_user);
-		post_message.put("from_user", from_user);
+		String post_message = "{\"to_user\":\"" + to_user + "\",\"from_user\":\"" + from_user + "\"}";
 		DBField field = new DBField(path, post_message);
 		DatabaseConnect.put(field);
 	}
@@ -51,11 +45,13 @@ public class FriendHelper {
 	public static boolean user_exists(String username) throws JSONException {
 		String path = address + "users/all";
 		JSONArray users = DatabaseConnect.get(path);
-		for (int i=0; i < users.length(); i ++) {
-			if (users.getJSONObject(i).getString("username").equals(username)) {
-				return true;
-			}
-		}
+        if (users != null) {
+            for (int i = 0; i < users.length(); i++) {
+                if (users.getJSONObject(i).getString("username").equals(username)) {
+                    return true;
+                }
+            }
+        }
 		return false;
 	}
 
@@ -72,29 +68,22 @@ public class FriendHelper {
 		if(!user_exists(to_user)) return "could not find " + to_user;
 
 		String path = address + "friend";
-		JSONObject post_message = new JSONObject();
-		post_message.put("to_user", to_user);
-		post_message.put("from_user", from_user);
+		String post_message = "{\"to_user\":\"" + to_user + "\",\"from_user\":\"" + from_user + "\"}";
 		DBField field = new DBField(path, post_message);
 		DatabaseConnect.post(field);
 		return "friend request sent to " + to_user;
 	}
 
 	public static JSONArray add_user(String username, String first_name, String last_name, String phone_num, String email, String fb_id) {
-		JSONObject post_message = new JSONObject();
-		try {
-			post_message.put("username", username);
-			post_message.put("first_name", first_name);
-			post_message.put("last_name", last_name);
-			post_message.put("phone_num", phone_num);
-			post_message.put("email", email);
-			post_message.put("fbId", fb_id);
-
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
+		String post_message = "{\"username\":\"" + username +
+				"\",\"first_name\":\"" + first_name +
+				"\",\"last_name\":\"" + last_name +
+				"\",\"phone_num\":\"" + phone_num +
+				"\",\"email\":\"" + email +
+				"\",\"fbId\":\"" + fb_id +
+				"\"}";
 		String path = address + "profile";
-        Log.i("test",post_message.toString());
+
 		DBField field = new DBField(path, post_message);
 		return DatabaseConnect.post(field);
 	}
