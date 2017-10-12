@@ -36,7 +36,7 @@ public class DatabaseConnect {
     private static class asyncPost extends AsyncTask<DBField, Void, JSONArray> {
         protected JSONArray doInBackground(DBField... fields) {
             for(DBField field : fields){
-                JSONObject jsonObject = field.getJsonObject();
+                String jsonObject = field.getJsonObject();
                 String path = field.getPath();
                 try {
                     URL url = new URL(path);
@@ -48,7 +48,7 @@ public class DatabaseConnect {
                     conn.connect();
 
                     DataOutputStream wr = new DataOutputStream(conn.getOutputStream());
-                    wr.writeBytes(jsonObject.toString());
+                    wr.writeBytes(jsonObject);
                     wr.flush();
                     wr.close();
 
@@ -74,7 +74,7 @@ public class DatabaseConnect {
     }
 
     public static JSONArray get(String path) {
-        JSONArray result = null;
+        JSONArray result = new JSONArray();
         try {
             result = new asyncGet().execute(path).get();
         } catch (InterruptedException e) {
@@ -82,7 +82,7 @@ public class DatabaseConnect {
         } catch (ExecutionException e) {
             e.printStackTrace();
         }
-        return null;
+        return result;
     }
 
     private static class asyncGet extends AsyncTask<String, Void, JSONArray> {
@@ -127,7 +127,7 @@ public class DatabaseConnect {
     private static class asyncPut extends AsyncTask<DBField, Void, JSONArray> {
         protected JSONArray doInBackground(DBField... fields) {
             for(DBField field : fields){
-                JSONObject jsonObject = field.getJsonObject();
+                String jsonObject = field.getJsonObject();
                 String path = field.getPath();
                 try {
                     JSONArray json_output = new JSONArray();
@@ -140,7 +140,7 @@ public class DatabaseConnect {
                     conn.connect();
 
                     DataOutputStream wr = new DataOutputStream(conn.getOutputStream());
-                    wr.writeBytes(jsonObject.toString());
+                    wr.writeBytes(jsonObject);
                     wr.flush();
                     wr.close();
 
@@ -182,7 +182,7 @@ public class DatabaseConnect {
     private static class asyncPatch extends AsyncTask<DBField, Void, JSONArray> {
         protected JSONArray doInBackground(DBField... fields) {
             for(DBField field : fields){
-                JSONObject jsonObject = field.getJsonObject();
+                String jsonObject = field.getJsonObject();
                 String path = field.getPath();
                 try {
                     URL url = new URL(path);
@@ -194,7 +194,7 @@ public class DatabaseConnect {
                     httpURLConnection.connect();
 
                     DataOutputStream wr = new DataOutputStream(httpURLConnection.getOutputStream());
-                    wr.writeBytes(jsonObject.toString());
+                    wr.writeBytes(jsonObject);
                     wr.flush();
                     wr.close();
 

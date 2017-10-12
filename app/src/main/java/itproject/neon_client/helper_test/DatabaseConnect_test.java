@@ -33,7 +33,7 @@ public class DatabaseConnect_test {
             post_message.put("phone_num", phone_num);
             post_message.put("email", email);
             post_message.put("fbID", fb_id);
-            DBField field = new DBField(path, post_message);
+            DBField field = new DBField(path, post_message.toString());
             DatabaseConnect.post(field);
             return FriendHelper.user_exists(username);
         }catch (JSONException e) {
