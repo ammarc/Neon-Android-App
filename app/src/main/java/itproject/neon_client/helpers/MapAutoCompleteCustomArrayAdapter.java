@@ -1,7 +1,6 @@
 package itproject.neon_client.helpers;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,12 +33,21 @@ public class MapAutoCompleteCustomArrayAdapter extends ArrayAdapter<String>
     }
 
     @Override
+    public int getCount() {
+        Log.e("Adapter", "Count is " + autoCompleteData.length);
+        return autoCompleteData.length;
+    }
+
+
+    @Override
     public View getView(int position, View view, ViewGroup parent)
     {
+        Log.e("TAG", position + "" );
         if (view == null)
         {
             // inflate the view if it is null
             LayoutInflater inflater = ((MainActivity) mContext).getLayoutInflater();
+            //Log.e("Adapater", parent.toString() + " " + parent.getId() + " " + parent.getTop() + " " + parent.getLeft() + " " );
             view = inflater.inflate(layoutResourceId, parent, false);
         }
 
@@ -49,7 +57,8 @@ public class MapAutoCompleteCustomArrayAdapter extends ArrayAdapter<String>
         Log.e("Adapter", "object item is " + objectItem);
 
         // get the TextView and then set the text and tag values
-        TextView textViewItem = (TextView) view.findViewById(R.id.search_box);
+        TextView textViewItem = (TextView)view.findViewById(R.id.auto_complete_view_item);
+        // Log.e("TAG IS", textViewItem.toString());
         textViewItem.setText(objectItem);
 
         return view;

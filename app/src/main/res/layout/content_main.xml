@@ -53,16 +53,15 @@
 
         <itproject.neon_client.helpers.MapSearchAutoCompleteView
             android:id="@+id/search_box"
-            android:layout_width="wrap_content"
+            android:layout_width="250dp"
             android:layout_height="40dp"
-            android:layout_weight="4"
-            android:completionThreshold="10"
+            android:layout_weight="1"
+            android:completionThreshold="1"
             android:background="@color/white"
             android:hint="Search Location Here"
-            android:layout_marginStart="12dp"
             android:layout_alignParentBottom="true"
             android:layout_alignStart="@+id/linearLayout"
-            android:layout_marginBottom="224dp" />
+            android:layout_marginBottom="189dp" />
         
         <!--<itproject.neon_client.helpers.MapSearchAutoCompleteView
             android:id="@+id/map_search_auto_complete"
@@ -81,9 +80,8 @@
             android:layout_weight="0.5"
             android:onClick="onMapSearch"
             android:text="Search"
-            android:layout_alignLeft="@id/search_box"
-            android:layout_alignTop="@+id/search_box"
-            android:layout_alignEnd="@+id/map_main_view" />
+            android:layout_alignBottom="@+id/search_box"
+            android:layout_alignEnd="@+id/linearLayout" />
 
 
     </itproject.neon_client.helpers.MapLayout>

@@ -206,6 +206,7 @@ public class NeonARActivity extends eu.kudan.kudan.ARActivity implements SensorE
     @Override
     public void onSensorChanged(SensorEvent event)
     {
+        gyroPlaceManager.setFloorDepth(-100f);
         if(renders == RENDER_LIMIT) {
             //initialPropertySet();
 
