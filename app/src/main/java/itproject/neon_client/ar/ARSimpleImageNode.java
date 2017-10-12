@@ -1,5 +1,9 @@
 package itproject.neon_client.ar;
 
+import android.util.Log;
+
+import com.jme3.math.Vector3f;
+
 import java.util.Arrays;
 
 import eu.kudan.kudan.ARImageNode;
@@ -17,8 +21,18 @@ public class ARSimpleImageNode extends ARImageNode
     public void preRender()
     {
         super.preRender();
+        //this.setParent(this.getWorld());
         // update after getting the phone's position in space
+        //Log.e("ARSimpleNode", "World Position " + getWorldPosition().toString());
+        if(getWorldPosition().getZ() <= -300) {
+            //Log.e("ARSimpleNode", "Translating by: " + (-(getWorldPosition().getZ() + 200)));
+            //this.translateBy(0, 0, -(getWorldPosition().getZ() + 200));
+            //Log.e("ARSimpleNode", "World Position " + getWorldPosition().toString());
+            //this.setPosition(-(getWorldPosition().getZ()), 0,  0);
 
+        }
+
+        Log.e("ARSimpleNode", "Position " + getPosition().toString());
         radiansToRotateBy = orientationMatrix[0];
         // Log.e(TAG, "Yaw diff is " + Math.toDegrees(newYaw - yaw));
         if (initialSettingFlag == 1) //(Math.toDegrees(newYaw - yaw) > 15)

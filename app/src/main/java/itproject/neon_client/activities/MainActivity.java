@@ -71,7 +71,6 @@ public class MainActivity extends AppCompatActivity
     private ArrayList<Marker> listOfAllMarkers;
 
     private MapSearchAutoCompleteView mapSearchAutoCompleteView;
-
     private ArrayAdapter<String> autoCompleteArrayAdapter;
 
     private GoogleMap mMap;

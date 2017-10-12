@@ -42,7 +42,6 @@ public class MapAutoCompleteCustomArrayAdapter extends ArrayAdapter<String>
     @Override
     public View getView(int position, View view, ViewGroup parent)
     {
-        Log.e("TAG", position + "" );
         if (view == null)
         {
             // inflate the view if it is null
@@ -54,11 +53,10 @@ public class MapAutoCompleteCustomArrayAdapter extends ArrayAdapter<String>
         // object item based on the position
         String objectItem = autoCompleteData[position];
 
-        Log.e("Adapter", "object item is " + objectItem);
+        // Log.e("Adapter", "object item is " + objectItem);
 
         // get the TextView and then set the text and tag values
         TextView textViewItem = (TextView)view.findViewById(R.id.auto_complete_view_item);
-        // Log.e("TAG IS", textViewItem.toString());
         textViewItem.setText(objectItem);
 
         return view;

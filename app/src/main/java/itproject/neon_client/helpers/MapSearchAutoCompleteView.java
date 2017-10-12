@@ -26,7 +26,8 @@ public class MapSearchAutoCompleteView extends AppCompatAutoCompleteTextView
     }
 
     @Override
-    protected void performFiltering(final CharSequence text, final int keyCode) {
+    protected void performFiltering(final CharSequence text, final int keyCode)
+    {
         String filterText = "";
         super.performFiltering(filterText, keyCode);
     }

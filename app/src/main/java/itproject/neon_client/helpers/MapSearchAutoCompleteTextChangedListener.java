@@ -6,7 +6,6 @@ import android.text.TextWatcher;
 import android.util.Log;
 
 import java.util.ArrayList;
-import java.util.regex.Pattern;
 
 import itproject.neon_client.R;
 import itproject.neon_client.activities.MainActivity;
@@ -20,7 +19,7 @@ public class MapSearchAutoCompleteTextChangedListener implements TextWatcher
 {
     Context context;
     ArrayList<String> suggestionsList;
-    public static String TAG = "MapSearchAutoComplete";
+    public static String TAG = "AutoCompleteListener";
 
     public MapSearchAutoCompleteTextChangedListener(Context context)
     {
@@ -37,23 +36,20 @@ public class MapSearchAutoCompleteTextChangedListener implements TextWatcher
     @Override
     public void onTextChanged(CharSequence userInput, int start, int before, int count)
     {
-        Log.e("AutoCompleteListener", "User input " + userInput);
+        Log.e(TAG, "User input " + userInput);
         MainActivity mainActivity = ((MainActivity) context);
 
         // update the adapter
         mainActivity.getAutoCompleteArrayAdapter().notifyDataSetChanged();
 
-        // get suggestions from the database
+        // TODO: get suggestions from the database
         String[] objects = mainActivity.getListOfAllMarkers();
-        for(int i = 0; i < objects.length; i++) {
+        for(int i = 0; i < objects.length; i++)
+        {
             // if they match the pattern, then add them
             if(objects[i].toLowerCase().contains(userInput.toString().toLowerCase()))
                 suggestionsList.add(objects[i]);
         }
-
-        //Log.e("onTextChanged", "onTextChanged: " + suggestionsList.toString());
-
-        // update the adapter
 
 
         String[] suggestionsArr = new String[suggestionsList.size()];
