@@ -19,7 +19,7 @@ public class MapHelperTest {
 
     @Test
     public void requests_permission_correct() {
-        //generate two users, and add them as friends
+        //generate two users, and add them as friendsList
         String to_user = "test" + Integer.toString(rand.nextInt(1000));
         String from_user = "test" + Integer.toString(rand.nextInt(1000));
         FriendHelper.add_user(to_user, "test", "test", "1111111111", "test789@test.com", "1111111111111111111");
@@ -36,7 +36,7 @@ public class MapHelperTest {
 
     @Test
     public void update_location_correct() {
-        //generate two friends and give them location sharing permission
+        //generate two friendsList and give them location sharing permission
         String to_user = "test" + Integer.toString(rand.nextInt(1000));
         String from_user = "test" + Integer.toString(rand.nextInt(1000));
         FriendHelper.add_user(to_user, "test", "test", "1111111111", "test789@test.com", "1111111111111111111");

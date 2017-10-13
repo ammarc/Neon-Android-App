@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.location.Geocoder;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -26,7 +25,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.identity.intents.Address;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
@@ -35,14 +33,16 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import org.json.JSONException;
+
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import itproject.neon_client.helpers.FriendHelper;
 import itproject.neon_client.helpers.LoggedInUser;
 import itproject.neon_client.R;
 import itproject.neon_client.chat.ChatActivity;
@@ -66,7 +66,7 @@ public class MainActivity extends AppCompatActivity
     private MapInfoTouchListener cameraButtonListener;
     private MapInfoTouchListener mapButtonListener;
     private MapLayout mapLayout;
-
+    private String username;
 
     private ArrayList<Marker> listOfAllMarkers;
 
@@ -81,7 +81,7 @@ public class MainActivity extends AppCompatActivity
 
     public static final String EXTRA_MESSAGE = "itproject.neon_client.MESSAGE";
 
-    public static List<String> friends = new ArrayList<>(Arrays.asList("Ron_Weasley", "Hermione_Granger", "Luna_Lovegood","Neville_Longbottom"));
+    public static List<String> friendsList = new ArrayList<>(Arrays.asList("Ron_Weasley", "Hermione_Granger", "Luna_Lovegood","Neville_Longbottom"));
     public static List<String> friend_requests = new ArrayList<>(Arrays.asList("Harry_Potter", "Ginny_Weasley"));
     public static List<String> all_users = new ArrayList<>(Arrays.asList("draco_m","hagrid_has_scary_pets","he_who_must_not_be_named","ratty","shaggy_dog","lupin_howles"));
 
@@ -114,6 +114,23 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
 
         listOfAllMarkers = new ArrayList<>();
+
+        username = getIntent().getStringExtra("EXTRA_USERNAME");
+
+        try
+        {
+            friendsList = FriendHelper.getFriendList(username);
+        }
+        catch (JSONException e)
+        {
+            Log.e(TAG, e.getMessage());
+        }
+
+        /*
+        for (String friend : friendsList)
+            Log.e(TAG, "I found one of the friends to be " + friend);
+        Log.e(TAG, "\n");
+        */
 
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -237,7 +254,7 @@ public class MainActivity extends AppCompatActivity
         Menu subm = friends_view.getSubMenu(); // get my MenuItem with placeholder submenu
         subm.clear(); // delete place holder
 
-        for (String friend : friends)
+        for (String friend : friendsList)
         {
             subm.add(0, MENU_DYNAMIC+friend_insert_counter, friend_insert_counter, friend); // id is idx+ my constant
             final MenuItem new_friend = subm.findItem(MENU_DYNAMIC+friend_insert_counter);
@@ -392,7 +409,7 @@ public class MainActivity extends AppCompatActivity
         mMap = googleMap;
 
         // Let's add a couple of markers
-        // TODO: add markers from the friends obtained from the backend
+        // TODO: add markers from the friendsList obtained from the backend
         listOfAllMarkers.add(mMap.addMarker(new MarkerOptions().title("Ron_Weasley").snippet("Czech Republic").
                                         position(new LatLng(50.08, 14.43))));
 

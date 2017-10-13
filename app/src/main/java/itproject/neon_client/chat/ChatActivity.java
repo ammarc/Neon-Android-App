@@ -5,7 +5,6 @@ import android.os.AsyncTask;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -48,7 +47,7 @@ public class ChatActivity extends AppCompatActivity {
         final String userName = LoggedInUser.getUser().username;
 
         // friend request accepted TODO put in proper back end function
-        for (String username : MainActivity.friends) {
+        for (String username : MainActivity.friendsList) {
             if (friendName != null && friendName.equals(username)) {
                 friendshipAccepted = true;
             }
@@ -70,7 +69,7 @@ public class ChatActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 // TODO put accept function here
-                MainActivity.friends.add(friendName);
+                MainActivity.friendsList.add(friendName);
                 MainActivity.friend_requests.remove(friendName);
                 finish();
                 startActivity(getIntent());

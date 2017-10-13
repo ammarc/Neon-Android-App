@@ -1,14 +1,7 @@
-package itproject.neon_client.mock_data;
+package itproject.neon_client.user_data;
 
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
-import android.graphics.Bitmap;
-import android.media.Image;
-import android.net.Uri;
-
-/**
- * Created by kit on 25/9/17.
- */
 
 @Entity
 public class User {

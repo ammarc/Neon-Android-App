@@ -13,11 +13,11 @@ import com.facebook.Profile;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
+
 import itproject.neon_client.helpers.LoggedInUser;
 import itproject.neon_client.helpers.FriendHelper;
 import itproject.neon_client.R;
-import itproject.neon_client.mock_data.User;
+import itproject.neon_client.user_data.User;
 
 public class NewProfileActivity extends AppCompatActivity {
 
@@ -75,12 +75,12 @@ public class NewProfileActivity extends AppCompatActivity {
         }   id++;*/
 
         try {
-            if (FriendHelper.user_exists(usernameString)) {
+            if (FriendHelper.userExists(usernameString)) {
                 Log.i("profile",usernameString + " exists!");
             }
             else {
                 Log.i("profile",usernameString + " doesn't exist");
-                JSONArray result = FriendHelper.add_user(usernameString,Profile.getCurrentProfile().getFirstName(),Profile.getCurrentProfile().getLastName(),
+                JSONArray result = FriendHelper.addUser(usernameString,Profile.getCurrentProfile().getFirstName(),Profile.getCurrentProfile().getLastName(),
                         phoneString, emailString, Profile.getCurrentProfile().getId());
                 if(result!=null){
                     Log.i("profile", result.toString());
@@ -107,8 +107,10 @@ public class NewProfileActivity extends AppCompatActivity {
         LoggedInUser.setUser(newUser);
         Log.i("profile","user " + user.username + " id " + user.id);
 
+        Intent mainActivityIntent = new Intent(NewProfileActivity.this, MainActivity.class);
+        mainActivityIntent.putExtra("EXTRA_USERNAME", username.toString());
 
 
-        startActivity(new Intent(NewProfileActivity.this, MainActivity.class));
+        startActivity(mainActivityIntent);
     }
 }

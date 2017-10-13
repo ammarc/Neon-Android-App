@@ -8,11 +8,11 @@ import java.util.ArrayList;
 
 public class FriendHelper {
 
-	private static final String address = "http://13.65.209.193:3000/";
+	private static final String SERVER_ADDRESS = "http://13.65.209.193:3000/";
 
-	public static ArrayList<String> get_pending_friends(String username) throws JSONException {
+	public static ArrayList<String> getPendingFriends(String username) throws JSONException {
 		ArrayList<String> pending_friends = new ArrayList<String>();
-		String path = address + "friend/requests";
+		String path = SERVER_ADDRESS + "friend/requests";
 		String json_message = "{\"username\":\"" + username + "\"}";
 		DBField field = new DBField(path, json_message);
 		JSONArray pending_friends_json = DatabaseConnect.post(field);
@@ -23,16 +23,16 @@ public class FriendHelper {
 		return pending_friends;
 	}
 
-	public static void accept_friend_request(String from_user, String to_user) throws JSONException {
-		String path = address + "friend";
+	public static void acceptFriendRequest(String from_user, String to_user) throws JSONException {
+		String path = SERVER_ADDRESS + "friend";
 		String post_message = "{\"to_user\":\"" + to_user + "\",\"from_user\":\"" + from_user + "\"}";
 		DBField field = new DBField(path, post_message);
 		DatabaseConnect.put(field);
 	}
 
-	public static ArrayList<String> get_friend_list(String username) throws JSONException {
+	public static ArrayList<String> getFriendList(String username) throws JSONException {
 		ArrayList<String> friends = new ArrayList<String>();
-		String path = address + "friend/list?user=" + username;
+		String path = SERVER_ADDRESS + "friend/list?user=" + username;
 		JSONArray friends_json = DatabaseConnect.get(path);
 
 		for (int i = 0; i < friends_json.length(); i ++) {
@@ -42,8 +42,8 @@ public class FriendHelper {
 		return friends;
 	}
 
-	public static boolean user_exists(String username) throws JSONException {
-		String path = address + "users/all";
+	public static boolean userExists(String username) throws JSONException {
+		String path = SERVER_ADDRESS + "users/all";
 		JSONArray users = DatabaseConnect.get(path);
         if (users != null) {
             for (int i = 0; i < users.length(); i++) {
@@ -55,26 +55,26 @@ public class FriendHelper {
 		return false;
 	}
 
-	public static boolean check_friend_list(ArrayList<String> friends, String friend_username) throws JSONException {
+	public static boolean checkFriendList(ArrayList<String> friends, String friend_username) throws JSONException {
 		for(String friend: friends) {
 			if(friend.equals(friend_username)) return true;
 		}
 		return false;
 	}
 
-	public static String add_friend(String to_user, String from_user) throws JSONException {
-		ArrayList<String> friends = get_friend_list(from_user);
-		if(check_friend_list(friends, to_user)) return "you are already friends with " + to_user;
-		if(!user_exists(to_user)) return "could not find " + to_user;
+	public static String addFriend(String to_user, String from_user) throws JSONException {
+		ArrayList<String> friends = getFriendList(from_user);
+		if(checkFriendList(friends, to_user)) return "you are already friendsList with " + to_user;
+		if(!userExists(to_user)) return "could not find " + to_user;
 
-		String path = address + "friend";
+		String path = SERVER_ADDRESS + "friend";
 		String post_message = "{\"to_user\":\"" + to_user + "\",\"from_user\":\"" + from_user + "\"}";
 		DBField field = new DBField(path, post_message);
 		DatabaseConnect.post(field);
 		return "friend request sent to " + to_user;
 	}
 
-	public static JSONArray add_user(String username, String first_name, String last_name, String phone_num, String email, String fb_id) {
+	public static JSONArray addUser(String username, String first_name, String last_name, String phone_num, String email, String fb_id) {
 		String post_message = "{\"username\":\"" + username +
 				"\",\"first_name\":\"" + first_name +
 				"\",\"last_name\":\"" + last_name +
@@ -82,15 +82,15 @@ public class FriendHelper {
 				"\",\"email\":\"" + email +
 				"\",\"fbId\":\"" + fb_id +
 				"\"}";
-		String path = address + "profile";
+		String path = SERVER_ADDRESS + "profile";
 
 		DBField field = new DBField(path, post_message);
 		return DatabaseConnect.post(field);
 	}
 
-	public static ArrayList<String> all_users() {
+	public static ArrayList<String> allUsers() {
 		ArrayList<String> users = new ArrayList<String>();
-		String path = address + "users/all";
+		String path = SERVER_ADDRESS + "users/all";
 		JSONArray all_users = DatabaseConnect.get(path);
 
 		for (int i = 0; i < all_users.length(); i ++) {
@@ -105,8 +105,8 @@ public class FriendHelper {
 
 	public static int getFriendshipStatus(String to_user, String from_user) {
 		try {
-			ArrayList<String> pending_friends = get_pending_friends(from_user);
-			ArrayList<String> accepted_friends = get_friend_list(from_user);
+			ArrayList<String> pending_friends = getPendingFriends(from_user);
+			ArrayList<String> accepted_friends = getFriendList(from_user);
 			for (String pending_friend: pending_friends) {
 				if (pending_friend.equals(to_user)) return 0;
 			}
