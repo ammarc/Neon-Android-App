@@ -21,6 +21,7 @@ import itproject.neon_client.user_data.User;
 
 public class NewProfileActivity extends AppCompatActivity {
 
+    public static final String TAG = "NewProfileActivity";
     private int id = 0;
     private EditText username, phone_number, email;
 
@@ -32,7 +33,7 @@ public class NewProfileActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_create_profile);
 
-        Log.i("profile","new profile");
+        Log.i(TAG,"new profile");
 
         TextView user_info_display = (TextView) findViewById(R.id.user_welcome);
         username = (EditText) findViewById(R.id.username);
@@ -76,19 +77,19 @@ public class NewProfileActivity extends AppCompatActivity {
 
         try {
             if (FriendHelper.userExists(usernameString)) {
-                Log.i("profile",usernameString + " exists!");
+                Log.i(TAG,usernameString + " exists!");
             }
             else {
-                Log.i("profile",usernameString + " doesn't exist");
+                Log.i(TAG,usernameString + " doesn't exist");
                 JSONArray result = FriendHelper.addUser(usernameString,Profile.getCurrentProfile().getFirstName(),Profile.getCurrentProfile().getLastName(),
                         phoneString, emailString, Profile.getCurrentProfile().getId());
                 if(result!=null){
-                    Log.i("profile", result.toString());
+                    Log.i(TAG, result.toString());
                 }
                 else{
-                    Log.i("profile", "no response from server!");
+                    Log.i(TAG, "no response from server!");
                 }
-                Log.i("profile", "user added!");
+                Log.i(TAG, "user added!");
             }
         } catch (JSONException e) {
         }
@@ -100,16 +101,16 @@ public class NewProfileActivity extends AppCompatActivity {
         LoginActivity.database.userDao().addUser(newUser);
 
         for (User user : LoginActivity.database.userDao().getAllUser()) {
-            Log.i("profile", "user : " + user.username + " id ::: " + user.id);
+            Log.i(TAG, "user : " + user.username + " id ::: " + user.id);
         }
 
         User user = LoginActivity.database.userDao().getUser(id).get(0);
         LoggedInUser.setUser(newUser);
-        Log.i("profile","user " + user.username + " id " + user.id);
+        Log.i(TAG,"user " + user.username + " id " + user.id);
 
         Intent mainActivityIntent = new Intent(NewProfileActivity.this, MainActivity.class);
         mainActivityIntent.putExtra("EXTRA_USERNAME", username.toString());
-
+        Log.e(TAG, "Current profile is " + username.toString());
 
         startActivity(mainActivityIntent);
     }

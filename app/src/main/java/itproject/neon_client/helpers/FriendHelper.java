@@ -35,6 +35,9 @@ public class FriendHelper {
 		String path = SERVER_ADDRESS + "friend/list?user=" + username;
 		JSONArray friends_json = DatabaseConnect.get(path);
 
+		if (friends_json == null)
+			return friends;
+
 		for (int i = 0; i < friends_json.length(); i ++) {
 			JSONObject friend = friends_json.getJSONObject(i);
 			friends.add(friend.getString("username"));

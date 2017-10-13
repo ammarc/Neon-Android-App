@@ -56,6 +56,13 @@ import itproject.neon_client.helpers.MapSearchAutoCompleteView;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback {
 
+    // where 20 is offset between info bottom edge and content's bottom edge
+    // and 39 is the marker height
+    public static final int MARKER_HEIGHT = 39;
+    public static final int BALLOON_BOTTOM_EDGE_OFFSET = 20;
+    private static final String TAG = "MainActivity";
+    public static final String EXTRA_MESSAGE = "itproject.neon_client.MESSAGE";
+
     private ViewGroup infoWindow;
     private TextView infoTitle;
     private TextView infoSnippet;
@@ -77,11 +84,8 @@ public class MainActivity extends AppCompatActivity
     private Menu sideMenu;
     private final int MENU_DYNAMIC = 2131755500;
     private int friend_insert_counter = 0;
-    private static final String TAG = "MainActivity";
 
-    public static final String EXTRA_MESSAGE = "itproject.neon_client.MESSAGE";
-
-    public static List<String> friendsList = new ArrayList<>(Arrays.asList("Ron_Weasley", "Hermione_Granger", "Luna_Lovegood","Neville_Longbottom"));
+    public static List<String> friendsList;// = new ArrayList<>(Arrays.asList("Ron_Weasley", "Hermione_Granger", "Luna_Lovegood","Neville_Longbottom"));
     public static List<String> friend_requests = new ArrayList<>(Arrays.asList("Harry_Potter", "Ginny_Weasley"));
     public static List<String> all_users = new ArrayList<>(Arrays.asList("draco_m","hagrid_has_scary_pets","he_who_must_not_be_named","ratty","shaggy_dog","lupin_howles"));
 
@@ -152,13 +156,19 @@ public class MainActivity extends AppCompatActivity
         mapSearchAutoCompleteView.addTextChangedListener(new MapSearchAutoCompleteTextChangedListener(this));
 
         // this is initially empty
-        // TODO: need to change this to actual values
-        String[] userNameList = {"Paris", "Melbourne", "Ron_Weasley"};
+        String[] userNameList = {};
+        if (friendsList != null)
+        {
+            int index = 0;
+            for (Object user : friendsList.toArray())
+                userNameList[index++] = user.toString();
+        }
 
         // set the custom ArrayAdapter
         autoCompleteArrayAdapter = new MapAutoCompleteCustomArrayAdapter(this,
                                         R.layout.auto_complete_view_row, userNameList);
         mapSearchAutoCompleteView.setAdapter(autoCompleteArrayAdapter);
+
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -168,17 +178,17 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        View navbar = navigationView.getHeaderView(0);
+        View navigationBar = navigationView.getHeaderView(0);
         sideMenu = navigationView.getMenu();
 
         /* dp */
-        ImageView userDp = (ImageView) navbar.findViewById(R.id.user_dp);
+        ImageView userDp = (ImageView) navigationBar.findViewById(R.id.user_dp);
         //Bitmap dpBitmap = getFacebookProfilePicture(LoggedInUser.getUser().fb_id); // ToDo fb profile picture
 
         /* user info */
-        TextView user_name = (TextView) navbar.findViewById(R.id.user_name);
+        TextView user_name = (TextView) navigationBar.findViewById(R.id.user_name);
         user_name.setText(LoggedInUser.getUser().fullname);
-        TextView user_username = (TextView) navbar.findViewById(R.id.user_username);
+        TextView user_username = (TextView) navigationBar.findViewById(R.id.user_username);
         user_username.setText(LoggedInUser.getUser().username);
 
         /* map */
@@ -410,8 +420,18 @@ public class MainActivity extends AppCompatActivity
 
         // Let's add a couple of markers
         // TODO: add markers from the friendsList obtained from the backend
-        listOfAllMarkers.add(mMap.addMarker(new MarkerOptions().title("Ron_Weasley").snippet("Czech Republic").
-                                        position(new LatLng(50.08, 14.43))));
+        /*
+        for (String friend : this.friendsList)
+        {
+            listOfAllMarkers.add(mMap.addMarker(new MarkerOptions().title(friend).
+                                        position(new LatLng())));
+        }
+        */
+        /*
+        listOfAllMarkers.add(mMap.addMarker(new MarkerOptions()
+                                        .title("Ron_Weasley")
+                                        .snippet("Czech Republic")
+                                        .position(new LatLng(50.08, 14.43))));
 
 
         listOfAllMarkers.add(mMap.addMarker(new MarkerOptions()
@@ -424,14 +444,11 @@ public class MainActivity extends AppCompatActivity
                 .title("Melbourne")
                 .snippet("Australia")
                 .position(new LatLng(-37.7964,144.9612))));
+        */
 
 
-
-        // TODO: make these numbers final and static
-        // where 20 is offset between info bottom edge and content's bottom edge
-        // and 40 is the marker height
         mapLayout = (MapLayout) findViewById(R.id.map_container);
-        mapLayout.initialize(mMap, getPixelsFromDp(this, 39 + 20));
+        mapLayout.initialize(mMap, getPixelsFromDp(this, MARKER_HEIGHT + BALLOON_BOTTOM_EDGE_OFFSET));
 
         mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
             @Override
@@ -458,20 +475,24 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-    public static int getPixelsFromDp(Context context, float dp) {
+    public static int getPixelsFromDp(Context context, float dp)
+    {
         final float scale = context.getResources().getDisplayMetrics().density;
         return (int)(dp * scale + 0.5f);
     }
 
-    public void onMapSearch(View view) {
+    public void onMapSearch(View view)
+    {
         EditText locationSearch = (EditText) findViewById(R.id.search_box);
         String query = locationSearch.getText().toString();
         Marker marker = null;
 
-        if (query != null || !query.equals("")) {
-
-            for (Marker m : listOfAllMarkers) {
-                if (m.getTitle().equals(query)) {
+        if (query != null || !query.equals(""))
+        {
+            for (Marker m : listOfAllMarkers)
+            {
+                if (m.getTitle().equals(query))
+                {
                     marker = m;
                     break;
                 }
@@ -480,7 +501,8 @@ public class MainActivity extends AppCompatActivity
             //Address address = addressList.get(0);
             //LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
             //mMap.addMarker(new MarkerOptions().position(latLng).title("Marker"));
-            if (marker != null) {
+            if (marker != null)
+            {
                 mMap.animateCamera(CameraUpdateFactory.newLatLng(marker.getPosition()));
                 marker.showInfoWindow();
             }

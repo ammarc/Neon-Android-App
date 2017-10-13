@@ -167,11 +167,13 @@ public class LoginActivity extends AppCompatActivity {
 
             for (User user : database.userDao().getAllUser())
             {
+                Log.i(TAG, "Inside the loop " + user.toString());
                 if (Profile.getCurrentProfile().getId().compareTo(user.fb_id) == 0)
                 {
                     LoggedInUser.setUser(user);
                     Log.e(TAG, "current user is " + user);
                     startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                    break;
                 }
             }
 
