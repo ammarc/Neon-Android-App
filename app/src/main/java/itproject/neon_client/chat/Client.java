@@ -10,8 +10,6 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 
 /**
- * Created by brycer on 15/09/17.
- *
  * Adapted from guide:
  *      https://causeyourestuck.io/2016/04/27/node-js-android-tcpip/
  */

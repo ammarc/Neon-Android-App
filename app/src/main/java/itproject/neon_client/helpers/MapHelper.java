@@ -1,4 +1,4 @@
-package itproject.neon_client.helper;
+package itproject.neon_client.helpers;
 
 import org.json.JSONArray;
 import org.json.JSONException;

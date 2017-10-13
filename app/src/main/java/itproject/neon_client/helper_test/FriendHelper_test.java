@@ -1,12 +1,8 @@
 package itproject.neon_client.helper_test;
 
 import org.json.JSONException;
-import itproject.neon_client.helper.FriendHelper;
+import itproject.neon_client.helpers.FriendHelper;
 import java.util.ArrayList;
-
-/**
- * Created by lachlanthomas on 10/10/17.
- */
 
 public class FriendHelper_test {
 
