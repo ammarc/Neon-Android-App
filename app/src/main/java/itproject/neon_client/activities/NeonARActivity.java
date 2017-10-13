@@ -1,4 +1,4 @@
-package itproject.neon_client.activitys;
+package itproject.neon_client.activities;
 
 
 import android.content.Context;
@@ -22,6 +22,7 @@ import itproject.neon_client.ar.ARSetup;
 import itproject.neon_client.ar.ARSimpleImageNode;
 
 import static android.content.ContentValues.TAG;
+import static eu.kudan.kudan.ARArbiTrack.deinitialise;
 
 public class NeonARActivity extends eu.kudan.kudan.ARActivity implements SensorEventListener, LocationListener
 {
@@ -54,6 +55,7 @@ public class NeonARActivity extends eu.kudan.kudan.ARActivity implements SensorE
     private float initialArrowAngleRadians;
     private int numSensorChanged;
     private ARGyroPlaceManager gyroPlaceManager;
+    private ARArbiTrack arbiTrack;
 
     private float[] gravity;
     // magnetic data
@@ -83,7 +85,7 @@ public class NeonARActivity extends eu.kudan.kudan.ARActivity implements SensorE
         gyroPlaceManager = ARGyroPlaceManager.getInstance();
         gyroPlaceManager.initialise();
         // Initialise ArbiTrack.
-        ARArbiTrack arbiTrack = ARArbiTrack.getInstance();
+        arbiTrack = ARArbiTrack.getInstance();
         arbiTrack.initialise();
 
 
@@ -101,7 +103,7 @@ public class NeonARActivity extends eu.kudan.kudan.ARActivity implements SensorE
         // Rotate the arrow by an initial reading
         if (initialArrowPosSet)
         {
-            Log.e(TAG, "Rotating by " + Math.toDegrees(initialArrowAngleRadians));
+            // Log.e(TAG, "Rotating by " + Math.toDegrees(initialArrowAngleRadians));
             targetNode.rotateByDegrees(-(float)Math.toDegrees(initialArrowAngleRadians), 0.0f, 0.0f, 1.0f);
         }
 
@@ -207,7 +209,7 @@ public class NeonARActivity extends eu.kudan.kudan.ARActivity implements SensorE
     public void onSensorChanged(SensorEvent event)
     {
         if(renders == RENDER_LIMIT) {
-            initialPropertySet();
+            //initialPropertySet();
 
             renders = 0;
         }

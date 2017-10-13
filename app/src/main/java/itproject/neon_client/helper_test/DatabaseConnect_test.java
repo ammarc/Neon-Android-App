@@ -1,15 +1,12 @@
 package itproject.neon_client.helper_test;
 
-import itproject.neon_client.helper.*;
+import itproject.neon_client.helpers.*;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONArray;
 
 import java.net.HttpURLConnection;
 
-/**
- * Created by lachlanthomas on 10/10/17.
- */
 
 public class DatabaseConnect_test {
 

@@ -1,11 +1,7 @@
-package itproject.neon_client.helper;
+package itproject.neon_client.helpers;
 
 import android.content.Context;
 import android.widget.Toast;
-
-/**
- * Created by brycer on 9/10/17.
- */
 
 public class Tools  {
     public static void exceptionToast(Context context, String message) {

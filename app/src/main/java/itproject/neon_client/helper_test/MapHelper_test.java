@@ -4,11 +4,7 @@ import org.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.Random;
-import itproject.neon_client.helper.MapHelper;
-
-/**
- * Created by lachlanthomas on 10/10/17.
- */
+import itproject.neon_client.helpers.MapHelper;
 
 public class MapHelper_test {
 

@@ -1,4 +1,4 @@
-package itproject.neon_client.helper;
+package itproject.neon_client.helpers;
 
 import android.os.AsyncTask;
 
@@ -15,10 +15,6 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.concurrent.ExecutionException;
-
-/**
- * Created by lachlanthomas on 9/10/17.
- */
 
 public class DatabaseConnect {
     public static JSONArray post(DBField field) {

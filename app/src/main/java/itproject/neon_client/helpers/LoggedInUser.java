@@ -1,14 +1,10 @@
-package itproject.neon_client.helper;
+package itproject.neon_client.helpers;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import itproject.neon_client.mock_data.User;
-
-/**
- * Created by kit on 10/9/17.
- */
 
 public class LoggedInUser {
     private static User user;

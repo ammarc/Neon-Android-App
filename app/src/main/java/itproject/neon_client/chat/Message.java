@@ -3,10 +3,6 @@ package itproject.neon_client.chat;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-/**
- * Created by brycer on 10/10/17.
- */
-
 public class Message {
     private String type;
     private String data;

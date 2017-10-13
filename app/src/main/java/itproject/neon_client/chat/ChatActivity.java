@@ -17,12 +17,13 @@ import org.json.simple.parser.ParseException;
 
 import co.intentservice.chatui.ChatView;
 import co.intentservice.chatui.models.ChatMessage;
-import itproject.neon_client.helper.LoggedInUser;
-import itproject.neon_client.activitys.MainActivity;
-import itproject.neon_client.activitys.MapToFriendActivity;
+import itproject.neon_client.helpers.LoggedInUser;
+import itproject.neon_client.activities.MainActivity;
+import itproject.neon_client.activities.MapToFriendActivity;
 import itproject.neon_client.R;
-import itproject.neon_client.helper.Tools;
-import itproject.neon_client.activitys.NeonARActivity;
+
+import itproject.neon_client.helpers.Tools;
+import itproject.neon_client.activities.NeonARActivity;
 import java.net.Socket;
 
 public class ChatActivity extends AppCompatActivity {
@@ -48,7 +49,7 @@ public class ChatActivity extends AppCompatActivity {
 
         // friend request accepted TODO put in proper back end function
         for (String username : MainActivity.friends) {
-            if (friendName.equals(username)) {
+            if (friendName != null && friendName.equals(username)) {
                 friendshipAccepted = true;
             }
         }

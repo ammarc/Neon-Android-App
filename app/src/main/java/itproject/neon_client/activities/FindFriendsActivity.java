@@ -1,4 +1,4 @@
-package itproject.neon_client.activitys;
+package itproject.neon_client.activities;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
