@@ -21,7 +21,7 @@ import itproject.neon_client.user_data.User;
 
 public class NewProfileActivity extends AppCompatActivity {
 
-    public static final String TAG = "NewProfileActivity";
+    private static final String TAG = "testing";
     private int id = 0;
     private EditText username, phone_number, email;
 
@@ -93,7 +93,6 @@ public class NewProfileActivity extends AppCompatActivity {
         LoggedInUser.setUsername(usernameString);
 
         Intent mainActivityIntent = new Intent(NewProfileActivity.this, MainActivity.class);
-        mainActivityIntent.putExtra("EXTRA_USERNAME", usernameString);
         Log.e(TAG, "Current profile is " + usernameString);
 
         startActivity(mainActivityIntent);

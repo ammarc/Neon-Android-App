@@ -26,7 +26,7 @@
             android:id="@+id/map_main_view"
             android:name="com.google.android.gms.maps.MapFragment"
             android:layout_width="match_parent"
-            android:layout_height="564dp"
+            android:layout_height="610dp"
             android:layout_alignParentStart="false"
             android:layout_below="@+id/linearLayout"
             tools:layout_editor_absoluteX="8dp"

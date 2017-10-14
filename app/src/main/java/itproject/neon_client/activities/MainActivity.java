@@ -52,6 +52,8 @@ import itproject.neon_client.helpers.MapLayout;
 import itproject.neon_client.helpers.MapSearchAutoCompleteTextChangedListener;
 import itproject.neon_client.helpers.MapSearchAutoCompleteView;
 
+import static itproject.neon_client.R.drawable.ic_account_circle_black_24dp;
+
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback {
@@ -60,7 +62,7 @@ public class MainActivity extends AppCompatActivity
     // and 39 is the marker height
     public static final int MARKER_HEIGHT = 39;
     public static final int BALLOON_BOTTOM_EDGE_OFFSET = 20;
-    private static final String TAG = "MainActivity";
+    private static final String TAG = "testing";
     public static final String EXTRA_MESSAGE = "itproject.neon_client.MESSAGE";
 
     private ViewGroup infoWindow;
@@ -73,7 +75,6 @@ public class MainActivity extends AppCompatActivity
     private MapInfoTouchListener cameraButtonListener;
     private MapInfoTouchListener mapButtonListener;
     private MapLayout mapLayout;
-    private String username;
 
     private ArrayList<Marker> listOfAllMarkers;
 
@@ -86,7 +87,7 @@ public class MainActivity extends AppCompatActivity
     private int friend_insert_counter = 0;
 
     public static List<String> friendsList;// = new ArrayList<>(Arrays.asList("Ron_Weasley", "Hermione_Granger", "Luna_Lovegood","Neville_Longbottom"));
-    public static List<String> friend_requests = new ArrayList<>(Arrays.asList("Harry_Potter", "Ginny_Weasley"));
+    public static List<String> friend_requests;// = new ArrayList<>(Arrays.asList("Harry_Potter", "Ginny_Weasley"));
     public static List<String> all_users = new ArrayList<>(Arrays.asList("draco_m","hagrid_has_scary_pets","he_who_must_not_be_named","ratty","shaggy_dog","lupin_howles"));
 
 
@@ -119,11 +120,10 @@ public class MainActivity extends AppCompatActivity
 
         listOfAllMarkers = new ArrayList<>();
 
-        username = getIntent().getStringExtra("EXTRA_USERNAME");
-
         try
         {
-            friendsList = FriendHelper.getFriendList(username);
+            friendsList = FriendHelper.getFriendList(LoggedInUser.getUsername());
+            friend_requests = FriendHelper.getPendingFriends(LoggedInUser.getUsername());
         }
         catch (JSONException e)
         {
@@ -139,6 +139,7 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle(LoggedInUser.getUsername());
 
         mapSearchAutoCompleteView = (MapSearchAutoCompleteView) findViewById(R.id.search_box);
 
@@ -187,9 +188,9 @@ public class MainActivity extends AppCompatActivity
 
         /* user info */
         TextView user_name = (TextView) navigationBar.findViewById(R.id.user_name);
-        user_name.setText(username);
+        user_name.setText(LoggedInUser.getUsername());
         TextView user_username = (TextView) navigationBar.findViewById(R.id.user_username);
-        user_username.setText(username);
+        user_username.setText(LoggedInUser.getUsername());
 
         /* map */
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.

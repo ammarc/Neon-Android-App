@@ -29,7 +29,7 @@ import itproject.neon_client.R;
  */
 public class LoginActivity extends AppCompatActivity {
 
-    public static final String TAG = "profile";
+    private static final String TAG = "testing";
     CallbackManager callbackManager;
     ProfileTracker profileTracker;
 
@@ -155,12 +155,13 @@ public class LoginActivity extends AppCompatActivity {
                 if (Profile.getCurrentProfile().getId().compareTo("0") == 0) // todo put in their actual id
                 {
                     LoggedInUser.setUsername(user);
-                    Log.e(TAG, "current user is " + user);
+                    Log.i(TAG, "current user is " + user);
                     startActivity(new Intent(LoginActivity.this, MainActivity.class));
                 }
             }
 
-            Snackbar mySnackbar = Snackbar.make(findViewById(R.id.coordinator_layout), R.string.dont_have_account, Snackbar.LENGTH_SHORT);
+            Log.i(TAG,"user doesn't have an account");
+            Snackbar mySnackbar = Snackbar.make(findViewById(R.id.coordinator_layout), R.string.dont_have_account, Snackbar.LENGTH_LONG);
             mySnackbar.show();
         }
     }
