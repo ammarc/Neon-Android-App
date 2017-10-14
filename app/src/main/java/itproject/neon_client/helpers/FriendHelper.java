@@ -103,6 +103,9 @@ public class FriendHelper {
 		String path = SERVER_ADDRESS + "users/all";
 		JSONArray all_users = DatabaseConnect.get(path);
 
+		if (all_users == null)
+			return users;
+
 		for (int i = 0; i < all_users.length(); i ++) {
 			try {
 				users.add(all_users.getJSONObject(i).getString("username"));

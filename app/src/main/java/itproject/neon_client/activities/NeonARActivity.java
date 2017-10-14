@@ -20,8 +20,8 @@ import eu.kudan.kudan.ARArbiTrack;
 import eu.kudan.kudan.ARGyroPlaceManager;
 import itproject.neon_client.ar.ARSetup;
 import itproject.neon_client.ar.ARSimpleImageNode;
+import itproject.neon_client.helpers.MapHelper;
 
-import static android.content.ContentValues.TAG;
 import static eu.kudan.kudan.ARArbiTrack.deinitialise;
 
 public class NeonARActivity extends eu.kudan.kudan.ARActivity implements SensorEventListener, LocationListener
@@ -30,7 +30,6 @@ public class NeonARActivity extends eu.kudan.kudan.ARActivity implements SensorE
     private boolean hasAccel = false;
     private boolean hasGravity = false;
     private boolean hasCompass = false;
-    // TODO: set the following two constants back to their original values
     private static final int LOCATION_MIN_TIME = 0;
     private static final int LOCATION_MIN_DISTANCE = 0;
     // TODO: these are test coordinates (South Lawn), we need to change them to the friend's location
@@ -40,6 +39,9 @@ public class NeonARActivity extends eu.kudan.kudan.ARActivity implements SensorE
     // private static final int LOCATION_MIN_DISTANCE = 10;
     private static final int INITIAL_SENSOR_ACTIVITY_NUM = 500;
     private static final int RENDER_LIMIT = 1000;
+    private static final float FILTER_THRESHOLD = 0.25f;
+    private static final String TAG = "NeonARActivity";
+    public static final String EXTRA_AR_MESSAGE = "itproject.neon_client.AR_MESSAGE";
     // sensor manager
     private SensorManager sensorManager;
     // sensor gravity
@@ -56,6 +58,8 @@ public class NeonARActivity extends eu.kudan.kudan.ARActivity implements SensorE
     private int numSensorChanged;
     private ARGyroPlaceManager gyroPlaceManager;
     private ARArbiTrack arbiTrack;
+    private boolean locationPostedToDatabase;
+    private String username;
 
     private float[] gravity;
     // magnetic data
@@ -66,7 +70,6 @@ public class NeonARActivity extends eu.kudan.kudan.ARActivity implements SensorE
     // smoothed values
     private float[] smoothed;
     private int renders;
-    private int count = 0;
 
 
     @Override
@@ -128,8 +131,8 @@ public class NeonARActivity extends eu.kudan.kudan.ARActivity implements SensorE
         sensorMagnetic = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
 
         // listen to these sensors
-        sensorManager.registerListener(this, sensorGravity, SensorManager.SENSOR_DELAY_NORMAL);
-        sensorManager.registerListener(this, sensorMagnetic, SensorManager.SENSOR_DELAY_NORMAL);
+        sensorManager.registerListener(this, sensorGravity, SensorManager.SENSOR_DELAY_UI);
+        sensorManager.registerListener(this, sensorMagnetic, SensorManager.SENSOR_DELAY_UI);
 
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
@@ -221,18 +224,18 @@ public class NeonARActivity extends eu.kudan.kudan.ARActivity implements SensorE
                             || event.sensor.getType() == Sensor.TYPE_GRAVITY)
         {
             // we need to use a low pass filter to make data smoothed
-            // smoothed = LowPassFilter.filter(event.values, gravity);
-            gravity[0] = event.values[0];
-            gravity[1] = event.values[1];
-            gravity[2] = event.values[2];
+            smoothed = lowPassFilter(event.values, gravity);
+            gravity[0] = smoothed[0];
+            gravity[1] = smoothed[1];
+            gravity[2] = smoothed[2];
 
         }
         else if (event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD)
         {
-            // smoothed = LowPassFilter.filter(event.values, geomagnetic);
-            geomagnetic[0] = event.values[0];
-            geomagnetic[1] = event.values[1];
-            geomagnetic[2] = event.values[2];
+            smoothed = lowPassFilter(event.values, geomagnetic);
+            geomagnetic[0] = smoothed[0];
+            geomagnetic[1] = smoothed[1];
+            geomagnetic[2] = smoothed[2];
         }
 
         // get rotation matrix to get gravity and magnetic data
@@ -254,21 +257,9 @@ public class NeonARActivity extends eu.kudan.kudan.ARActivity implements SensorE
         if (bearing < 0)
             bearing += 360;
 
-        if(count%1000 == 0)
-            Log.e(TAG, "Pitch is " + Math.toDegrees(orientation[1]));
-        count++;
-
         if (numSensorChanged <= INITIAL_SENSOR_ACTIVITY_NUM)
         {
             numSensorChanged++;
-            if (numSensorChanged != INITIAL_SENSOR_ACTIVITY_NUM)
-            {
-                Toast.makeText(getApplicationContext(), "Setting up...", Toast.LENGTH_SHORT);
-            }
-            else
-            {
-                Toast.makeText(getApplicationContext(), "Done!", Toast.LENGTH_LONG);
-            }
         }
 
         if (!initialArrowPosSet)
@@ -279,8 +270,15 @@ public class NeonARActivity extends eu.kudan.kudan.ARActivity implements SensorE
         }
         else if (targetNode != null && numSensorChanged > INITIAL_SENSOR_ACTIVITY_NUM-1)
         {
+            if (!locationPostedToDatabase)
+            {
+                MapHelper.post_location(username, currentLocation.getLatitude(),
+                            currentLocation.getLongitude());
+                locationPostedToDatabase = true;
+            }
             // targetNode.updateOrientationMatrix(orientation, orientation[0]);
-            Log.e(TAG, "The angle to dest is " + currentLocation.bearingTo(destLocation));
+            Log.i(TAG, "The angle to dest is " + currentLocation.bearingTo(destLocation) +
+                       " with src: " + currentLocation.toString() + " and dest: " + destLocation.toString());
             targetNode.updateOrientationMatrix(orientation, orientation[0] -
                                 (float) Math.toRadians(currentLocation.bearingTo(destLocation)));
         }
@@ -300,6 +298,9 @@ public class NeonARActivity extends eu.kudan.kudan.ARActivity implements SensorE
         PackageManager manager = getPackageManager();
         initialArrowPosSet = false;
         initialArrowAngleRadians = 0.0f;
+        username = getIntent().getStringExtra(EXTRA_AR_MESSAGE);
+
+        locationPostedToDatabase = false;
         this.setup();
         if (manager.hasSystemFeature(PackageManager.FEATURE_SENSOR_ACCELEROMETER))
             hasAccel = true;
@@ -331,8 +332,9 @@ public class NeonARActivity extends eu.kudan.kudan.ARActivity implements SensorE
         orientation = new float[3];
         smoothed = new float[3];
         setupObject = new ARSetup();
-        sensorManager.registerListener(this, sensorGravity, SensorManager.SENSOR_DELAY_NORMAL);
-        sensorManager.registerListener(this, sensorMagnetic, SensorManager.SENSOR_DELAY_NORMAL);
+        sensorManager.registerListener(this, sensorGravity, SensorManager.SENSOR_DELAY_UI);
+        sensorManager.registerListener(this, sensorMagnetic, SensorManager.SENSOR_DELAY_UI);
+        numSensorChanged = 0;
     }
 
     @Override
@@ -340,5 +342,17 @@ public class NeonARActivity extends eu.kudan.kudan.ARActivity implements SensorE
     {
         super.onPause();
         sensorManager.unregisterListener(this);
+    }
+
+    public float[] lowPassFilter(float[] input, float[] output)
+    {
+        if (output == null)
+            return input;
+
+        for (int i = 0; i < input.length; i++)
+        {
+            output[i] = output[i] + FILTER_THRESHOLD * (input[i] - output[i]);
+        }
+        return output;
     }
 }

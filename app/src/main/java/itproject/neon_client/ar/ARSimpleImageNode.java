@@ -10,6 +10,7 @@ import eu.kudan.kudan.ARImageNode;
 
 public class ARSimpleImageNode extends ARImageNode
 {
+    public static final String TAG = "ARSimpleNode";
     private float orientationMatrix[];
     private float radiansToRotateBy;
     private float currentAngleRadians;
@@ -21,21 +22,10 @@ public class ARSimpleImageNode extends ARImageNode
     public void preRender()
     {
         super.preRender();
-        //this.setParent(this.getWorld());
         // update after getting the phone's position in space
-        //Log.e("ARSimpleNode", "World Position " + getWorldPosition().toString());
-        if(getWorldPosition().getZ() <= -300) {
-            //Log.e("ARSimpleNode", "Translating by: " + (-(getWorldPosition().getZ() + 200)));
-            //this.translateBy(0, 0, -(getWorldPosition().getZ() + 200));
-            //Log.e("ARSimpleNode", "World Position " + getWorldPosition().toString());
-            //this.setPosition(-(getWorldPosition().getZ()), 0,  0);
 
-        }
-
-        Log.e("ARSimpleNode", "Position " + getPosition().toString());
         radiansToRotateBy = orientationMatrix[0];
-        // Log.e(TAG, "Yaw diff is " + Math.toDegrees(newYaw - yaw));
-        if (initialSettingFlag == 1) //(Math.toDegrees(newYaw - yaw) > 15)
+        if (initialSettingFlag == 1)
         {
             currentAngleRadians += radiansToRotateBy;
             initialSettingFlag = 0;
@@ -71,18 +61,11 @@ public class ARSimpleImageNode extends ARImageNode
     // add a method to set the matrix so that the render can be easily done
     public void updateOrientationMatrix(float[] updatedRotationMatrix, float newYaw)
     {
-        for (int i = 0; i < 3; i++)
+        for (int i = 0; i < updatedRotationMatrix.length; i++)
         {
             if (i == 0)
             {
-                // Log.e(TAG, "The current angle for now is: " + currentAngleRadians);
-                // Log.e(TAG, "The current angle for now is: " + currentAngleRadians);
-                //Log.e(TAG, "Degrees to north: " + Math.toDegrees(newYaw));
-                // orientationMatrix[0] = updatedRotationMatrix[0] -  currentAngleRadians;
-                // Log.e(TAG, "The oM is " + orientationMatrix[0]);
-                /////////////////////
                 orientationMatrix[0] = newYaw -  currentAngleRadians;
-                /////////////////////
             }
            else
             {
