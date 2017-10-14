@@ -11,7 +11,7 @@ public class MapHelper {
     private static final String address = "http://13.65.209.193:3000";
 
     public static double get_latitude(String to_user, String from_user) throws JSONException {
-        String path = address + "/gps/friends?user=" + from_user;
+        String path = address + "/gps/friendsList?user=" + from_user;
         JSONArray friends_locations = DatabaseConnect.get(path);
 
         for (int i = 0; i < friends_locations.length(); i ++) {
@@ -23,7 +23,7 @@ public class MapHelper {
     }
 
     public static double get_longitude(String to_user, String from_user) throws JSONException {
-        String path = address+ "/gps/friends?user=" + from_user;
+        String path = address+ "/gps/friendsList?user=" + from_user;
         JSONArray friends_locations = DatabaseConnect.get(path);
 
         for (int i = 0; i < friends_locations.length(); i ++) {
@@ -35,31 +35,20 @@ public class MapHelper {
     }
 
     public static void post_location(String username, double latitude, double longitude) {
-        JSONObject post_message = new JSONObject();
-        try {
-            post_message.put("username", username);
-            post_message.put("latitude", latitude);
-            post_message.put("longitude", longitude);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+      String post_message = "{\"username\":\"" + username +
+                "\",\"latitude\":\"" + latitude +
+                "\",\"longitude\":\"" + longitude +
+                "\"}";
         String path = address+ "/gps";
         DBField field = new DBField(path, post_message);
         DatabaseConnect.post(field);
     }
 
     public static void request_permission(String from_user, String to_user) {
-        try {
-            JSONObject post_message = new JSONObject();
-            post_message.put("to_user", to_user);
-            post_message.put("from_user", from_user);
-            String path = address + "/gps/request";
-
-            DBField field = new DBField(path, post_message);
-            DatabaseConnect.post(field);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+      String path = address + "/gps/request";
+        String post_message = "{\"to_user\":\"" + to_user + "\",\"from_user\":\"" + from_user + "\"}";
+        DBField field = new DBField(path, post_message);
+        DatabaseConnect.post(field);
     }
 
     public static int get_permission_status(String from_user, String to_user) {
@@ -85,17 +74,12 @@ public class MapHelper {
     }
 
     public static void accept_permission_request(String from_user, String to_user) {
-        try {
-            JSONObject patch_message = new JSONObject();
-            patch_message.put("to_user", to_user);
-            patch_message.put("from_user", from_user);
-            String path = address + "/gps/request";
+        String patch_message = "{\"to_user\":\"" + to_user + "\",\"from_user\":\"" + from_user + "\"}";
+        String path = address + "/gps/request";
 
-            DBField field = new DBField(path, patch_message);
-            DatabaseConnect.patch(field);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        DBField field = new DBField(path, patch_message);
+        DatabaseConnect.patch(field);
+
     }
 
  /*   public static void update_location(String username) {

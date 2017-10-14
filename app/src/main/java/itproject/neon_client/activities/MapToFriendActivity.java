@@ -88,7 +88,7 @@ public class MapToFriendActivity extends AppCompatActivity implements OnMapReady
 
                 mLastLocation = location;
                 LatLng myLocation = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
-                post_location(LoggedInUser.getUser().username, mLastLocation.getLatitude(), mLastLocation.getLongitude());
+                post_location(LoggedInUser.getUsername(), mLastLocation.getLatitude(), mLastLocation.getLongitude());
                 mMap.moveCamera(CameraUpdateFactory.newLatLng(myLocation));
                 mMap.moveCamera(CameraUpdateFactory.zoomBy(15));
 
@@ -98,8 +98,8 @@ public class MapToFriendActivity extends AppCompatActivity implements OnMapReady
     }
 
     void friend_marker(GoogleMap map, String to_user) throws JSONException {
-        double latitude = get_latitude(to_user, LoggedInUser.getUser().username);
-        double longitude = get_longitude(to_user, LoggedInUser.getUser().username);
+        double latitude = get_latitude(to_user, LoggedInUser.getUsername());
+        double longitude = get_longitude(to_user, LoggedInUser.getUsername());
 
         map.addMarker(new MarkerOptions()
                 .position(new LatLng(latitude, longitude))

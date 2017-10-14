@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import itproject.neon_client.mock_data.User;
+import itproject.neon_client.user_data.User;
 
 /**
  * Created by kit on 10/9/17.

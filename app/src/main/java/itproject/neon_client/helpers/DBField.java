@@ -5,9 +5,9 @@ import org.json.JSONObject;
 /* ASync task can only take 1 argument type so this is used as a struct to hold 2 different
    arguments of different types.*/
 public class DBField {
-    private JSONObject jsonObject;
+    private String jsonObject;
     private String path;
-    public DBField(String path, JSONObject jsonObject){
+    public DBField(String path, String jsonObject){
         this.path = path;
         this.jsonObject = jsonObject;
     }
@@ -17,7 +17,7 @@ public class DBField {
     public String getPath(){
         return path;
     }
-    public JSONObject getJsonObject(){
+    public String getJsonObject(){
         return jsonObject;
     }
 

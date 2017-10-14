@@ -23,8 +23,8 @@ import java.util.List;
 
 import itproject.neon_client.helper.LoggedInUser;
 import itproject.neon_client.R;
-import itproject.neon_client.mock_data.AppDatabase;
-import itproject.neon_client.mock_data.User;
+import itproject.neon_client.user_data.AppDatabase;
+import itproject.neon_client.user_data.User;
 
 /**
  * A login screen that offers login via facebook.

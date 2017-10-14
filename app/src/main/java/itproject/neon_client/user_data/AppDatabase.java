@@ -1,4 +1,4 @@
-package itproject.neon_client.mock_data;
+package itproject.neon_client.user_data;
 
 import android.content.Context;
 
@@ -6,8 +6,7 @@ import android.arch.persistence.room.Database;
 import android.arch.persistence.room.Room;
 import android.arch.persistence.room.RoomDatabase;
 
-@Database(entities = {User.class
-}, version = 20, exportSchema = false)
+@Database(entities = {User.class}, version = 20, exportSchema = false)
 
 public abstract class AppDatabase extends RoomDatabase {
 

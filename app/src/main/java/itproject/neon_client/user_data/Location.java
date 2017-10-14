@@ -1,8 +1,4 @@
-package itproject.neon_client.mock_data;
-
-/**
- * Created by ammar on 10/10/17.
- */
+package itproject.neon_client.user_data;
 
 public class Location {
 

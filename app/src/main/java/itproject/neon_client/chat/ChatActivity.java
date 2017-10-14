@@ -5,18 +5,19 @@ import android.os.AsyncTask;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import org.json.JSONException;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import co.intentservice.chatui.ChatView;
 import co.intentservice.chatui.models.ChatMessage;
+import itproject.neon_client.helpers.FriendHelper;
 import itproject.neon_client.helpers.LoggedInUser;
 import itproject.neon_client.activities.MainActivity;
 import itproject.neon_client.activities.MapToFriendActivity;
@@ -28,10 +29,13 @@ import java.net.Socket;
 
 public class ChatActivity extends AppCompatActivity {
 
+    private static final String TAG = "testing";
     static final Client mySocket = new Client("13.65.209.193", 4000);
     //static final Client mySocket = new Client("10.0.2.2", 4000);
     String gFriendName;
-    Boolean friendshipAccepted = false;
+
+    enum status {pending, accepted};
+    status friendShipStatus;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,14 +49,14 @@ public class ChatActivity extends AppCompatActivity {
         //Bit of a hacking making 2 variables for friend name, need to fix
         final String friendName = intent.getStringExtra(MainActivity.EXTRA_MESSAGE);
         gFriendName = friendName;
-        final String userName = LoggedInUser.getUser().username;
+        final String userName = LoggedInUser.getUsername();
 
-        // friend request accepted TODO put in proper back end function
-        for (String username : MainActivity.friends) {
-            if (friendName != null && friendName.equals(username)) {
-                friendshipAccepted = true;
-            }
+        if (FriendHelper.getFriendshipStatus(userName,friendName) == 1) {
+            friendShipStatus = status.accepted;
+        } else {
+            friendShipStatus = status.pending;
         }
+
 
         getSupportActionBar().setTitle(friendName);
 
@@ -69,9 +73,12 @@ public class ChatActivity extends AppCompatActivity {
         accept_request.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // TODO put accept function here
-                MainActivity.friends.add(friendName);
-                MainActivity.friend_requests.remove(friendName);
+                try {
+                    FriendHelper.acceptFriendRequest(friendName,LoggedInUser.getUsername());
+                    Log.i(TAG,"friendship accepted");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
                 finish();
                 startActivity(getIntent());
             }
@@ -82,7 +89,6 @@ public class ChatActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 // TODO put decline function here
-                MainActivity.friend_requests.remove(friendName);
                 String declined_message = "You have declined the friend request from " + friendName;
                 message.setText(declined_message);
                 not_accepted_view.setVisibility(View.INVISIBLE);
@@ -120,7 +126,7 @@ public class ChatActivity extends AppCompatActivity {
         });
 
 
-        if (!friendshipAccepted) {
+        if (friendShipStatus == status.pending) {
 
             accepted_view.setVisibility(View.INVISIBLE);
             not_accepted_view.setVisibility(View.VISIBLE);
