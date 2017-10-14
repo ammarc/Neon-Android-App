@@ -73,6 +73,12 @@
 
         </LinearLayout>
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:id="@+id/not_the_logged_in_person_message"/>
+
         <com.facebook.login.widget.LoginButton
             android:id="@+id/fb_login_button"
             android:layout_width="wrap_content"

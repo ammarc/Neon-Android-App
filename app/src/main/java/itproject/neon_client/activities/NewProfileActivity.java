@@ -22,7 +22,6 @@ import itproject.neon_client.user_data.User;
 public class NewProfileActivity extends AppCompatActivity {
 
     private static final String TAG = "testing";
-    private int id = 0;
     private EditText username, phone_number, email;
 
 
@@ -58,7 +57,7 @@ public class NewProfileActivity extends AppCompatActivity {
         String emailString = email.getText().toString();
 
         if (usernameString.length() < 4) {
-            username.setError("username is invalid");
+            username.setError("username is too short");
             return;
         }
         if (phoneString.length() != 10) {
@@ -74,9 +73,14 @@ public class NewProfileActivity extends AppCompatActivity {
         try {
             if (FriendHelper.userExists(usernameString)) {
                 Log.i(TAG,usernameString + " exists!");
+                username.setError("username is taken");
             }
             else {
-                Log.i(TAG,usernameString + " doesn't exist");
+                for (String user : FriendHelper.allUsers()) {
+                    if (Profile.getCurrentProfile().getId().equals(FriendHelper.getUserFacebookID(user))) {
+                        // todo remove user
+                    }
+                }
                 JSONArray result = FriendHelper.addUser(usernameString,Profile.getCurrentProfile().getFirstName(),Profile.getCurrentProfile().getLastName(),
                         phoneString, emailString, Profile.getCurrentProfile().getId());
                 if(result!=null){

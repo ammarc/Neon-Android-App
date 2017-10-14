@@ -3,6 +3,7 @@ package itproject.neon_client.helpers;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.JSONStringer;
 
 import java.util.ArrayList;
 
@@ -56,6 +57,12 @@ public class FriendHelper {
             }
         }
 		return false;
+	}
+
+	public static String getUserFacebookID(String username) throws JSONException {
+		String path = SERVER_ADDRESS + "profile/?username=" + username;
+		JSONArray user = DatabaseConnect.get(path);
+		return user.getJSONObject(0).getString("fbID");
 	}
 
 	public static boolean checkFriendList(ArrayList<String> friends, String friend_username) throws JSONException {

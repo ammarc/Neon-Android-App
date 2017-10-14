@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -19,6 +20,8 @@ import com.facebook.appevents.AppEventsLogger;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
+
+import org.json.JSONException;
 
 import itproject.neon_client.helpers.FriendHelper;
 import itproject.neon_client.helpers.LoggedInUser;
@@ -49,6 +52,8 @@ public class LoginActivity extends AppCompatActivity {
         signUpButton = (Button) findViewById(R.id.sign_up_button);
         signInButton = (Button) findViewById(R.id.fb_sign_in_button);
 
+        final TextView fb_logout_message = findViewById(R.id.not_the_logged_in_person_message);
+
 
         /* facebook and login */
 
@@ -76,6 +81,7 @@ public class LoginActivity extends AppCompatActivity {
 
                             signInButton.setVisibility(View.VISIBLE);
                             signUpButton.setVisibility(View.VISIBLE);
+                            fb_logout_message.setText("Logged in as " + Profile.getCurrentProfile().getFirstName() + " " + Profile.getCurrentProfile().getLastName() + "\nNot you?");
 
 
                             // no need to call startTracking() on mProfileTracker
@@ -94,18 +100,26 @@ public class LoginActivity extends AppCompatActivity {
                     }
                 });
 
-        Log.i(TAG, "*");
-
         if (Profile.getCurrentProfile() == null) {
             signInButton.setVisibility(View.INVISIBLE);
             signUpButton.setVisibility(View.INVISIBLE);
+            fb_logout_message.setVisibility(View.INVISIBLE);
         }
         else {
-            signInButton.setVisibility(View.VISIBLE);
             signUpButton.setVisibility(View.VISIBLE);
-        }
+            fb_logout_message.setVisibility(View.VISIBLE);
 
-        Log.i(TAG,"!");
+            for (String user : FriendHelper.allUsers()) {
+                try {
+                    if (FriendHelper.getUserFacebookID(user).equals(Profile.getCurrentProfile().getId())) {
+                        signInButton.setVisibility(View.VISIBLE);
+                        signUpButton.setVisibility(View.INVISIBLE);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
 
         signUpButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -119,12 +133,6 @@ public class LoginActivity extends AppCompatActivity {
                 facebookSignIn();
             }
         });
-
-    }
-
-    public void goToCamera(View view) {
-
-        startActivity(new Intent(LoginActivity.this, NeonARActivity.class));
 
     }
 
@@ -152,11 +160,16 @@ public class LoginActivity extends AppCompatActivity {
 
             for (String user : FriendHelper.allUsers())
             {
-                if (Profile.getCurrentProfile().getId().compareTo("0") == 0) // todo put in their actual id
-                {
-                    LoggedInUser.setUsername(user);
-                    Log.i(TAG, "current user is " + user);
-                    startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                try {
+                    if (Profile.getCurrentProfile().getId().equals(FriendHelper.getUserFacebookID(user))) // todo put in their actual id
+                    {
+                        LoggedInUser.setUsername(user);
+                        Log.i(TAG, "current user is " + user);
+                        startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                        return;
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
             }
 
