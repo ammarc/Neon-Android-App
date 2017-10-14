@@ -44,7 +44,7 @@ public class ChatActivity extends AppCompatActivity {
         //Bit of a hacking making 2 variables for friend name, need to fix
         final String friendName = intent.getStringExtra(MainActivity.EXTRA_MESSAGE);
         gFriendName = friendName;
-        final String userName = LoggedInUser.getUser().username;
+        final String userName = LoggedInUser.getUsername();
 
         // friend request accepted TODO put in proper back end function
         for (String username : MainActivity.friends) {

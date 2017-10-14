@@ -74,14 +74,10 @@ public class NewProfileActivity extends AppCompatActivity {
             return;
         }
 
-        /*for (User user : LoginActivity.database.userDao().getAllUser()) {
-            id++;
-            Log.i("profile","user :: " + user.username + " id " + user.id);
-        }   id++;*/
 
         try {
             if (FriendHelper.user_exists(usernameString)) {
-                Log.i("profile",usernameString + " exists!");
+                Log.i("profile",usernameString + " username is taken sozzzzzzzle");
             }
             else {
                 Log.i("profile",usernameString + " doesn't exist");
@@ -99,19 +95,7 @@ public class NewProfileActivity extends AppCompatActivity {
         }
 
 
-        User newUser = new User(id,usernameString,Profile.getCurrentProfile().getFirstName(),Profile.getCurrentProfile().getLastName(),
-                phoneString, emailString, Profile.getCurrentProfile().getId());
-
-        LoginActivity.database.userDao().addUser(newUser);
-
-        for (User user : LoginActivity.database.userDao().getAllUser()) {
-            Log.i("profile", "user : " + user.username + " id ::: " + user.id);
-        }
-
-        User user = LoginActivity.database.userDao().getUser(id).get(0);
-        LoggedInUser.setUser(newUser);
-        Log.i("profile","user " + user.username + " id " + user.id);
-
+        LoggedInUser.setUsername(usernameString);
 
 
         startActivity(new Intent(NewProfileActivity.this, MainActivity.class));

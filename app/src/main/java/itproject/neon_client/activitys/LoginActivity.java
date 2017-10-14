@@ -3,6 +3,7 @@ package itproject.neon_client.activitys;
 import android.content.Intent;
 
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -21,10 +22,9 @@ import com.facebook.login.widget.LoginButton;
 
 import java.util.List;
 
+import itproject.neon_client.helper.FriendHelper;
 import itproject.neon_client.helper.LoggedInUser;
 import itproject.neon_client.R;
-import itproject.neon_client.mock_data.AppDatabase;
-import itproject.neon_client.mock_data.User;
 
 /**
  * A login screen that offers login via facebook.
@@ -37,8 +37,6 @@ public class LoginActivity extends AppCompatActivity {
     LoginButton fbLoginButton;
     Button signUpButton;
     Button signInButton;
-
-    static AppDatabase database;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -123,19 +121,6 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        /* mock data */
-        database = AppDatabase.getDatabase(getApplicationContext());
-
-        database.userDao().removeAllUsers();
-
-        // add some data
-        /*List<User> users = database.userDao().getAllUser();
-        if (users.size()==0) {
-            database.userDao().addUser(new User(1, "harryP", "harry", "potter", "0411854930", "hazP@account", Profile.getCurrentProfile().getId()));
-            database.userDao().addUser(new User(2, "ginny_weasley", "ginny", "weasley", "0447893029", "gweasley@gmail", "0"));
-            database.userDao().addUser(new User(3, "hermione", "hermione", "granger", "0478986543", "hgranger@hotmail", "0"));
-        }*/
-
     }
 
     public void goToCamera(View view) {
@@ -163,12 +148,15 @@ public class LoginActivity extends AppCompatActivity {
         else {
             Log.i("profile",Profile.getCurrentProfile().getFirstName());
 
-            for (User user : database.userDao().getAllUser()) {
-                if (Profile.getCurrentProfile().getId().compareTo(user.fb_id) == 0) {
-                    LoggedInUser.setUser(user);
+            for (String user : FriendHelper.all_users()) {
+                if (Profile.getCurrentProfile().getId().compareTo("0") == 0) {//todo get user fb id
+                    LoggedInUser.setUsername(user);
                     startActivity(new Intent(LoginActivity.this, MainActivity.class));
                 }
             }
+
+            Snackbar mySnackbar = Snackbar.make(findViewById(R.id.coordinator_layout), R.string.dont_have_account, Snackbar.LENGTH_SHORT);
+            mySnackbar.show();
 
             // TODO error message if they don't have account
         }
@@ -183,7 +171,6 @@ public class LoginActivity extends AppCompatActivity {
 
     @Override
     public void onDestroy() {
-        AppDatabase.destroyInstance();
         super.onDestroy();
     }
 }

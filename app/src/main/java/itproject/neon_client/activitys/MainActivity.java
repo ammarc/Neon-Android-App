@@ -76,9 +76,9 @@ public class MainActivity extends AppCompatActivity
 
         /* user info */
         TextView user_name = (TextView) navbar.findViewById(R.id.user_name);
-        user_name.setText(LoggedInUser.getUser().fullname);
+        user_name.setText(LoggedInUser.getUsername());
         TextView user_username = (TextView) navbar.findViewById(R.id.user_username);
-        user_username.setText(LoggedInUser.getUser().username);
+        user_username.setText(LoggedInUser.getUsername()); // todo get full name
 
         /* map */
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
