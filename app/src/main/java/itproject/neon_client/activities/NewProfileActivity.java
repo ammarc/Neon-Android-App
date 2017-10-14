@@ -1,4 +1,4 @@
-package itproject.neon_client.activitys;
+package itproject.neon_client.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,19 +13,15 @@ import com.facebook.Profile;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
-import itproject.neon_client.helper.FriendHelper;
-import itproject.neon_client.helper.LoggedInUser;
+import itproject.neon_client.helpers.LoggedInUser;
+import itproject.neon_client.helpers.FriendHelper;
 import itproject.neon_client.R;
-import itproject.neon_client.mock_data.User;
-
-/**
- * Created by kit on 25/9/17.
- */
+import itproject.neon_client.user_data.User;
 
 public class NewProfileActivity extends AppCompatActivity {
 
+    public static final String TAG = "NewProfileActivity";
     private int id = 0;
     private EditText username, phone_number, email;
 
@@ -37,7 +33,7 @@ public class NewProfileActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_create_profile);
 
-        Log.i("profile","new profile");
+        Log.i(TAG,"new profile");
 
         TextView user_info_display = (TextView) findViewById(R.id.user_welcome);
         username = (EditText) findViewById(R.id.username);
@@ -76,28 +72,30 @@ public class NewProfileActivity extends AppCompatActivity {
 
 
         try {
-            if (FriendHelper.user_exists(usernameString)) {
-                Log.i("profile",usernameString + " username is taken sozzzzzzzle");
+            if (FriendHelper.userExists(usernameString)) {
+                Log.i(TAG,usernameString + " exists!");
             }
             else {
-                Log.i("profile",usernameString + " doesn't exist");
-                JSONArray result = FriendHelper.add_user(usernameString,Profile.getCurrentProfile().getFirstName(),Profile.getCurrentProfile().getLastName(),
+                Log.i(TAG,usernameString + " doesn't exist");
+                JSONArray result = FriendHelper.addUser(usernameString,Profile.getCurrentProfile().getFirstName(),Profile.getCurrentProfile().getLastName(),
                         phoneString, emailString, Profile.getCurrentProfile().getId());
                 if(result!=null){
-                    Log.i("profile", result.toString());
+                    Log.i(TAG, result.toString());
                 }
                 else{
-                    Log.i("profile", "no response from server!");
+                    Log.i(TAG, "no response from server!");
                 }
-                Log.i("profile", "user added!");
+                Log.i(TAG, "user added!");
             }
         } catch (JSONException e) {
         }
 
-
         LoggedInUser.setUsername(usernameString);
 
+        Intent mainActivityIntent = new Intent(NewProfileActivity.this, MainActivity.class);
+        mainActivityIntent.putExtra("EXTRA_USERNAME", usernameString);
+        Log.e(TAG, "Current profile is " + usernameString);
 
-        startActivity(new Intent(NewProfileActivity.this, MainActivity.class));
+        startActivity(mainActivityIntent);
     }
 }

@@ -1,4 +1,4 @@
-package itproject.neon_client.activitys;
+package itproject.neon_client.activities;
 
 import android.content.Intent;
 
@@ -20,10 +20,8 @@ import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 
-import java.util.List;
-
-import itproject.neon_client.helper.FriendHelper;
-import itproject.neon_client.helper.LoggedInUser;
+import itproject.neon_client.helpers.FriendHelper;
+import itproject.neon_client.helpers.LoggedInUser;
 import itproject.neon_client.R;
 
 /**
@@ -31,6 +29,7 @@ import itproject.neon_client.R;
  */
 public class LoginActivity extends AppCompatActivity {
 
+    public static final String TAG = "profile";
     CallbackManager callbackManager;
     ProfileTracker profileTracker;
 
@@ -42,7 +41,7 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Log.i("profile", "on create");
+        Log.i(TAG, "on create");
 
         setContentView(R.layout.activity_login);
 
@@ -95,7 +94,7 @@ public class LoginActivity extends AppCompatActivity {
                     }
                 });
 
-        Log.i("profile", "*");
+        Log.i(TAG, "*");
 
         if (Profile.getCurrentProfile() == null) {
             signInButton.setVisibility(View.INVISIBLE);
@@ -106,18 +105,18 @@ public class LoginActivity extends AppCompatActivity {
             signUpButton.setVisibility(View.VISIBLE);
         }
 
-        Log.i("profile","!");
+        Log.i(TAG,"!");
 
         signUpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                sign_up();
+                signUp();
             }
         });
         signInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                facebook_sign_in();
+                facebookSignIn();
             }
         });
 
@@ -129,43 +128,47 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
-    private void sign_up() {
-        Log.i("profile","sign up");
+    private void signUp() {
+        Log.i(TAG,"sign up");
         if (Profile.getCurrentProfile() == null) {
-            Log.i("profile","null");
+            Log.i(TAG,"null");
         }
         else {
-            Log.i("profile",Profile.getCurrentProfile().getFirstName());
+            Log.i(TAG,Profile.getCurrentProfile().getFirstName());
             startActivity(new Intent(LoginActivity.this, NewProfileActivity.class));
         }
     }
 
-    private void facebook_sign_in() {
-        Log.i("profile","fb login");
-        if (Profile.getCurrentProfile() == null) {
-            Log.i("profile","null");
+    private void facebookSignIn()
+    {
+        Log.i(TAG,"fb login");
+        if (Profile.getCurrentProfile() == null)
+        {
+            Log.i(TAG,"null");
         }
-        else {
-            Log.i("profile",Profile.getCurrentProfile().getFirstName());
+        else
+        {
+            Log.i(TAG, "Name of current fb user is " + Profile.getCurrentProfile().getFirstName());
 
-            for (String user : FriendHelper.all_users()) {
-                if (Profile.getCurrentProfile().getId().compareTo("0") == 0) {//todo get user fb id
+            for (String user : FriendHelper.allUsers())
+            {
+                if (Profile.getCurrentProfile().getId().compareTo("0") == 0) // todo put in their actual id
+                {
                     LoggedInUser.setUsername(user);
+                    Log.e(TAG, "current user is " + user);
                     startActivity(new Intent(LoginActivity.this, MainActivity.class));
                 }
             }
 
             Snackbar mySnackbar = Snackbar.make(findViewById(R.id.coordinator_layout), R.string.dont_have_account, Snackbar.LENGTH_SHORT);
             mySnackbar.show();
-
-            // TODO error message if they don't have account
         }
     }
 
     @Override
     protected void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Log.i("profile", "on activity result");
+        Log.i(TAG, "on activity result");
         callbackManager.onActivityResult(requestCode, resultCode, data);
     }
 

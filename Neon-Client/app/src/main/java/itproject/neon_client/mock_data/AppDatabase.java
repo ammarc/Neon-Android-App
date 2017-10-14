@@ -1,4 +1,4 @@
-package itproject.neon_client.mock_data;
+package itproject.neon_client.user_data;
 
 import android.content.Context;
 

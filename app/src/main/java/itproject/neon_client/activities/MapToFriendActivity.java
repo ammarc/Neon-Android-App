@@ -1,4 +1,4 @@
-package itproject.neon_client.activitys;
+package itproject.neon_client.activities;
 
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -26,18 +26,14 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.json.JSONException;
-import org.json.JSONObject;
-import org.json.JSONArray;
 
-import itproject.neon_client.helper.DBField;
-import itproject.neon_client.helper.DatabaseConnect;
-import itproject.neon_client.helper.LoggedInUser;
+import itproject.neon_client.helpers.LoggedInUser;
 import itproject.neon_client.R;
 
-import static itproject.neon_client.helper.DatabaseConnect.get;
-import static itproject.neon_client.helper.MapHelper.get_latitude;
-import static itproject.neon_client.helper.MapHelper.get_longitude;
-import static itproject.neon_client.helper.MapHelper.post_location;
+import static android.content.ContentValues.TAG;
+import static itproject.neon_client.helpers.MapHelper.get_latitude;
+import static itproject.neon_client.helpers.MapHelper.get_longitude;
+import static itproject.neon_client.helpers.MapHelper.post_location;
 
 public class MapToFriendActivity extends AppCompatActivity implements OnMapReadyCallback {
 
@@ -74,12 +70,12 @@ public class MapToFriendActivity extends AppCompatActivity implements OnMapReady
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        // Add a marker in Sydney and move the camera
+        // Add a marker in Melbourne and move the camera
         LatLng melbUni = new LatLng(-37.7964, 144.9612);
         mMap.addMarker(new MarkerOptions().position(melbUni).title("Marker in Melb Uni"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(melbUni));
-        mMap.setMinZoomPreference(10);
-        mMap.setMaxZoomPreference(20);
+        //mMap.setMinZoomPreference(10);
+        //mMap.setMaxZoomPreference(20);
     }
 
     public void onConnected(Bundle arg0) {
@@ -96,8 +92,7 @@ public class MapToFriendActivity extends AppCompatActivity implements OnMapReady
                 mMap.moveCamera(CameraUpdateFactory.newLatLng(myLocation));
                 mMap.moveCamera(CameraUpdateFactory.zoomBy(15));
 
-                Log.d("d", "location changed");
-
+                Log.d(TAG, "location changed");
             }
         });
     }

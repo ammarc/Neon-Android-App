@@ -1,4 +1,4 @@
-package itproject.neon_client.helper;
+package itproject.neon_client.helpers;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -11,7 +11,7 @@ public class MapHelper {
     private static final String address = "http://13.65.209.193:3000";
 
     public static double get_latitude(String to_user, String from_user) throws JSONException {
-        String path = address + "/gps/friends?user=" + from_user;
+        String path = address + "/gps/friendsList?user=" + from_user;
         JSONArray friends_locations = DatabaseConnect.get(path);
 
         for (int i = 0; i < friends_locations.length(); i ++) {
@@ -23,7 +23,7 @@ public class MapHelper {
     }
 
     public static double get_longitude(String to_user, String from_user) throws JSONException {
-        String path = address+ "/gps/friends?user=" + from_user;
+        String path = address+ "/gps/friendsList?user=" + from_user;
         JSONArray friends_locations = DatabaseConnect.get(path);
 
         for (int i = 0; i < friends_locations.length(); i ++) {

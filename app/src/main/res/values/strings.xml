@@ -50,6 +50,9 @@
 
     <string name="title_activity_maps">Map</string>
 
+    <string name="app_label">Neon Client</string>
+    <string name="search_hint">No hint yet</string>
+
     <string name="nav_friends">Friends</string>
     <string name="nav_logout">Logout</string>
     <string name="title_activity_map_to_friend">MapToFriendActivity</string>

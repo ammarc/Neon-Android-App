@@ -4,11 +4,7 @@ import org.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.Random;
-import itproject.neon_client.helper.MapHelper;
-
-/**
- * Created by lachlanthomas on 10/10/17.
- */
+import itproject.neon_client.helpers.MapHelper;
 
 public class MapHelper_test {
 
@@ -20,7 +16,7 @@ public class MapHelper_test {
     }
 
     //function tests request_permission() and get_permission_requests() from class MapToFriendActivity
-    //requires two users that are friends however do not have location permissions
+    //requires two users that are friendsList however do not have location permissions
     public static boolean test_permission_requests(String to_user, String from_user) {
         MapHelper.request_permission(from_user, to_user);
         ArrayList<String> permission_requests = MapHelper.get_permission_requests(to_user);
@@ -31,7 +27,7 @@ public class MapHelper_test {
     }
 
     //function tests update_location(), get_latitude(), and get_longitude() from MapToFriendActivity
-    //requires two friends that have location permissions
+    //requires two friendsList that have location permissions
     public static boolean test_update_location(String to_user, String from_user) {
         Random rand = new Random();
         double latitude = rand.nextDouble();
