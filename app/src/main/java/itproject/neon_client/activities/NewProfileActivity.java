@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.facebook.Profile;
@@ -24,6 +25,10 @@ public class NewProfileActivity extends AppCompatActivity {
     private static final String TAG = "testing";
     private EditText username, phone_number, email;
 
+    private ProgressBar spinner;
+    Button setUsernameButton;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +36,9 @@ public class NewProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_create_profile);
+
+        spinner = (ProgressBar)findViewById(R.id.newUserProgressBar);
+        spinner.setVisibility(View.GONE);
 
         Log.i(TAG,"new profile");
 
@@ -41,10 +49,11 @@ public class NewProfileActivity extends AppCompatActivity {
 
         user_info_display.setText("Welcome " + Profile.getCurrentProfile().getFirstName() + " " + Profile.getCurrentProfile().getLastName());
 
-        Button setUsername = (Button) findViewById(R.id.set_username);
-        setUsername.setOnClickListener(new View.OnClickListener() {
+        setUsernameButton = (Button) findViewById(R.id.set_username);
+        setUsernameButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                spinner.setVisibility(View.VISIBLE);
                 createProfile();
             }
         });
@@ -58,14 +67,22 @@ public class NewProfileActivity extends AppCompatActivity {
 
         if (usernameString.length() < 4) {
             username.setError("username is too short");
+            spinner.setVisibility(View.GONE);
+            return;
+        }
+        if (usernameString.matches("(.*) (.*)")) {
+            username.setError("username can't have spaces");
+            spinner.setVisibility(View.GONE);
             return;
         }
         if (phoneString.length() != 10) {
             phone_number.setError("phone number is invalid");
+            spinner.setVisibility(View.GONE);
             return;
         }
         if (!emailString.contains("@")) {
             email.setError("email is invalid");
+            spinner.setVisibility(View.GONE);
             return;
         }
 
@@ -88,6 +105,9 @@ public class NewProfileActivity extends AppCompatActivity {
                 }
                 else{
                     Log.i(TAG, "no response from server!");
+                    setUsernameButton.setError("didn't go to server");
+                    spinner.setVisibility(View.GONE);
+                    return;
                 }
                 Log.i(TAG, "user added!");
             }

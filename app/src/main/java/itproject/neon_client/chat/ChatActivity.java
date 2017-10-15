@@ -3,6 +3,7 @@ package itproject.neon_client.chat;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -23,6 +24,7 @@ import itproject.neon_client.activities.MainActivity;
 import itproject.neon_client.activities.MapToFriendActivity;
 import itproject.neon_client.R;
 
+import itproject.neon_client.helpers.MapHelper;
 import itproject.neon_client.helpers.Tools;
 import itproject.neon_client.activities.NeonARActivity;
 import java.net.Socket;
@@ -109,6 +111,15 @@ public class ChatActivity extends AppCompatActivity {
         map.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                // todo ask for friends location, also need to put in message if the other has asked
+
+                // doesn't have permission
+                if (MapHelper.get_permission_status(LoggedInUser.getUsername(),friendName) != 1) {
+                    Snackbar mySnackbar = Snackbar.make(findViewById(R.id.chat_coordinator_layout), R.string.requested_location_permission, Snackbar.LENGTH_LONG);
+                    mySnackbar.show();
+                }
+
                 mapDirect();
             }
         });

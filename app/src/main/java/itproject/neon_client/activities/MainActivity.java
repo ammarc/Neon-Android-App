@@ -86,10 +86,8 @@ public class MainActivity extends AppCompatActivity
     private final int MENU_DYNAMIC = 2131755500;
     private int friend_insert_counter = 0;
 
-    public static List<String> friendsList;// = new ArrayList<>(Arrays.asList("Ron_Weasley", "Hermione_Granger", "Luna_Lovegood","Neville_Longbottom"));
-    public static List<String> friend_requests;// = new ArrayList<>(Arrays.asList("Harry_Potter", "Ginny_Weasley"));
-    public static List<String> all_users = new ArrayList<>(Arrays.asList("draco_m","hagrid_has_scary_pets","he_who_must_not_be_named","ratty","shaggy_dog","lupin_howles"));
-
+    public static List<String> friendsList;
+    public static List<String> friend_requests;
 
     public MapSearchAutoCompleteView getMapSearchAutoCompleteView()
     {
@@ -137,7 +135,7 @@ public class MainActivity extends AppCompatActivity
         */
 
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.main_toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(LoggedInUser.getUsername());
 
@@ -188,7 +186,11 @@ public class MainActivity extends AppCompatActivity
 
         /* user info */
         TextView user_name = (TextView) navigationBar.findViewById(R.id.user_name);
-        user_name.setText(LoggedInUser.getUsername());
+        try {
+            user_name.setText(FriendHelper.getUserFullName(LoggedInUser.getUsername()));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         TextView user_username = (TextView) navigationBar.findViewById(R.id.user_username);
         user_username.setText(LoggedInUser.getUsername());
 

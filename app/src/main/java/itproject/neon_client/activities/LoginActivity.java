@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.facebook.CallbackManager;
@@ -40,6 +41,8 @@ public class LoginActivity extends AppCompatActivity {
     Button signUpButton;
     Button signInButton;
 
+    private ProgressBar spinner;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,6 +54,8 @@ public class LoginActivity extends AppCompatActivity {
         fbLoginButton = (LoginButton) findViewById(R.id.fb_login_button);
         signUpButton = (Button) findViewById(R.id.sign_up_button);
         signInButton = (Button) findViewById(R.id.fb_sign_in_button);
+        spinner = (ProgressBar)findViewById(R.id.progressBar);
+        spinner.setVisibility(View.GONE);
 
         final TextView fb_logout_message = findViewById(R.id.not_the_logged_in_person_message);
 
@@ -92,33 +97,42 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onCancel() {
                         // App code
+                        Log.i(TAG,"fb cancel");
                     }
 
                     @Override
                     public void onError(FacebookException exception) {
                         // App code
+                        Log.i(TAG,"fb error");
                     }
                 });
 
         if (Profile.getCurrentProfile() == null) {
+            Log.i(TAG,"current profile is null");
             signInButton.setVisibility(View.INVISIBLE);
             signUpButton.setVisibility(View.INVISIBLE);
             fb_logout_message.setVisibility(View.INVISIBLE);
         }
         else {
             signUpButton.setVisibility(View.VISIBLE);
+            signInButton.setVisibility(View.INVISIBLE);
             fb_logout_message.setVisibility(View.VISIBLE);
 
-            for (String user : FriendHelper.allUsers()) {
-                try {
-                    if (FriendHelper.getUserFacebookID(user).equals(Profile.getCurrentProfile().getId())) {
-                        signInButton.setVisibility(View.VISIBLE);
-                        signUpButton.setVisibility(View.INVISIBLE);
+            if (FriendHelper.allUsers() == null) {
+                Log.i(TAG,"allusers() is null");
+            } else {
+                for (String user : FriendHelper.allUsers()) {
+                    try {
+                        if (FriendHelper.getUserFacebookID(user).equals(Profile.getCurrentProfile().getId())) {
+                            signInButton.setVisibility(View.VISIBLE);
+                            signUpButton.setVisibility(View.INVISIBLE);
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
-                } catch (JSONException e) {
-                    e.printStackTrace();
                 }
             }
+
         }
 
         signUpButton.setOnClickListener(new View.OnClickListener() {
@@ -130,6 +144,7 @@ public class LoginActivity extends AppCompatActivity {
         signInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                spinner.setVisibility(View.VISIBLE);
                 facebookSignIn();
             }
         });
@@ -161,7 +176,7 @@ public class LoginActivity extends AppCompatActivity {
             for (String user : FriendHelper.allUsers())
             {
                 try {
-                    if (Profile.getCurrentProfile().getId().equals(FriendHelper.getUserFacebookID(user))) // todo put in their actual id
+                    if (Profile.getCurrentProfile().getId().equals(FriendHelper.getUserFacebookID(user)))
                     {
                         LoggedInUser.setUsername(user);
                         Log.i(TAG, "current user is " + user);
@@ -183,6 +198,8 @@ public class LoginActivity extends AppCompatActivity {
     protected void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         Log.i(TAG, "on activity result");
+        finish();
+        startActivity(getIntent());
         callbackManager.onActivityResult(requestCode, resultCode, data);
     }
 

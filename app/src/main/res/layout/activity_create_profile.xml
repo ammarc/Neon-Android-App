@@ -98,4 +98,12 @@
         android:text="Create Account"
         android:background="@color/blue"/>
 
+    <ProgressBar
+        android:id="@+id/newUserProgressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_gravity="center"/>
+
 </LinearLayout>
