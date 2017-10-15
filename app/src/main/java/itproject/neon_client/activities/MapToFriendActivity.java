@@ -118,9 +118,12 @@ public class MapToFriendActivity extends AppCompatActivity implements OnMapReady
             Log.i(TAG,"friendLocation is null");
         }
 
-        LatLng userLatLng = new LatLng(userLocation.getLatitude(),userLocation.getLongitude());
-        MapHelper.post_location(LoggedInUser.getUsername(),userLocation.getLatitude(),userLocation.getLongitude());
-        builder.include(userLatLng);
+        if (userLocation != null)
+        {
+            LatLng userLatLng = new LatLng(userLocation.getLatitude(), userLocation.getLongitude());
+            MapHelper.post_location(LoggedInUser.getUsername(), userLocation.getLatitude(), userLocation.getLongitude());
+            builder.include(userLatLng);
+        }
 
         LatLngBounds bounds = builder.build();
         cu = CameraUpdateFactory.newLatLngBounds(bounds, 10);
@@ -158,7 +161,6 @@ public class MapToFriendActivity extends AppCompatActivity implements OnMapReady
             Log.e("Exception: %s", e.getMessage());
         }
     }
-
 
     public void onConnected(Bundle arg0) {
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)

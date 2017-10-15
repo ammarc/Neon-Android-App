@@ -60,14 +60,6 @@ public class MapLayout extends RelativeLayout
     {
         boolean toReturn = false;
 
-        // Be wary here, this produces a null pointer exception!
-        if (marker != null)
-            Log.e("MapLayout", marker.isInfoWindowShown() + " for info window");
-
-        //Log.e("MapLayout", mMap.toString() + " is the map");
-        if (infoWindow != null)
-            Log.e("MapLayout", infoWindow.toString() + " is the infoWindow");
-
         // Being wary of any null pointers
         if (marker != null && marker.isInfoWindowShown() && mMap != null && infoWindow != null)
         {
@@ -79,11 +71,6 @@ public class MapLayout extends RelativeLayout
                     -point.y + infoWindow.getHeight() + bottomOffsetInPixels);
 
             toReturn = infoWindow.dispatchTouchEvent(copyEv);
-            //Button infoButton = (Button)infoWindow.findViewById(R.id.button_chat);
-            //infoButton.dispatchTouchEvent(copyEv);
-            //Log.e("MapLayout", "The button to press is: " + infoButton.toString());
-            Log.e("MapLayout", "Dispatching touch event that will make me look like a boss!");
-
         }
 
         // If the infoWindow is interacted with in the touch event, then just return true.

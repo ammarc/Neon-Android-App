@@ -209,4 +209,11 @@ public class LoginActivity extends AppCompatActivity {
     public void onDestroy() {
         super.onDestroy();
     }
+
+    // TODO: remove this method after AR improvement is done
+    public void directToCamera(View view)
+    {
+        startActivity(new Intent(LoginActivity.this, NeonARActivity.class));
+    }
+
 }

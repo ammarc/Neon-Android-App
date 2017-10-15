@@ -47,6 +47,7 @@ import itproject.neon_client.helpers.LoggedInUser;
 import itproject.neon_client.R;
 import itproject.neon_client.chat.ChatActivity;
 import itproject.neon_client.helpers.MapAutoCompleteCustomArrayAdapter;
+import itproject.neon_client.helpers.MapHelper;
 import itproject.neon_client.helpers.MapInfoTouchListener;
 import itproject.neon_client.helpers.MapLayout;
 import itproject.neon_client.helpers.MapSearchAutoCompleteTextChangedListener;
@@ -63,7 +64,7 @@ public class MainActivity extends AppCompatActivity
     // and 39 is the marker height
     public static final int MARKER_HEIGHT = 39;
     public static final int BALLOON_BOTTOM_EDGE_OFFSET = 20;
-    private static final String TAG = "testing";
+    private static final String TAG = "MainActivity";
     public static final String EXTRA_MESSAGE = "itproject.neon_client.MESSAGE";
 
     private ViewGroup infoWindow;
@@ -164,10 +165,10 @@ public class MainActivity extends AppCompatActivity
                 index++;
             }
             userNameList = new String[index+1];
-            int newindex = 0;
+            int newIndex = 0;
             for (Object user : friendsList.toArray()) {
-                userNameList[index++] = (String) user;
-                if (newindex == index) {
+                userNameList[newIndex++] = user.toString();
+                if (newIndex == index) {
                     break;
                 }
             }
@@ -431,32 +432,20 @@ public class MainActivity extends AppCompatActivity
         mMap = googleMap;
 
         // Let's add a couple of markers
-        // TODO: add markers from the friendsList obtained from the backend
-        /*
-        for (String friend : this.friendsList)
+        for (String friend : friendsList)
         {
-            listOfAllMarkers.add(mMap.addMarker(new MarkerOptions().title(friend).
-                                        position(new LatLng())));
+            Log.e(TAG, "inside the loop with friend" + friend);
+            try
+            {
+                listOfAllMarkers.add(mMap.addMarker(new MarkerOptions().title(friend).
+                        position(new LatLng(MapHelper.get_latitude(friend, LoggedInUser.getUsername())
+                                , MapHelper.get_longitude(friend, LoggedInUser.getUsername())))));
+            }
+            catch (JSONException e)
+            {
+                Log.e(TAG, e.getMessage());
+            }
         }
-        */
-        /*
-        listOfAllMarkers.add(mMap.addMarker(new MarkerOptions()
-                                        .title("Ron_Weasley")
-                                        .snippet("Czech Republic")
-                                        .position(new LatLng(50.08, 14.43))));
-
-
-        listOfAllMarkers.add(mMap.addMarker(new MarkerOptions()
-                .title("Paris")
-                .snippet("France")
-                .position(new LatLng(48.86,2.33))));
-
-
-        listOfAllMarkers.add(mMap.addMarker(new MarkerOptions()
-                .title("Melbourne")
-                .snippet("Australia")
-                .position(new LatLng(-37.7964,144.9612))));
-        */
 
 
         mapLayout = (MapLayout) findViewById(R.id.map_container);
@@ -524,4 +513,5 @@ public class MainActivity extends AppCompatActivity
             }
         }
     }
+
 }

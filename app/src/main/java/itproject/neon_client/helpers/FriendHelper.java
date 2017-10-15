@@ -9,7 +9,7 @@ import java.util.ArrayList;
 
 public class FriendHelper {
 
-	private static final String SERVER_ADDRESS = "http://13.65.209.193:3000/";
+	public static final String SERVER_ADDRESS = "http://13.65.209.193:3000/";
 
 	public static ArrayList<String> getPendingFriends(String username) throws JSONException {
 		ArrayList<String> pending_friends = new ArrayList<String>();

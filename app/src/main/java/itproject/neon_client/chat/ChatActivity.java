@@ -37,8 +37,8 @@ public class ChatActivity extends AppCompatActivity {
 
     private static final String TAG = "testing";
     static final Client mySocket = new Client("13.65.209.193", 4000);
-    static final int LOCATION_SHARING_ACCEPTED = 1;
-    static final int LOCATION_SHARING_PENDING = 0;
+    public static final int LOCATION_SHARING_ACCEPTED = 1;
+    public static final int LOCATION_SHARING_PENDING = 0;
     String gFriendName;
 
     enum status {pending, accepted};
@@ -273,8 +273,9 @@ public class ChatActivity extends AppCompatActivity {
 
     public void cameraClick() {
         // Do something in response to button
-        Intent intent = new Intent(this, NeonARActivity.class);
-        startActivity(intent);
+        Intent arIntent = new Intent(this, NeonARActivity.class);
+        arIntent.putExtra(NeonARActivity.EXTRA_AR_MESSAGE, gFriendName);
+        startActivity(arIntent);
     }
 
     /* Class to handle the asynchronous sending of messages to the server. */

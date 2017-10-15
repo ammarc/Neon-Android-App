@@ -108,8 +108,7 @@ public class NewProfileActivity extends AppCompatActivity {
         LoggedInUser.setUsername(usernameString);
 
         Intent mainActivityIntent = new Intent(NewProfileActivity.this, MainActivity.class);
-        Log.e(TAG, "Current profile is " + usernameString);
-
+        Log.i(TAG, "Current profile is " + usernameString);
         startActivity(mainActivityIntent);
     }
 }
