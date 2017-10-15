@@ -188,10 +188,6 @@ public class LoginActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
             }
-
-            Log.i(TAG,"user doesn't have an account");
-            Snackbar mySnackbar = Snackbar.make(findViewById(R.id.coordinator_layout), R.string.dont_have_account, Snackbar.LENGTH_LONG);
-            mySnackbar.show();
         }
     }
 
