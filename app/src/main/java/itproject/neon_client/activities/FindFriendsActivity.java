@@ -88,8 +88,9 @@ public class FindFriendsActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View view) {
                         try {
-                            FriendHelper.addFriend(user_final,LoggedInUser.getUsername());
-                            Log.i(TAG,"friend added: " + user_final);
+                            String returned_message = FriendHelper.addFriend(user_final,LoggedInUser.getUsername());
+                            Log.i(TAG,"friendship requested: " + user_final);
+                            Log.i(TAG,"message from db: " + returned_message);
                             addButton.setBackgroundResource(ic_done_black_24dp);
                             ListElement.setBackgroundColor(getResources().getColor(grey));
                         } catch (JSONException e) {

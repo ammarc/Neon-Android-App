@@ -1,8 +1,12 @@
 package itproject.neon_client.activities;
 
+import android.Manifest;
+import android.location.Criteria;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -16,14 +20,20 @@ import android.util.Log;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.FusedLocationProviderApi;
+import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 
 import org.json.JSONException;
 
@@ -37,18 +47,29 @@ import static itproject.neon_client.helpers.MapHelper.post_location;
 
 public class MapToFriendActivity extends AppCompatActivity implements OnMapReadyCallback {
 
-    protected Location mLastLocation;
+    protected Location userLocation;
     protected FusedLocationProviderApi mFusedLocactionProviderApi;
     protected LocationManager mLocationManager;
     protected Context context;
     GoogleApiClient mGoogleApiClient;
     LocationRequest locationRequest;
     private GoogleMap mMap;
+    private boolean mLocationPermissionGranted = false;
+    CameraUpdate cu;
+    LatLngBounds.Builder builder;
+
+    private String friendUsername;
+
+    // Construct a FusedLocationProviderClient.
+    FusedLocationProviderClient mFusedLocationProviderClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map_to_friend);
+
+        // Construct a FusedLocationProviderClient.
+        mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
@@ -70,27 +91,76 @@ public class MapToFriendActivity extends AppCompatActivity implements OnMapReady
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
+        getLocationPermission();
+        mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        updateLocationUI();
+        builder = new LatLngBounds.Builder();
+
         // Add a marker in Melbourne and move the camera
         LatLng melbUni = new LatLng(-37.7964, 144.9612);
         mMap.addMarker(new MarkerOptions().position(melbUni).title("Marker in Melb Uni"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(melbUni));
-        //mMap.setMinZoomPreference(10);
-        //mMap.setMaxZoomPreference(20);
+
+        LatLng userLatLng = new LatLng(userLocation.getLatitude(),userLocation.getLongitude());
+
+        builder.include(melbUni);
+        builder.include(userLatLng);
+
+        LatLngBounds bounds = builder.build();
+        cu = CameraUpdateFactory.newLatLngBounds(bounds, 1);
+        mMap.animateCamera(cu);
+
     }
 
+    private void getLocationPermission() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+            mLocationPermissionGranted = true;
+        } else {
+            mLocationPermissionGranted = false;
+            Log.i(TAG,"location permission not granted");
+        }
+    }
+
+    private void updateLocationUI() {
+        if (mMap == null) {
+            return;
+        }
+        try {
+            if (mLocationPermissionGranted) {
+                mMap.setMyLocationEnabled(true);
+                mMap.getUiSettings().setMyLocationButtonEnabled(true);
+                Criteria criteria = new Criteria();
+                userLocation = mLocationManager.getLastKnownLocation(mLocationManager.getBestProvider(criteria, false));
+            } else {
+                mMap.setMyLocationEnabled(false);
+                mMap.getUiSettings().setMyLocationButtonEnabled(false);
+                userLocation = null;
+                getLocationPermission();
+            }
+        } catch (SecurityException e)  {
+            Log.e("Exception: %s", e.getMessage());
+        }
+    }
+
+
     public void onConnected(Bundle arg0) {
-        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
         mFusedLocactionProviderApi.requestLocationUpdates(mGoogleApiClient, locationRequest, new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
 
-                mLastLocation = location;
-                LatLng myLocation = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
-                post_location(LoggedInUser.getUsername(), mLastLocation.getLatitude(), mLastLocation.getLongitude());
-                mMap.moveCamera(CameraUpdateFactory.newLatLng(myLocation));
-                mMap.moveCamera(CameraUpdateFactory.zoomBy(15));
+                userLocation = location;
+                LatLng myLocation = new LatLng(userLocation.getLatitude(), userLocation.getLongitude());
+                post_location(LoggedInUser.getUsername(), userLocation.getLatitude(), userLocation.getLongitude());
+
+                builder.include(myLocation);
+                LatLngBounds bounds = builder.build();
+
+                cu = CameraUpdateFactory.newLatLngBounds(bounds, 1);
+                mMap.moveCamera(cu);
 
                 Log.d(TAG, "location changed");
             }

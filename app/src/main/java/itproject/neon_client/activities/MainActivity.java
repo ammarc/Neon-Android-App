@@ -55,6 +55,7 @@ import itproject.neon_client.helpers.MapSearchAutoCompleteView;
 import static itproject.neon_client.R.drawable.ic_account_circle_black_24dp;
 
 
+
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback {
 
@@ -159,13 +160,21 @@ public class MainActivity extends AppCompatActivity
         if (friendsList != null)
         {
             int index = 0;
-            for (Object user : friendsList.toArray())
-                userNameList[index++] = user.toString();
+            for (Object user : friendsList.toArray()) {
+                index++;
+            }
+            userNameList = new String[index+1];
+            int newindex = 0;
+            for (Object user : friendsList.toArray()) {
+                userNameList[index++] = (String) user;
+                if (newindex == index) {
+                    break;
+                }
+            }
         }
 
         // set the custom ArrayAdapter
-        autoCompleteArrayAdapter = new MapAutoCompleteCustomArrayAdapter(this,
-                                        R.layout.auto_complete_view_row, userNameList);
+        autoCompleteArrayAdapter = new MapAutoCompleteCustomArrayAdapter(this, R.layout.auto_complete_view_row, userNameList);
         mapSearchAutoCompleteView.setAdapter(autoCompleteArrayAdapter);
 
 

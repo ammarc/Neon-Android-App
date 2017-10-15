@@ -2,6 +2,7 @@ package itproject.neon_client.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -47,7 +48,7 @@ public class NewProfileActivity extends AppCompatActivity {
         phone_number = (EditText) findViewById(R.id.phone_number);
         email = (EditText) findViewById(R.id.email);
 
-        user_info_display.setText("Welcome " + Profile.getCurrentProfile().getFirstName() + " " + Profile.getCurrentProfile().getLastName());
+        user_info_display.setText("Welcome\n" + Profile.getCurrentProfile().getFirstName() + " " + Profile.getCurrentProfile().getLastName());
 
         setUsernameButton = (Button) findViewById(R.id.set_username);
         setUsernameButton.setOnClickListener(new View.OnClickListener() {
@@ -100,15 +101,6 @@ public class NewProfileActivity extends AppCompatActivity {
                 }
                 JSONArray result = FriendHelper.addUser(usernameString,Profile.getCurrentProfile().getFirstName(),Profile.getCurrentProfile().getLastName(),
                         phoneString, emailString, Profile.getCurrentProfile().getId());
-                if(result!=null){
-                    Log.i(TAG, result.toString());
-                }
-                else{
-                    Log.i(TAG, "no response from server!");
-                    setUsernameButton.setError("didn't go to server");
-                    spinner.setVisibility(View.GONE);
-                    return;
-                }
                 Log.i(TAG, "user added!");
             }
         } catch (JSONException e) {

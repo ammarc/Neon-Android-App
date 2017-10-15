@@ -105,6 +105,7 @@
             android:value="@string/google_maps_key" />
 
 
+
         <activity
             android:name=".activities.MapToFriendActivity"
             android:label="@string/title_activity_map_to_friend"
