@@ -28,7 +28,7 @@ public class MapHelper {
                 return friends_locations.getJSONObject(i).getDouble("latitude");
             }
         }
-        return 0;
+        throw new JSONException("Could not find friend's latitude");
     }
 
     public static double get_longitude(String to_user, String from_user) throws JSONException {
@@ -45,7 +45,7 @@ public class MapHelper {
                 return friends_locations.getJSONObject(i).getDouble("longitude");
             }
         }
-        throw new JSONException("Could not find friend's location");
+        throw new JSONException("Could not find friend's longitude");
     }
 
     public static void post_location(String username, double latitude, double longitude) {
