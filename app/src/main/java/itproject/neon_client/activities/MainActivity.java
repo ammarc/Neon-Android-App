@@ -1,10 +1,16 @@
 package itproject.neon_client.activities;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -25,11 +31,13 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
@@ -66,6 +74,7 @@ public class MainActivity extends AppCompatActivity
     public static final int BALLOON_BOTTOM_EDGE_OFFSET = 20;
     private static final String TAG = "MainActivity";
     public static final String EXTRA_MESSAGE = "itproject.neon_client.MESSAGE";
+    public static final int MAP_ZOOM_VIEW = 15;
 
     private ViewGroup infoWindow;
     private TextView infoTitle;
@@ -77,6 +86,11 @@ public class MainActivity extends AppCompatActivity
     private MapInfoTouchListener cameraButtonListener;
     private MapInfoTouchListener mapButtonListener;
     private MapLayout mapLayout;
+    private Location userLocation;
+    private LatLngBounds.Builder builder;
+    private CameraUpdate cameraUpdate;
+    private boolean mLocationPermissionGranted;
+    private LocationManager mLocationManager;
 
     private ArrayList<Marker> listOfAllMarkers;
 
@@ -118,7 +132,9 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+
         listOfAllMarkers = new ArrayList<>();
+        mLocationPermissionGranted = false;
 
         try
         {
@@ -430,11 +446,14 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        builder = new LatLngBounds.Builder();
+        updateLocation();
 
         // Let's add a couple of markers
         for (String friend : friendsList)
         {
-            Log.e(TAG, "inside the loop with friend" + friend);
+            Log.e(TAG, "inside the loop with friend " + friend);
             try
             {
                 listOfAllMarkers.add(mMap.addMarker(new MarkerOptions().title(friend).
@@ -474,6 +493,52 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
+        // show the user's location on the main map
+        if (userLocation != null)
+        {
+            LatLng userLatLng = new LatLng(userLocation.getLatitude(), userLocation.getLongitude());
+            MapHelper.post_location(LoggedInUser.getUsername(), userLocation.getLatitude(), userLocation.getLongitude());
+            builder.include(userLatLng);
+            // LatLngBounds bounds = builder.build();
+            cameraUpdate = CameraUpdateFactory.newLatLng(userLatLng);
+            mMap.moveCamera(cameraUpdate);
+            cameraUpdate = CameraUpdateFactory.zoomTo(MAP_ZOOM_VIEW);
+            mMap.animateCamera(cameraUpdate);
+        }
+    }
+
+    private void updateLocation()
+    {
+        if (mMap == null) {
+            return;
+        }
+        try {
+            if (mLocationPermissionGranted) {
+                mMap.setMyLocationEnabled(true);
+                mMap.getUiSettings().setMyLocationButtonEnabled(true);
+                Criteria criteria = new Criteria();
+                userLocation = mLocationManager.getLastKnownLocation(mLocationManager.
+                        getBestProvider(criteria, false));
+            } else {
+                mMap.setMyLocationEnabled(false);
+                mMap.getUiSettings().setMyLocationButtonEnabled(false);
+                userLocation = null;
+                getLocationPermission();
+            }
+        } catch (SecurityException e)  {
+            Log.e("Exception: %s", e.getMessage());
+        }
+    }
+
+    private void getLocationPermission() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+            mLocationPermissionGranted = true;
+            updateLocation();
+        } else {
+            mLocationPermissionGranted = false;
+            Log.i(TAG,"location permission not granted");
+        }
     }
 
     public static int getPixelsFromDp(Context context, float dp)

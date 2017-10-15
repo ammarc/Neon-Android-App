@@ -123,11 +123,11 @@ public class MapToFriendActivity extends AppCompatActivity implements OnMapReady
             LatLng userLatLng = new LatLng(userLocation.getLatitude(), userLocation.getLongitude());
             MapHelper.post_location(LoggedInUser.getUsername(), userLocation.getLatitude(), userLocation.getLongitude());
             builder.include(userLatLng);
+            LatLngBounds bounds = builder.build();
+            cu = CameraUpdateFactory.newLatLngBounds(bounds, 10);
+            mMap.animateCamera(cu);
         }
 
-        LatLngBounds bounds = builder.build();
-        cu = CameraUpdateFactory.newLatLngBounds(bounds, 10);
-        mMap.animateCamera(cu);
 
     }
 

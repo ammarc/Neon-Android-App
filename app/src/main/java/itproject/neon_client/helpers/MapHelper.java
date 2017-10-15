@@ -36,7 +36,7 @@ public class MapHelper {
         JSONArray friends_locations = DatabaseConnect.get(path);
 
         if (friends_locations == null) {
-            Log.i(TAG,"longitude friends_locations is null");
+            Log.e(TAG,"longitude friends_locations is null");
             throw new JSONException("Friends location was null");
         }
 
@@ -45,7 +45,7 @@ public class MapHelper {
                 return friends_locations.getJSONObject(i).getDouble("longitude");
             }
         }
-        return 0;
+        throw new JSONException("Could not find friend's location");
     }
 
     public static void post_location(String username, double latitude, double longitude) {
