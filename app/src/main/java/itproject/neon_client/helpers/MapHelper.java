@@ -66,9 +66,9 @@ public class MapHelper {
 
     public static void accept_permission_request(String from_user, String to_user) {
         String patch_message = "{\"to_user\":\"" + to_user + "\",\"from_user\":\"" + from_user + "\"}";
-        String path = address + "/gps/request";
+        String path = address + "/gps/request/accept";
         DBField field = new DBField(path, patch_message);
-        DatabaseConnect.patch(field);
+        DatabaseConnect.post(field);
     }
 
     public static int get_permission_status(String from_user, String to_user) throws JSONException{
