@@ -1,7 +1,7 @@
 package itproject.neon_client;
 
 import itproject.neon_client.helper_test.MapHelper_test;
-import itproject.neon_client.helper.*;
+import itproject.neon_client.helpers.*;
 import org.json.JSONException;
 import org.junit.Test;
 
@@ -22,11 +22,11 @@ public class MapHelperTest {
         //generate two users, and add them as friendsList
         String to_user = "test" + Integer.toString(rand.nextInt(1000));
         String from_user = "test" + Integer.toString(rand.nextInt(1000));
-        FriendHelper.add_user(to_user, "test", "test", "1111111111", "test789@test.com", "1111111111111111111");
-        FriendHelper.add_user(from_user, "test", "test", "1111111111", "test789@test.com", "2222222222222222222");
+        FriendHelper.addUser(to_user, "test", "test", "1111111111", "test789@test.com", "1111111111111111111");
+        FriendHelper.addUser(from_user, "test", "test", "1111111111", "test789@test.com", "2222222222222222222");
         try {
-            FriendHelper.add_friend(to_user, from_user);
-            FriendHelper.accept_friend_request(from_user, to_user);
+            FriendHelper.addFriend(to_user, from_user);
+            FriendHelper.acceptFriendRequest(from_user, to_user);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -39,11 +39,11 @@ public class MapHelperTest {
         //generate two friendsList and give them location sharing permission
         String to_user = "test" + Integer.toString(rand.nextInt(1000));
         String from_user = "test" + Integer.toString(rand.nextInt(1000));
-        FriendHelper.add_user(to_user, "test", "test", "1111111111", "test789@test.com", "1111111111111111111");
-        FriendHelper.add_user(from_user, "test", "test", "1111111111", "test789@test.com", "2222222222222222222");
+        FriendHelper.addUser(to_user, "test", "test", "1111111111", "test789@test.com", "1111111111111111111");
+        FriendHelper.addUser(from_user, "test", "test", "1111111111", "test789@test.com", "2222222222222222222");
         try {
-            FriendHelper.add_friend(to_user, from_user);
-            FriendHelper.accept_friend_request(from_user, to_user);
+            FriendHelper.addFriend(to_user, from_user);
+            FriendHelper.acceptFriendRequest(from_user, to_user);
         } catch (JSONException e) {
             e.printStackTrace();
         }

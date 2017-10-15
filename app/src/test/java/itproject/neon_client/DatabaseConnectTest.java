@@ -4,7 +4,7 @@ import org.junit.Test;
 
 import java.util.Random;
 import itproject.neon_client.helper_test.*;
-import itproject.neon_client.helper.*;
+import itproject.neon_client.helpers.*;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 

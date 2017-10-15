@@ -1,6 +1,7 @@
 package itproject.neon_client.activities;
 
 import android.Manifest;
+import android.content.Intent;
 import android.location.Criteria;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -39,6 +40,7 @@ import org.json.JSONException;
 
 import itproject.neon_client.helpers.LoggedInUser;
 import itproject.neon_client.R;
+import itproject.neon_client.helpers.MapHelper;
 
 import static android.content.ContentValues.TAG;
 import static itproject.neon_client.helpers.MapHelper.get_latitude;
@@ -68,6 +70,10 @@ public class MapToFriendActivity extends AppCompatActivity implements OnMapReady
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map_to_friend);
 
+        // Get the Intent that started this activity and extract the string
+        Intent intent = getIntent();
+        friendUsername = intent.getStringExtra(MainActivity.EXTRA_MESSAGE);
+
         // Construct a FusedLocationProviderClient.
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
@@ -90,19 +96,33 @@ public class MapToFriendActivity extends AppCompatActivity implements OnMapReady
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        LatLng friendLocation = null;
 
         getLocationPermission();
         mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         updateLocationUI();
         builder = new LatLngBounds.Builder();
 
+        try {
+            double friendLat = MapHelper.get_latitude(friendUsername,LoggedInUser.getUsername());
+            double friendLong = MapHelper.get_longitude(friendUsername,LoggedInUser.getUsername());
+            friendLocation = new LatLng(friendLat,friendLong);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        if (friendLocation != null) {
+            mMap.addMarker(new MarkerOptions().position(friendLocation).title(friendUsername + "\'s location"));
+            builder.include(friendLocation);
+        } else {
+            Log.i(TAG,"friendLocation is null");
+        }
+
         // Add a marker in Melbourne and move the camera
-        LatLng melbUni = new LatLng(-37.7964, 144.9612);
-        mMap.addMarker(new MarkerOptions().position(melbUni).title("Marker in Melb Uni"));
+        //LatLng melbUni = new LatLng(-37.7964, 144.9612);
+        //mMap.addMarker(new MarkerOptions().position(melbUni).title("Marker in Melb Uni"));
 
         LatLng userLatLng = new LatLng(userLocation.getLatitude(),userLocation.getLongitude());
-
-        builder.include(melbUni);
         builder.include(userLatLng);
 
         LatLngBounds bounds = builder.build();

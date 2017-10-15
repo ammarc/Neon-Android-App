@@ -1,15 +1,16 @@
 package itproject.neon_client.chat;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.simple.JSONObject;
@@ -112,17 +113,39 @@ public class ChatActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                // todo ask for friends location, also need to put in message if the other has asked
+                Context context = getApplicationContext();
+                CharSequence text = "Hello toast!";
+                int duration = Toast.LENGTH_LONG;
 
-                // doesn't have permission
-                if (MapHelper.get_permission_status(LoggedInUser.getUsername(),friendName) != 1) {
-                    Snackbar mySnackbar = Snackbar.make(findViewById(R.id.chat_coordinator_layout), R.string.requested_location_permission, Snackbar.LENGTH_LONG);
-                    mySnackbar.show();
+                Toast toast = Toast.makeText(context, text, duration);
+
+                try {
+                    // has permission
+                    if (MapHelper.get_permission_status(LoggedInUser.getUsername(),friendName) == 1) {
+                        Log.i(TAG,"location has permission");
+                        mapDirect();
+                    }
+                    else if (MapHelper.get_permission_status(LoggedInUser.getUsername(),friendName) == 0) {
+                        Log.i(TAG,"location is pending");
+                        toast.setText(R.string.location_permission_pending);
+                        toast.show();
+                    }
+                    else { // doesn't have permission
+                        Log.i(TAG,"location request sent");
+                        MapHelper.request_permission(LoggedInUser.getUsername(),friendName);
+                        toast.setText(R.string.requested_location_permission);
+                        toast.show();
+                    }
+                } catch (JSONException e) {
+                    Log.i(TAG,"location exception caught");
+                    e.printStackTrace();
                 }
-
-                mapDirect();
             }
+
+
         });
+
+
 
         final ChatView chatView = (ChatView) findViewById(R.id.chat_view);
         chatView.setOnSentMessageListener(new ChatView.OnSentMessageListener() {
@@ -201,19 +224,6 @@ public class ChatActivity extends AppCompatActivity {
 
         mySocket.connect();
 
-
-        /*chatView.setTypingListener(new ChatView.TypingListener() {
-            @Override
-            public void userStartedTyping() {
-
-            }
-
-            @Override
-            public void userStoppedTyping() {
-
-            }
-        });*/
-
     }
 
     public void mapDirect() {
@@ -263,3 +273,4 @@ public class ChatActivity extends AppCompatActivity {
     }
 
 }
+
