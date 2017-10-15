@@ -1,9 +1,11 @@
 package itproject.neon_client.chat;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -29,12 +31,14 @@ import itproject.neon_client.helpers.MapHelper;
 import itproject.neon_client.helpers.Tools;
 import itproject.neon_client.activities.NeonARActivity;
 import java.net.Socket;
+import java.util.Map;
 
 public class ChatActivity extends AppCompatActivity {
 
     private static final String TAG = "testing";
     static final Client mySocket = new Client("13.65.209.193", 4000);
-    //static final Client mySocket = new Client("10.0.2.2", 4000);
+    static final int LOCATION_SHARING_ACCEPTED = 1;
+    static final int LOCATION_SHARING_PENDING = 0;
     String gFriendName;
 
     enum status {pending, accepted};
@@ -121,11 +125,11 @@ public class ChatActivity extends AppCompatActivity {
 
                 try {
                     // has permission
-                    if (MapHelper.get_permission_status(LoggedInUser.getUsername(),friendName) == 1) {
+                    if (MapHelper.get_permission_status(LoggedInUser.getUsername(),friendName) == LOCATION_SHARING_ACCEPTED) {
                         Log.i(TAG,"location has permission");
                         mapDirect();
                     }
-                    else if (MapHelper.get_permission_status(LoggedInUser.getUsername(),friendName) == 0) {
+                    else if (MapHelper.get_permission_status(LoggedInUser.getUsername(),friendName) == LOCATION_SHARING_PENDING) {
                         Log.i(TAG,"location is pending");
                         toast.setText(R.string.location_permission_pending);
                         toast.show();
@@ -145,6 +149,40 @@ public class ChatActivity extends AppCompatActivity {
 
         });
 
+        /*AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Look at this dialog!")
+                .setCancelable(false)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        //do things
+                    }
+                });
+        AlertDialog alert = builder.create();
+        alert.show();*/
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(friendName + " has requested your location")
+                .setTitle("Location Sharing");
+        builder.setPositiveButton("Accept", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // User clicked OK button
+                MapHelper.accept_permission_request(friendName,LoggedInUser.getUsername());
+            }
+        });
+        builder.setNegativeButton("Deny", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // User cancelled the dialog
+            }
+        });
+        AlertDialog LocationSharingRequest = builder.create();
+
+        try {
+            if (MapHelper.get_permission_status(LoggedInUser.getUsername(),friendName) == LOCATION_SHARING_PENDING) {
+                LocationSharingRequest.show();
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
 
         final ChatView chatView = (ChatView) findViewById(R.id.chat_view);

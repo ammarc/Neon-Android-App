@@ -19,8 +19,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             chatview:bubbleElevation="elevated"
-            chatview:bubbleBackgroundRcv="@color/colorPrimary"
-            chatview:bubbleBackgroundSend="@color/colorPrimaryLight"
+            chatview:bubbleBackgroundRcv="@color/grey"
+            chatview:bubbleBackgroundSend="@color/colorPrimary"
             chatview:layout_constraintTop_toBottomOf="parent"
             chatview:layout_constraintRight_toRightOf="parent"
             chatview:layout_constraintBottom_toBottomOf="parent"
@@ -45,7 +45,7 @@
                 android:layout_marginEnd="@dimen/fab_margin"
                 android:layout_marginStart="@dimen/fab_margin"
                 android:clickable="true"
-                android:src="@drawable/ic_photo_camera_black_24dp"
+                android:src="@drawable/ic_photo_camera_white_24dp"
                 tools:layout_editor_absoluteY="0dp"
                 tools:layout_editor_absoluteX="0dp" />
 
@@ -57,7 +57,7 @@
                 android:layout_marginEnd="@dimen/fab_margin"
                 android:layout_marginStart="@dimen/fab_margin"
                 android:clickable="true"
-                android:src="@drawable/ic_phone_black_24dp"
+                android:src="@drawable/ic_phone_white_24dp"
                 tools:layout_editor_absoluteY="0dp"
                 tools:layout_editor_absoluteX="0dp" />
 
@@ -68,7 +68,7 @@
                 android:layout_gravity="top|end"
                 android:layout_marginEnd="@dimen/fab_margin"
                 android:layout_marginStart="@dimen/fab_margin"
-                android:src="@drawable/ic_near_me_black_24dp"
+                android:src="@drawable/ic_near_me_white_24dp"
                 tools:layout_editor_absoluteY="0dp"
                 tools:layout_editor_absoluteX="0dp" />
 
@@ -116,7 +116,7 @@
                     android:layout_marginEnd="@dimen/fab_margin"
                     android:layout_marginStart="@dimen/fab_margin"
                     android:clickable="true"
-                    android:src="@drawable/ic_done_black_24dp"
+                    android:src="@drawable/ic_done_white_24dp"
                     tools:layout_editor_absoluteY="0dp"
                     tools:layout_editor_absoluteX="0dp" />
 
@@ -127,7 +127,7 @@
                     android:layout_gravity="top|end"
                     android:layout_marginEnd="@dimen/fab_margin"
                     android:layout_marginStart="@dimen/fab_margin"
-                    android:src="@drawable/ic_clear_black_24dp"
+                    android:src="@drawable/ic_clear_white_24dp"
                     tools:layout_editor_absoluteY="0dp"
                     tools:layout_editor_absoluteX="0dp" />
 

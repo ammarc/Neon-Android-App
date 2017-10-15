@@ -64,6 +64,13 @@ public class MapHelper {
         DatabaseConnect.post(field);
     }
 
+    public static void accept_permission_request(String from_user, String to_user) {
+        String patch_message = "{\"to_user\":\"" + to_user + "\",\"from_user\":\"" + from_user + "\"}";
+        String path = address + "/gps/request";
+        DBField field = new DBField(path, patch_message);
+        DatabaseConnect.patch(field);
+    }
+
     public static int get_permission_status(String from_user, String to_user) throws JSONException{
         String path = address + "/gps/friends/status?from_user=" + from_user + "&to_user=" + to_user;
         JSONArray friendship = DatabaseConnect.get(path);
@@ -91,15 +98,6 @@ public class MapHelper {
         }
 
         return null;
-    }
-
-    public static void accept_permission_request(String from_user, String to_user) {
-        String patch_message = "{\"to_user\":\"" + to_user + "\",\"from_user\":\"" + from_user + "\"}";
-        String path = address + "/gps/request";
-
-        DBField field = new DBField(path, patch_message);
-        DatabaseConnect.patch(field);
-
     }
     
 }
