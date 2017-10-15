@@ -16,8 +16,6 @@
             android:id="@+id/chat_background"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:src="@drawable/neon_pattern"
-            android:scaleType="centerCrop"
             chatview:layout_constraintBottom_toBottomOf="parent"
             chatview:layout_constraintLeft_toLeftOf="parent"
             chatview:layout_constraintRight_toRightOf="parent"
