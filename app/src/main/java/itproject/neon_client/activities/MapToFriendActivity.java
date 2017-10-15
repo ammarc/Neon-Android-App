@@ -101,7 +101,12 @@ public class MapToFriendActivity extends AppCompatActivity implements OnMapReady
         try {
             double friendLat = MapHelper.get_latitude(friendUsername,LoggedInUser.getUsername());
             double friendLong = MapHelper.get_longitude(friendUsername,LoggedInUser.getUsername());
-            friendLocation = new LatLng(friendLat,friendLong);
+            if (friendLat != 0 && friendLong != 0) {
+                friendLocation = new LatLng(friendLat,friendLong);
+            }
+            else {
+                friendLocation = new LatLng(-37.7964, 144.9612); // melb uni
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -113,15 +118,12 @@ public class MapToFriendActivity extends AppCompatActivity implements OnMapReady
             Log.i(TAG,"friendLocation is null");
         }
 
-        // Add a marker in Melbourne and move the camera
-        //LatLng melbUni = new LatLng(-37.7964, 144.9612);
-        //mMap.addMarker(new MarkerOptions().position(melbUni).title("Marker in Melb Uni"));
-
         LatLng userLatLng = new LatLng(userLocation.getLatitude(),userLocation.getLongitude());
+        MapHelper.post_location(LoggedInUser.getUsername(),userLocation.getLatitude(),userLocation.getLongitude());
         builder.include(userLatLng);
 
         LatLngBounds bounds = builder.build();
-        cu = CameraUpdateFactory.newLatLngBounds(bounds, 1);
+        cu = CameraUpdateFactory.newLatLngBounds(bounds, 10);
         mMap.animateCamera(cu);
 
     }

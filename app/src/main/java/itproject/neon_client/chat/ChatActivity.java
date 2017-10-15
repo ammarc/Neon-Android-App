@@ -167,6 +167,7 @@ public class ChatActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int id) {
                 // User clicked OK button
                 MapHelper.accept_permission_request(friendName,LoggedInUser.getUsername());
+                mapDirect();
             }
         });
         builder.setNegativeButton("Deny", new DialogInterface.OnClickListener() {
