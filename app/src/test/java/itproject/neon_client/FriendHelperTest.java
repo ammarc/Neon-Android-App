@@ -4,7 +4,7 @@ import org.junit.Test;
 
 import java.util.Random;
 import itproject.neon_client.helper_test.*;
-import itproject.neon_client.helper.*;
+import itproject.neon_client.helpers.*;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -33,8 +33,8 @@ public class FriendHelperTest {
     @Test
     public void add_friend_correct() {
         //add two users to database to test on
-        FriendHelper.add_user(to_user, "test", "test", "1111111111", "test789@test.com", "1234567890123456789");
-        FriendHelper.add_user(from_user, "test", "test", "1111111111", "test789@test.com", "1234567890987654321");
+        //FriendHelper.add_user(to_user, "test", "test", "1111111111", "test789@test.com", "1234567890123456789");
+        //FriendHelper.add_user(from_user, "test", "test", "1111111111", "test789@test.com", "1234567890987654321");
         assertTrue("should send friend request and be labelled pending", tester.test_add_friend(to_user, from_user));
     }
 

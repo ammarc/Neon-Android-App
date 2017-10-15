@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.facebook.CallbackManager;
@@ -39,6 +40,9 @@ public class LoginActivity extends AppCompatActivity {
     LoginButton fbLoginButton;
     Button signUpButton;
     Button signInButton;
+    TextView fb_logout_message;
+
+    private ProgressBar spinner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,8 +55,10 @@ public class LoginActivity extends AppCompatActivity {
         fbLoginButton = (LoginButton) findViewById(R.id.fb_login_button);
         signUpButton = (Button) findViewById(R.id.sign_up_button);
         signInButton = (Button) findViewById(R.id.fb_sign_in_button);
+        spinner = (ProgressBar)findViewById(R.id.progressBar);
+        spinner.setVisibility(View.GONE);
 
-        final TextView fb_logout_message = findViewById(R.id.not_the_logged_in_person_message);
+        fb_logout_message = findViewById(R.id.not_the_logged_in_person_message);
 
 
         /* facebook and login */
@@ -81,7 +87,6 @@ public class LoginActivity extends AppCompatActivity {
 
                             signInButton.setVisibility(View.VISIBLE);
                             signUpButton.setVisibility(View.VISIBLE);
-                            fb_logout_message.setText("Logged in as " + Profile.getCurrentProfile().getFirstName() + " " + Profile.getCurrentProfile().getLastName() + "\nNot you?");
 
 
                             // no need to call startTracking() on mProfileTracker
@@ -92,33 +97,43 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onCancel() {
                         // App code
+                        Log.i(TAG,"fb cancel");
                     }
 
                     @Override
                     public void onError(FacebookException exception) {
                         // App code
+                        Log.i(TAG,"fb error");
                     }
                 });
 
         if (Profile.getCurrentProfile() == null) {
-            signInButton.setVisibility(View.INVISIBLE);
-            signUpButton.setVisibility(View.INVISIBLE);
-            fb_logout_message.setVisibility(View.INVISIBLE);
+            Log.i(TAG,"current profile is null");
+            signInButton.setVisibility(View.GONE);
+            signUpButton.setVisibility(View.GONE);
+            fb_logout_message.setVisibility(View.GONE);
         }
         else {
             signUpButton.setVisibility(View.VISIBLE);
+            signInButton.setVisibility(View.GONE);
             fb_logout_message.setVisibility(View.VISIBLE);
+            fb_logout_message.setText("Logged in as " + Profile.getCurrentProfile().getFirstName() + " " + Profile.getCurrentProfile().getLastName() + "\nNot you?");
 
-            for (String user : FriendHelper.allUsers()) {
-                try {
-                    if (FriendHelper.getUserFacebookID(user).equals(Profile.getCurrentProfile().getId())) {
-                        signInButton.setVisibility(View.VISIBLE);
-                        signUpButton.setVisibility(View.INVISIBLE);
+            if (FriendHelper.allUsers() == null) {
+                Log.i(TAG,"allusers() is null");
+            } else {
+                for (String user : FriendHelper.allUsers()) {
+                    try {
+                        if (FriendHelper.getUserFacebookID(user).equals(Profile.getCurrentProfile().getId())) {
+                            signInButton.setVisibility(View.VISIBLE);
+                            signUpButton.setVisibility(View.GONE);
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
-                } catch (JSONException e) {
-                    e.printStackTrace();
                 }
             }
+
         }
 
         signUpButton.setOnClickListener(new View.OnClickListener() {
@@ -130,6 +145,7 @@ public class LoginActivity extends AppCompatActivity {
         signInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                spinner.setVisibility(View.VISIBLE);
                 facebookSignIn();
             }
         });
@@ -161,7 +177,7 @@ public class LoginActivity extends AppCompatActivity {
             for (String user : FriendHelper.allUsers())
             {
                 try {
-                    if (Profile.getCurrentProfile().getId().equals(FriendHelper.getUserFacebookID(user))) // todo put in their actual id
+                    if (Profile.getCurrentProfile().getId().equals(FriendHelper.getUserFacebookID(user)))
                     {
                         LoggedInUser.setUsername(user);
                         Log.i(TAG, "current user is " + user);
@@ -172,10 +188,6 @@ public class LoginActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
             }
-
-            Log.i(TAG,"user doesn't have an account");
-            Snackbar mySnackbar = Snackbar.make(findViewById(R.id.coordinator_layout), R.string.dont_have_account, Snackbar.LENGTH_LONG);
-            mySnackbar.show();
         }
     }
 
@@ -183,6 +195,13 @@ public class LoginActivity extends AppCompatActivity {
     protected void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         Log.i(TAG, "on activity result");
+        finish();
+        startActivity(getIntent());
+        if (Profile.getCurrentProfile() == null) {
+            signInButton.setVisibility(View.GONE);
+            signUpButton.setVisibility(View.GONE);
+            fb_logout_message.setVisibility(View.GONE);
+        }
         callbackManager.onActivityResult(requestCode, resultCode, data);
     }
 

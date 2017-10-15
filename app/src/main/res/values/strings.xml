@@ -13,6 +13,9 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
+    <string name="requested_location_permission">You have requested location sharing permission</string>
+    <string name="data_did_not_reach_server">Sorry, the data didn\'t reach the server</string>
+    <string name="location_permission_pending">The location request is pending</string>
     <string name="facebook_app_id">352058488583807</string>
     <string name="fb_login_protocol_scheme">fb352058488583807</string>
     <string name="edit_message">Enter a message</string>

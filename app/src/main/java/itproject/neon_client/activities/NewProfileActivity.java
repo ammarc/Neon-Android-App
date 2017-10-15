@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.facebook.Profile;
@@ -24,6 +25,10 @@ public class NewProfileActivity extends AppCompatActivity {
     private static final String TAG = "testing";
     private EditText username, phone_number, email;
 
+    private ProgressBar spinner;
+    Button setUsernameButton;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +37,9 @@ public class NewProfileActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_create_profile);
 
+        spinner = (ProgressBar)findViewById(R.id.newUserProgressBar);
+        spinner.setVisibility(View.GONE);
+
         Log.i(TAG,"new profile");
 
         TextView user_info_display = (TextView) findViewById(R.id.user_welcome);
@@ -39,12 +47,13 @@ public class NewProfileActivity extends AppCompatActivity {
         phone_number = (EditText) findViewById(R.id.phone_number);
         email = (EditText) findViewById(R.id.email);
 
-        user_info_display.setText("Welcome " + Profile.getCurrentProfile().getFirstName() + " " + Profile.getCurrentProfile().getLastName());
+        user_info_display.setText("Welcome\n" + Profile.getCurrentProfile().getFirstName() + " " + Profile.getCurrentProfile().getLastName());
 
-        Button setUsername = (Button) findViewById(R.id.set_username);
-        setUsername.setOnClickListener(new View.OnClickListener() {
+        setUsernameButton = (Button) findViewById(R.id.set_username);
+        setUsernameButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                spinner.setVisibility(View.VISIBLE);
                 createProfile();
             }
         });
@@ -58,14 +67,22 @@ public class NewProfileActivity extends AppCompatActivity {
 
         if (usernameString.length() < 4) {
             username.setError("username is too short");
+            spinner.setVisibility(View.GONE);
+            return;
+        }
+        if (usernameString.matches("(.*) (.*)")) {
+            username.setError("username can't have spaces");
+            spinner.setVisibility(View.GONE);
             return;
         }
         if (phoneString.length() != 10) {
             phone_number.setError("phone number is invalid");
+            spinner.setVisibility(View.GONE);
             return;
         }
         if (!emailString.contains("@")) {
             email.setError("email is invalid");
+            spinner.setVisibility(View.GONE);
             return;
         }
 
@@ -83,12 +100,6 @@ public class NewProfileActivity extends AppCompatActivity {
                 }
                 JSONArray result = FriendHelper.addUser(usernameString,Profile.getCurrentProfile().getFirstName(),Profile.getCurrentProfile().getLastName(),
                         phoneString, emailString, Profile.getCurrentProfile().getId());
-                if(result!=null){
-                    Log.i(TAG, result.toString());
-                }
-                else{
-                    Log.i(TAG, "no response from server!");
-                }
                 Log.i(TAG, "user added!");
             }
         } catch (JSONException e) {

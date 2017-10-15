@@ -1,14 +1,18 @@
 package itproject.neon_client.chat;
 
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.simple.JSONObject;
@@ -23,15 +27,18 @@ import itproject.neon_client.activities.MainActivity;
 import itproject.neon_client.activities.MapToFriendActivity;
 import itproject.neon_client.R;
 
+import itproject.neon_client.helpers.MapHelper;
 import itproject.neon_client.helpers.Tools;
 import itproject.neon_client.activities.NeonARActivity;
 import java.net.Socket;
+import java.util.Map;
 
 public class ChatActivity extends AppCompatActivity {
 
     private static final String TAG = "testing";
     static final Client mySocket = new Client("13.65.209.193", 4000);
-    //static final Client mySocket = new Client("10.0.2.2", 4000);
+    static final int LOCATION_SHARING_ACCEPTED = 1;
+    static final int LOCATION_SHARING_PENDING = 0;
     String gFriendName;
 
     enum status {pending, accepted};
@@ -109,9 +116,74 @@ public class ChatActivity extends AppCompatActivity {
         map.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mapDirect();
+
+                Context context = getApplicationContext();
+                CharSequence text = "Hello toast!";
+                int duration = Toast.LENGTH_LONG;
+
+                Toast toast = Toast.makeText(context, text, duration);
+
+                try {
+                    // has permission
+                    if (MapHelper.get_permission_status(LoggedInUser.getUsername(),friendName) == LOCATION_SHARING_ACCEPTED) {
+                        Log.i(TAG,"location has permission");
+                        mapDirect();
+                    }
+                    else if (MapHelper.get_permission_status(LoggedInUser.getUsername(),friendName) == LOCATION_SHARING_PENDING) {
+                        Log.i(TAG,"location is pending");
+                        toast.setText(R.string.location_permission_pending);
+                        toast.show();
+                    }
+                    else { // doesn't have permission
+                        Log.i(TAG,"location request sent");
+                        MapHelper.request_permission(LoggedInUser.getUsername(),friendName);
+                        toast.setText(R.string.requested_location_permission);
+                        toast.show();
+                    }
+                } catch (JSONException e) {
+                    Log.i(TAG,"location exception caught");
+                    e.printStackTrace();
+                }
+            }
+
+
+        });
+
+        /*AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Look at this dialog!")
+                .setCancelable(false)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        //do things
+                    }
+                });
+        AlertDialog alert = builder.create();
+        alert.show();*/
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(friendName + " has requested your location")
+                .setTitle("Location Sharing");
+        builder.setPositiveButton("Accept", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // User clicked OK button
+                MapHelper.accept_permission_request(friendName,LoggedInUser.getUsername());
             }
         });
+        builder.setNegativeButton("Deny", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // User cancelled the dialog
+            }
+        });
+        AlertDialog LocationSharingRequest = builder.create();
+
+        try {
+            if (MapHelper.get_permission_status(LoggedInUser.getUsername(),friendName) == LOCATION_SHARING_PENDING) {
+                LocationSharingRequest.show();
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
 
         final ChatView chatView = (ChatView) findViewById(R.id.chat_view);
         chatView.setOnSentMessageListener(new ChatView.OnSentMessageListener() {
@@ -190,19 +262,6 @@ public class ChatActivity extends AppCompatActivity {
 
         mySocket.connect();
 
-
-        /*chatView.setTypingListener(new ChatView.TypingListener() {
-            @Override
-            public void userStartedTyping() {
-
-            }
-
-            @Override
-            public void userStoppedTyping() {
-
-            }
-        });*/
-
     }
 
     public void mapDirect() {
@@ -252,3 +311,4 @@ public class ChatActivity extends AppCompatActivity {
     }
 
 }
+

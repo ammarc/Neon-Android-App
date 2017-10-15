@@ -65,6 +65,12 @@ public class FriendHelper {
 		return user.getJSONObject(0).getString("fbID");
 	}
 
+    public static String getUserFullName(String username) throws JSONException {
+        String path = SERVER_ADDRESS + "profile/?username=" + username;
+        JSONArray user = DatabaseConnect.get(path);
+        return user.getJSONObject(0).getString("first_name") + " " + user.getJSONObject(0).getString("last_name");
+    }
+
 	public static boolean checkFriendList(ArrayList<String> friends, String friend_username) throws JSONException {
 		for(String friend: friends) {
 			if(friend.equals(friend_username)) return true;
@@ -102,6 +108,10 @@ public class FriendHelper {
 		ArrayList<String> users = new ArrayList<String>();
 		String path = SERVER_ADDRESS + "users/all";
 		JSONArray all_users = DatabaseConnect.get(path);
+
+        if (all_users == null) {
+            return null;
+        }
 
 		for (int i = 0; i < all_users.length(); i ++) {
 			try {

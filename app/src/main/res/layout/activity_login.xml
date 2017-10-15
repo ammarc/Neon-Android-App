@@ -33,49 +33,30 @@
             android:textSize="100dp" />
 
 
-        <LinearLayout
+        <Button
+            android:id="@+id/sign_up_button"
             android:layout_width="150dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:orientation="horizontal"
-            android:layout_marginTop="20dp">
+            android:text="Sign Up"
+            android:layout_marginTop="80dp"
+            android:background="@color/blue"
+            android:textSize="15dp"
+            android:textColor="@color/black"/>
 
-            <Button
-                android:id="@+id/sign_up_button"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Sign Up"
-                android:background="@color/blue"
-                android:layout_margin="10dp"
-                android:textSize="15dp"
-                android:textColor="@color/black"/>
-
-        </LinearLayout>
-
-        <LinearLayout
+        <Button
+            android:id="@+id/fb_sign_in_button"
             android:layout_width="150dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="20dp"
-            android:orientation="horizontal">
-
-            <Button
-                android:id="@+id/fb_sign_in_button"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Login"
-                android:layout_margin="10dp"
-                android:background="@color/blue"
-                android:textSize="15dp"
-                android:textColor="@color/black"/>
-
-        </LinearLayout>
+            android:text="Login"
+            android:layout_marginTop="80dp"
+            android:background="@color/blue"
+            android:textSize="15dp"
+            android:textColor="@color/black"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="@color/colorPrimary"
             android:layout_marginTop="20dp"
             android:id="@+id/not_the_logged_in_person_message"/>
 
@@ -85,6 +66,14 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:layout_gravity="center_horizontal" />
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_centerHorizontal="true" />
 
     </LinearLayout>
 
