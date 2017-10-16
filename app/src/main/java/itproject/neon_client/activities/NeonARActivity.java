@@ -246,9 +246,9 @@ public class NeonARActivity extends eu.kudan.kudan.ARActivity implements SensorE
                 (float) currentLocation.getLongitude(),
                 (float) currentLocation.getAltitude(),
                 System.currentTimeMillis());
-        Log.i(TAG, "Posting location from AR");
-        MapHelper.post_location(LoggedInUser.getUsername(), currentLocation.getLatitude(),
-                currentLocation.getLongitude());
+        // Log.i(TAG, "Posting location from AR");
+        // MapHelper.post_location(LoggedInUser.getUsername(), currentLocation.getLatitude(),
+                // currentLocation.getLongitude());
     }
 
     @Override
@@ -407,6 +407,8 @@ public class NeonARActivity extends eu.kudan.kudan.ARActivity implements SensorE
             destLocation.setLongitude(MapHelper.get_longitude(friendUsername, LoggedInUser.getUsername()));
             destLocation.setLatitude(MapHelper.get_latitude(friendUsername, LoggedInUser.getUsername()));
             targetNode.resetToTrackNewLocation();
+            if (currentLocation != null)
+                MapHelper.post_location(LoggedInUser.getUsername(), currentLocation.getLatitude(), currentLocation.getLongitude());
         }
         catch (JSONException e)
         {
