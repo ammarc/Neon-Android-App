@@ -35,22 +35,22 @@
             android:id="@+id/search_box"
             android:layout_width="250dp"
             android:layout_height="40dp"
-            android:layout_weight="1"
             android:completionThreshold="1"
-            android:background="@color/white"
-            android:hint="Search Location Here"
+            android:layout_marginLeft="20dp"
+            android:background="@color/grey"
+            android:hint="Search Friends"
             android:layout_alignBottom="@+id/map_search_button"
-            android:layout_alignStart="@+id/linearLayout" />
-        
+            android:layout_alignStart="@+id/main_toolbar_layout" />
+
         <Button
             android:id="@+id/map_search_button"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="40dp"
             android:layout_weight="0.5"
             android:onClick="onMapSearch"
             android:text="Search"
             android:layout_below="@+id/linearLayout"
-            android:layout_alignParentEnd="true"
+            android:layout_toRightOf="@id/search_box"
             android:layout_marginTop="44dp" />
 
 
