@@ -6,8 +6,10 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.hardware.Sensor;
 import android.location.Criteria;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -58,6 +60,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import itproject.neon_client.helpers.FriendHelper;
 import itproject.neon_client.helpers.LoggedInUser;
@@ -75,13 +81,16 @@ import static itproject.neon_client.R.drawable.ic_account_circle_black_24dp;
 
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback {
+        implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback, LocationListener {
 
     // where 20 is offset between info bottom edge and content's bottom edge
     // and 39 is the marker height
     public static final int MARKER_HEIGHT = 39;
     public static final int BALLOON_BOTTOM_EDGE_OFFSET = 20;
-    private static final String TAG = "testing";
+    private static final String TAG = "MainActivity";
+    private static final int LOCATION_MIN_TIME = 0;
+    private static final int LOCATION_MIN_DISTANCE = 0;
+    private static final long MAP_UPDATE_DELAY = 10;
     public static final String EXTRA_MESSAGE = "itproject.neon_client.MESSAGE";
     public static final int MAP_ZOOM_VIEW = 15;
 
@@ -100,6 +109,9 @@ public class MainActivity extends AppCompatActivity
     private CameraUpdate cameraUpdate;
     private boolean mLocationPermissionGranted;
     private LocationManager mLocationManager;
+    private boolean isMapReady;
+    // TODO: change the thread pool size below to a constant
+    final ScheduledExecutorService mapUpdateExecutor = Executors.newSingleThreadScheduledExecutor();
 
     private ArrayList<Marker> listOfAllMarkers;
 
@@ -144,6 +156,7 @@ public class MainActivity extends AppCompatActivity
 
         listOfAllMarkers = new ArrayList<>();
         mLocationPermissionGranted = false;
+        isMapReady = false;
 
         try
         {
@@ -250,6 +263,20 @@ public class MainActivity extends AppCompatActivity
             }
         };
         this.chatButton.setOnTouchListener(chatButtonListener);
+
+        mapUpdateExecutor.scheduleWithFixedDelay(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        refreshMap();
+                    }
+                });
+            }
+        }, 0, MAP_UPDATE_DELAY, TimeUnit.SECONDS);
     }
 
     @Override
@@ -390,6 +417,8 @@ public class MainActivity extends AppCompatActivity
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
+                LOCATION_MIN_TIME, LOCATION_MIN_DISTANCE, this);
         builder = new LatLngBounds.Builder();
         updateLocation();
 
@@ -445,6 +474,27 @@ public class MainActivity extends AppCompatActivity
             mMap.moveCamera(cameraUpdate);
             cameraUpdate = CameraUpdateFactory.zoomTo(MAP_ZOOM_VIEW);
             mMap.animateCamera(cameraUpdate);
+        }
+
+        isMapReady = true;
+    }
+
+    public void refreshMap()
+    {
+        if (!isMapReady)
+            return;
+        for (Marker marker : this.listOfAllMarkers)
+        {
+            Log.e(TAG, "Refreshing map of friend: " + marker.getTitle());
+            try {
+                marker.setPosition(new LatLng(MapHelper.get_latitude(marker.getTitle(),
+                        LoggedInUser.getUsername()),
+                        MapHelper.get_longitude(marker.getTitle(), LoggedInUser.getUsername())));
+            }
+            catch (JSONException e)
+            {
+                Log.e(TAG, "JSON exception: " + e.getMessage());
+            }
         }
     }
 
@@ -569,5 +619,23 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    @Override
+    public void onLocationChanged(Location location)
+    {
+        userLocation = location;
+        // can be used to update location info on screen
+        Log.i(TAG, "Posting location from main");
+        MapHelper.post_location(LoggedInUser.getUsername(), userLocation.getLatitude(),
+                userLocation.getLongitude());
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {}
+
+    @Override
+    public void onProviderEnabled(String provider) {}
+
+    @Override
+    public void onProviderDisabled(String provider) {}
 
 }
