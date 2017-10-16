@@ -497,7 +497,8 @@ public class MainActivity extends AppCompatActivity
                         LoggedInUser.getUsername()),
                         MapHelper.get_longitude(marker.getTitle(), LoggedInUser.getUsername())));
                 // Post a new location every couple of seconds
-                MapHelper.post_location(LoggedInUser.getUsername(), userLocation.getLatitude(), userLocation.getLongitude());
+                if (userLocation != null)
+                    MapHelper.post_location(LoggedInUser.getUsername(), userLocation.getLatitude(), userLocation.getLongitude());
             }
             catch (JSONException e)
             {
