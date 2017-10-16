@@ -161,7 +161,7 @@ public class MapToFriendActivity extends AppCompatActivity implements OnMapReady
                     Log.i(TAG,"userLocation is null");
                     userLocation = new Location("testy_loc");
                     userLocation.setLatitude(-37.7964);
-                    userLocation.setLongitude(144.9612); // melb uni
+                    userLocation.setLongitude(144.9612);
                 }
                 else {
                     Log.i(TAG,"userLocation = " + userLocation.getLatitude() + "," + userLocation.getLongitude());
@@ -189,6 +189,7 @@ public class MapToFriendActivity extends AppCompatActivity implements OnMapReady
 
                 userLocation = location;
                 LatLng myLocation = new LatLng(userLocation.getLatitude(), userLocation.getLongitude());
+                Log.d(TAG, "Posting location from the maps");
                 post_location(LoggedInUser.getUsername(), userLocation.getLatitude(), userLocation.getLongitude());
 
                 builder.include(myLocation);
@@ -197,7 +198,6 @@ public class MapToFriendActivity extends AppCompatActivity implements OnMapReady
                 cu = CameraUpdateFactory.newLatLngBounds(bounds, 1);
                 mMap.moveCamera(cu);
 
-                Log.d(TAG, "location changed");
             }
         });
     }

@@ -53,7 +53,7 @@ public class MapHelper {
                 "\",\"latitude\":\"" + latitude +
                 "\",\"longitude\":\"" + longitude +
                 "\"}";
-        Log.i(TAG, "post_location: " + post_message);
+        Log.i(TAG, "Now posting the following location: " + post_message);
         String path = SERVER_ADDRESS + "/gps";
         DBField field = new DBField(path, post_message);
         DatabaseConnect.post(field);
