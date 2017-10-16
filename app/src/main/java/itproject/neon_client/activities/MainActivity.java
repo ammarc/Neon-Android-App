@@ -22,6 +22,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -221,14 +222,13 @@ public class MainActivity extends AppCompatActivity
         mapFragment.getMapAsync(this);
 
 
-
         this.infoWindow = (ViewGroup)getLayoutInflater().inflate(R.layout.info_balloon, null);
         this.infoTitle = (TextView)infoWindow.findViewById(R.id.friend_name);
         //this.infoSnippet = (TextView)infoWindow.findViewById(R.id.details);
 
         this.chatButton = (Button)infoWindow.findViewById(R.id.button_chat);
-        this.cameraButton = (Button)infoWindow.findViewById(R.id.button_camera);
-        this.mapButton = (Button)infoWindow.findViewById(R.id.button_map);
+        //this.cameraButton = (Button)infoWindow.findViewById(R.id.button_camera);
+        //this.mapButton = (Button)infoWindow.findViewById(R.id.button_map);
 
         // Setting custom OnTouchListener which deals with the pressed state
         // so it shows up
@@ -238,32 +238,12 @@ public class MainActivity extends AppCompatActivity
             protected void onClickConfirmed(View v, Marker marker) {
                 // Here we can perform some action triggered after clicking the button
                 //chat(marker.getTitle());
-                Toast.makeText(MainActivity.this, marker.getTitle() + " chat button clicked", Toast.LENGTH_SHORT).show();
                 chatButton.setBackgroundColor(getResources().getColor(R.color.dark_gray));
                 chatButton.setBackgroundColor(getResources().getColor(R.color.white));
+                chat(marker.getTitle());
             }
         };
         this.chatButton.setOnTouchListener(chatButtonListener);
-
-        this.cameraButtonListener = new MapInfoTouchListener(infoWindow)
-        {
-            @Override
-            protected void onClickConfirmed(View v, Marker marker) {
-                // Here we can perform some action triggered after clicking the button
-                Toast.makeText(MainActivity.this, marker.getTitle() + " camera button clicked", Toast.LENGTH_SHORT).show();
-            }
-        };
-        this.cameraButton.setOnTouchListener(cameraButtonListener);
-
-        this.mapButtonListener = new MapInfoTouchListener(infoWindow)
-        {
-            @Override
-            protected void onClickConfirmed(View v, Marker marker) {
-                // Here we can perform some action triggered after clicking the button
-                Toast.makeText(MainActivity.this, marker.getTitle() + " map button clicked", Toast.LENGTH_SHORT).show();
-            }
-        };
-        this.mapButton.setOnTouchListener(mapButtonListener);
     }
 
     @Override
@@ -323,24 +303,6 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    /**
-     * Gets called every time the user presses the menu button.
-     * Use if your menu is dynamic.
-     */
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        /*menu.clear();
-        if(enableAdd)
-            menu.add(0, MENU_ADD, Menu.NONE, R.string.your-add-text).setIcon(R.drawable.your-add-icon);
-        if(enableList)
-            menu.add(0, MENU_LIST, Menu.NONE, R.string.your-list-text).setIcon(R.drawable.your-list-icon);
-        if(enableRefresh)
-            menu.add(0, MENU_REFRESH, Menu.NONE, R.string.your-refresh-text).setIcon(R.drawable.your-refresh-icon);
-        if(enableLogin)
-            menu.add(0, MENU_LOGIN, Menu.NONE, R.string.your-login-text).setIcon(R.drawable.your-login-icon);*/
-
-        return super.onPrepareOptionsMenu(menu);
-    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -476,8 +438,6 @@ public class MainActivity extends AppCompatActivity
                 infoTitle.setText(marker.getTitle());
                 //infoSnippet.setText(marker.getSnippet());
                 chatButtonListener.setMarker(marker);
-                cameraButtonListener.setMarker(marker);
-                mapButtonListener.setMarker(marker);
 
                 // We must call this to set the current marker and infoWindow references
                 // to the MapWrapperLayout
@@ -570,6 +530,13 @@ public class MainActivity extends AppCompatActivity
             {
                 Toast.makeText(this.getApplicationContext(), "No user exists with that name", Toast.LENGTH_SHORT).show();
             }
+        }
+
+        // putting keyboard down
+        view = this.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
     }
 

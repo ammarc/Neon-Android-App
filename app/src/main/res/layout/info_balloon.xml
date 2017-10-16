@@ -14,13 +14,13 @@
         android:gravity="center"
         android:background="@color/white"/>
 
-    <Button
+    <!--Button
         android:id="@+id/button_map"
         android:layout_width="127dp"
         android:layout_height="wrap_content"
         android:text="Map"
         android:textSize="10dp"
-        android:background="@color/white" />
+        android:background="@color/white" /-->
 
     <Button
         android:id="@+id/button_chat"
@@ -31,11 +31,11 @@
         android:background="@color/white"
         android:layout_weight="0.30" />
 
-    <Button
+    <!--Button
         android:id="@+id/button_camera"
         android:layout_width="127dp"
         android:layout_height="wrap_content"
         android:text="Camera"
         android:textSize="10dp"
-        android:background="@color/white"/>
+        android:background="@color/white"/-->
 </LinearLayout>

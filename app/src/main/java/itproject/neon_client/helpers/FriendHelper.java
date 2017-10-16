@@ -65,6 +65,12 @@ public class FriendHelper {
 		return user.getJSONObject(0).getString("fbID");
 	}
 
+	public static String getUserPhoneNumber(String username) throws JSONException {
+		String path = SERVER_ADDRESS + "profile/?username=" + username;
+		JSONArray user = DatabaseConnect.get(path);
+		return user.getJSONObject(0).getString("phone_num");
+	}
+
     public static String getUserFullName(String username) throws JSONException {
         String path = SERVER_ADDRESS + "profile/?username=" + username;
         JSONArray user = DatabaseConnect.get(path);

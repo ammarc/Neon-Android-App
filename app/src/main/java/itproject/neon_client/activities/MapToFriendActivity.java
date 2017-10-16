@@ -121,19 +121,17 @@ public class MapToFriendActivity extends AppCompatActivity implements OnMapReady
 
         if (friendLocation != null) {
             mMap.addMarker(new MarkerOptions().position(friendLocation).title(friendUsername + "\'s location"));
-            builder.include(friendLocation);
+            LatLng friendLatLng = new LatLng(friendLocation.latitude,friendLocation.longitude);
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(friendLatLng,14.0f));
         } else {
             Log.i(TAG,"friendLocation is null");
         }
 
         if (userLocation != null)
         {
-            LatLng userLatLng = new LatLng(userLocation.getLatitude(), userLocation.getLongitude());
             MapHelper.post_location(LoggedInUser.getUsername(), userLocation.getLatitude(), userLocation.getLongitude());
-            builder.include(userLatLng);
-            LatLngBounds bounds = builder.build();
-            cu = CameraUpdateFactory.newLatLngBounds(bounds, 10);
-            mMap.animateCamera(cu);
+        } else {
+            Log.i(TAG,"userLocation is null");
         }
 
 

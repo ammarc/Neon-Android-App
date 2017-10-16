@@ -1,15 +1,20 @@
 package itproject.neon_client.chat;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -102,7 +107,36 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
 
+        if (ActivityCompat.checkSelfPermission(ChatActivity.this,
+                Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(ChatActivity.this, new String[]{Manifest.permission.CALL_PHONE},1);
+        }
+
         FloatingActionButton phone = (FloatingActionButton) findViewById(R.id.phone_fab);
+        phone.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent callIntent = new Intent(Intent.ACTION_CALL);
+                try {
+                    callIntent.setData(Uri.parse("tel:" + FriendHelper.getUserPhoneNumber(friendName)));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                if (ActivityCompat.checkSelfPermission(ChatActivity.this,
+                        Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED) {
+                    startActivity(callIntent);
+                }
+                else {
+                    Log.i(TAG,"phone permission: "+ActivityCompat.checkSelfPermission(ChatActivity.this,
+                            Manifest.permission.CALL_PHONE));
+                    Log.i(TAG,"required phone permission: "+PackageManager.PERMISSION_GRANTED);
+                    Toast toast = Toast.makeText(getApplicationContext(),"Call failed",Toast.LENGTH_LONG);
+                    toast.show();
+                }
+
+            }
+        });
 
         FloatingActionButton camera = (FloatingActionButton) findViewById(R.id.camera_view_fab);
         camera.setOnClickListener(new View.OnClickListener() {
@@ -149,16 +183,6 @@ public class ChatActivity extends AppCompatActivity {
 
         });
 
-        /*AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage("Look at this dialog!")
-                .setCancelable(false)
-                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        //do things
-                    }
-                });
-        AlertDialog alert = builder.create();
-        alert.show();*/
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage(friendName + " has requested your location")
@@ -194,6 +218,7 @@ public class ChatActivity extends AppCompatActivity {
                 Message newMessage = new Message("live", chatMessage.getMessage(), friendName, userName, -1);
                 org.json.JSONObject messageJson = newMessage.buildJson();
                 new SendMessage().execute(messageJson.toString());
+                removeKeyboard();
                 return true;
             }
         });
@@ -291,6 +316,7 @@ public class ChatActivity extends AppCompatActivity {
             return true;
         }
 
+
         @Override
         protected void onProgressUpdate(Void... params) { }
 
@@ -298,6 +324,15 @@ public class ChatActivity extends AppCompatActivity {
 
         @Override
         protected void onPreExecute() {}
+    }
+
+    private void removeKeyboard() {
+        // putting keyboard down
+        View view = this.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
     }
 
     protected void onStop(){
