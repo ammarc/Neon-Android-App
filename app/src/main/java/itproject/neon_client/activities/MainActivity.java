@@ -110,8 +110,7 @@ public class MainActivity extends AppCompatActivity
     private boolean mLocationPermissionGranted;
     private LocationManager mLocationManager;
     private boolean isMapReady;
-    // TODO: change the thread pool size below to a constant
-    final ScheduledExecutorService mapUpdateExecutor = Executors.newSingleThreadScheduledExecutor();
+    private final ScheduledExecutorService mapUpdateExecutor = Executors.newSingleThreadScheduledExecutor();
 
     private ArrayList<Marker> listOfAllMarkers;
 
@@ -417,8 +416,15 @@ public class MainActivity extends AppCompatActivity
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
-                LOCATION_MIN_TIME, LOCATION_MIN_DISTANCE, this);
+        try
+        {
+            mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
+                    LOCATION_MIN_TIME, LOCATION_MIN_DISTANCE, this);
+        }
+        catch (SecurityException e)
+        {
+            Log.e(TAG, "Location access error: " + e.getMessage());
+        }
         builder = new LatLngBounds.Builder();
         updateLocation();
 

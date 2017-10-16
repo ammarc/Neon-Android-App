@@ -78,9 +78,8 @@ public class ARSimpleImageNode extends ARImageNode
             initialSettingFlag = 1;
     }
 
-    public void resetYaws()
+    public void resetToTrackNewLocation()
     {
-        newYaw = orientationMatrix[0];
-        yaw = orientationMatrix[0];
+        initialSettingFlag = -1;
     }
 }
