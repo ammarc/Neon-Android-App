@@ -11,11 +11,11 @@ import static itproject.neon_client.chat.ChatActivity.LOCATION_SHARING_PENDING;
 import static itproject.neon_client.helpers.FriendHelper.SERVER_ADDRESS;
 
 public class MapHelper {
-    // private static final String SERVER_ADDRESS = "http://13.65.209.193:3000";
+    private static final String SERVER_ADDRESS = "http://13.65.209.193:3000";
     private static final String TAG = "testing";
 
     public static double get_latitude(String to_user, String from_user) throws JSONException {
-        String path = SERVER_ADDRESS + "/gps/friendsList?user=" + from_user;
+        String path = SERVER_ADDRESS + "/gps/friends?user=" + from_user;
         JSONArray friends_locations = DatabaseConnect.get(path);
 
         if (friends_locations == null) {
@@ -32,7 +32,7 @@ public class MapHelper {
     }
 
     public static double get_longitude(String to_user, String from_user) throws JSONException {
-        String path = SERVER_ADDRESS + "/gps/friendsList?user=" + from_user;
+        String path = SERVER_ADDRESS + "/gps/friends?user=" + from_user;
         JSONArray friends_locations = DatabaseConnect.get(path);
 
         if (friends_locations == null) {
@@ -53,7 +53,7 @@ public class MapHelper {
                 "\",\"latitude\":\"" + latitude +
                 "\",\"longitude\":\"" + longitude +
                 "\"}";
-        // Log.e(TAG, "post_location: " + post_message);
+        Log.i(TAG, "post_location: " + post_message);
         String path = SERVER_ADDRESS + "/gps";
         DBField field = new DBField(path, post_message);
         DatabaseConnect.post(field);
@@ -76,8 +76,6 @@ public class MapHelper {
     public static int get_permission_status(String from_user, String to_user) throws JSONException{
         String path = SERVER_ADDRESS + "/gps/friends/status?from_user=" + from_user + "&to_user=" + to_user;
         JSONArray friendship = DatabaseConnect.get(path);
-        if (friendship == null)
-            return LOCATION_SHARING_PENDING;
         if (friendship.getJSONObject(0).get("location_status").toString().equals("null")) {
             Log.i(TAG,"location status is null");
             return -1;

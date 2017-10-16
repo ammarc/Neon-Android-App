@@ -72,7 +72,7 @@ public class MainActivity extends AppCompatActivity
     // and 39 is the marker height
     public static final int MARKER_HEIGHT = 39;
     public static final int BALLOON_BOTTOM_EDGE_OFFSET = 20;
-    private static final String TAG = "MainActivity";
+    private static final String TAG = "testing";
     public static final String EXTRA_MESSAGE = "itproject.neon_client.MESSAGE";
     public static final int MAP_ZOOM_VIEW = 15;
 
@@ -145,12 +145,6 @@ public class MainActivity extends AppCompatActivity
         {
             Log.e(TAG, e.getMessage());
         }
-
-        /*
-        for (String friend : friendsList)
-            Log.e(TAG, "I found one of the friends to be " + friend);
-        Log.e(TAG, "\n");
-        */
 
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.main_toolbar);

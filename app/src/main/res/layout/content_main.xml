@@ -11,24 +11,25 @@
 
     <itproject.neon_client.helpers.MapLayout
         android:id="@+id/map_container"
-        android:layout_width="368dp"
-        android:layout_height="620dp"
+        android:layout_width="420dp"
+        android:layout_height="610dp"
         tools:layout_constraintRight_toRightOf="parent"
         tools:layout_constraintBottom_toBottomOf="parent"
         tools:layout_constraintLeft_toLeftOf="parent"
-        tools:layout_editor_absoluteY="56dp"
-        tools:layout_editor_absoluteX="8dp"
-        android:layout_gravity="bottom|center">
+        android:layout_gravity="bottom|center"
+        tools:layout_editor_absoluteY="0dp"
+        tools:layout_editor_absoluteX="8dp">
 
         <fragment
             android:id="@+id/map_main_view"
             android:name="com.google.android.gms.maps.MapFragment"
             android:layout_width="match_parent"
-            android:layout_height="610dp"
+            android:layout_height="match_parent"
             android:layout_alignParentStart="false"
             android:layout_below="@+id/linearLayout"
-            tools:layout_editor_absoluteX="8dp"
-            tools:layout_editor_absoluteY="0dp" />
+            tools:layout_constraintRight_toRightOf="parent"
+            tools:layout_constraintBottom_toBottomOf="parent"
+            tools:layout_constraintLeft_toLeftOf="parent" />
 
         <itproject.neon_client.helpers.MapSearchAutoCompleteView
             android:id="@+id/search_box"

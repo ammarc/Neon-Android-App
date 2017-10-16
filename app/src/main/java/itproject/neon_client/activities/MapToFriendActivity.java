@@ -33,6 +33,8 @@ import com.google.android.gms.tasks.Task;
 
 import org.json.JSONException;
 
+import java.util.Random;
+
 import itproject.neon_client.helpers.LoggedInUser;
 import itproject.neon_client.R;
 import itproject.neon_client.helpers.MapHelper;
@@ -56,6 +58,7 @@ public class MapToFriendActivity extends AppCompatActivity implements OnMapReady
     LatLngBounds.Builder builder;
 
     private String friendUsername;
+    private final String TAG = "testing";
 
     // Construct a FusedLocationProviderClient.
     FusedLocationProviderClient mFusedLocationProviderClient;
@@ -71,6 +74,8 @@ public class MapToFriendActivity extends AppCompatActivity implements OnMapReady
 
         // Construct a FusedLocationProviderClient.
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+
+        userLocation = new Location("user_location");
 
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
@@ -105,7 +110,10 @@ public class MapToFriendActivity extends AppCompatActivity implements OnMapReady
                 friendLocation = new LatLng(friendLat,friendLong);
             }
             else {
-                friendLocation = new LatLng(-37.7964, 144.9612); // melb uni
+                Random rand = new Random();
+                double randLat = rand.nextInt(-37) - rand.nextDouble();
+                double randLng = rand.nextInt(145) - rand.nextDouble();
+                friendLocation = new LatLng(randLat,randLng); // melb uni
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -151,6 +159,16 @@ public class MapToFriendActivity extends AppCompatActivity implements OnMapReady
                 mMap.getUiSettings().setMyLocationButtonEnabled(true);
                 Criteria criteria = new Criteria();
                 userLocation = mLocationManager.getLastKnownLocation(mLocationManager.getBestProvider(criteria, false));
+                if (userLocation == null) {
+                    Log.i(TAG,"userLocation is null");
+                    userLocation = new Location("testy_loc");
+                    userLocation.setLatitude(-37.7964);
+                    userLocation.setLongitude(144.9612); // melb uni
+                }
+                else {
+                    Log.i(TAG,"userLocation = " + userLocation.getLatitude() + "," + userLocation.getLongitude());
+                }
+
             } else {
                 mMap.setMyLocationEnabled(false);
                 mMap.getUiSettings().setMyLocationButtonEnabled(false);

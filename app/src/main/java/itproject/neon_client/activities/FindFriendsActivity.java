@@ -49,7 +49,7 @@ public class FindFriendsActivity extends AppCompatActivity {
 
             final String user_final = user;
 
-            if (FriendHelper.getFriendshipStatus(LoggedInUser.getUsername(),user) == -1) {
+            if (FriendHelper.getFriendshipStatus(LoggedInUser.getUsername(),user) == -1 && !user.equals(LoggedInUser.getUsername())) {
 
                 final LinearLayout ListElement = new LinearLayout(this);
                 ListElement.setPadding(16, 16, 16, 16);
