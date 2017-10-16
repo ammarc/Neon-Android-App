@@ -33,6 +33,8 @@ import com.google.android.gms.tasks.Task;
 
 import org.json.JSONException;
 
+import java.util.Random;
+
 import itproject.neon_client.helpers.LoggedInUser;
 import itproject.neon_client.R;
 import itproject.neon_client.helpers.MapHelper;
@@ -56,6 +58,7 @@ public class MapToFriendActivity extends AppCompatActivity implements OnMapReady
     LatLngBounds.Builder builder;
 
     private String friendUsername;
+    private final String TAG = "testing";
 
     // Construct a FusedLocationProviderClient.
     FusedLocationProviderClient mFusedLocationProviderClient;
@@ -71,6 +74,8 @@ public class MapToFriendActivity extends AppCompatActivity implements OnMapReady
 
         // Construct a FusedLocationProviderClient.
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+
+        userLocation = new Location("user_location");
 
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
@@ -101,7 +106,15 @@ public class MapToFriendActivity extends AppCompatActivity implements OnMapReady
         try {
             double friendLat = MapHelper.get_latitude(friendUsername,LoggedInUser.getUsername());
             double friendLong = MapHelper.get_longitude(friendUsername,LoggedInUser.getUsername());
-            friendLocation = new LatLng(friendLat,friendLong);
+            if (friendLat != 0 && friendLong != 0) {
+                friendLocation = new LatLng(friendLat,friendLong);
+            }
+            else {
+                Random rand = new Random();
+                double randLat = rand.nextInt(-37) - rand.nextDouble();
+                double randLng = rand.nextInt(145) - rand.nextDouble();
+                friendLocation = new LatLng(randLat,randLng); // melb uni
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -113,16 +126,16 @@ public class MapToFriendActivity extends AppCompatActivity implements OnMapReady
             Log.i(TAG,"friendLocation is null");
         }
 
-        // Add a marker in Melbourne and move the camera
-        //LatLng melbUni = new LatLng(-37.7964, 144.9612);
-        //mMap.addMarker(new MarkerOptions().position(melbUni).title("Marker in Melb Uni"));
+        if (userLocation != null)
+        {
+            LatLng userLatLng = new LatLng(userLocation.getLatitude(), userLocation.getLongitude());
+            MapHelper.post_location(LoggedInUser.getUsername(), userLocation.getLatitude(), userLocation.getLongitude());
+            builder.include(userLatLng);
+            LatLngBounds bounds = builder.build();
+            cu = CameraUpdateFactory.newLatLngBounds(bounds, 10);
+            mMap.animateCamera(cu);
+        }
 
-        LatLng userLatLng = new LatLng(userLocation.getLatitude(),userLocation.getLongitude());
-        builder.include(userLatLng);
-
-        LatLngBounds bounds = builder.build();
-        cu = CameraUpdateFactory.newLatLngBounds(bounds, 1);
-        mMap.animateCamera(cu);
 
     }
 
@@ -146,6 +159,16 @@ public class MapToFriendActivity extends AppCompatActivity implements OnMapReady
                 mMap.getUiSettings().setMyLocationButtonEnabled(true);
                 Criteria criteria = new Criteria();
                 userLocation = mLocationManager.getLastKnownLocation(mLocationManager.getBestProvider(criteria, false));
+                if (userLocation == null) {
+                    Log.i(TAG,"userLocation is null");
+                    userLocation = new Location("testy_loc");
+                    userLocation.setLatitude(-37.7964);
+                    userLocation.setLongitude(144.9612); // melb uni
+                }
+                else {
+                    Log.i(TAG,"userLocation = " + userLocation.getLatitude() + "," + userLocation.getLongitude());
+                }
+
             } else {
                 mMap.setMyLocationEnabled(false);
                 mMap.getUiSettings().setMyLocationButtonEnabled(false);
@@ -156,7 +179,6 @@ public class MapToFriendActivity extends AppCompatActivity implements OnMapReady
             Log.e("Exception: %s", e.getMessage());
         }
     }
-
 
     public void onConnected(Bundle arg0) {
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)

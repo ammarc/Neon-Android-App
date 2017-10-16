@@ -1,10 +1,16 @@
 package itproject.neon_client.activities;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -25,11 +31,13 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
@@ -47,6 +55,7 @@ import itproject.neon_client.helpers.LoggedInUser;
 import itproject.neon_client.R;
 import itproject.neon_client.chat.ChatActivity;
 import itproject.neon_client.helpers.MapAutoCompleteCustomArrayAdapter;
+import itproject.neon_client.helpers.MapHelper;
 import itproject.neon_client.helpers.MapInfoTouchListener;
 import itproject.neon_client.helpers.MapLayout;
 import itproject.neon_client.helpers.MapSearchAutoCompleteTextChangedListener;
@@ -65,6 +74,7 @@ public class MainActivity extends AppCompatActivity
     public static final int BALLOON_BOTTOM_EDGE_OFFSET = 20;
     private static final String TAG = "testing";
     public static final String EXTRA_MESSAGE = "itproject.neon_client.MESSAGE";
+    public static final int MAP_ZOOM_VIEW = 15;
 
     private ViewGroup infoWindow;
     private TextView infoTitle;
@@ -76,6 +86,11 @@ public class MainActivity extends AppCompatActivity
     private MapInfoTouchListener cameraButtonListener;
     private MapInfoTouchListener mapButtonListener;
     private MapLayout mapLayout;
+    private Location userLocation;
+    private LatLngBounds.Builder builder;
+    private CameraUpdate cameraUpdate;
+    private boolean mLocationPermissionGranted;
+    private LocationManager mLocationManager;
 
     private ArrayList<Marker> listOfAllMarkers;
 
@@ -117,7 +132,9 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+
         listOfAllMarkers = new ArrayList<>();
+        mLocationPermissionGranted = false;
 
         try
         {
@@ -128,12 +145,6 @@ public class MainActivity extends AppCompatActivity
         {
             Log.e(TAG, e.getMessage());
         }
-
-        /*
-        for (String friend : friendsList)
-            Log.e(TAG, "I found one of the friends to be " + friend);
-        Log.e(TAG, "\n");
-        */
 
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.main_toolbar);
@@ -164,10 +175,10 @@ public class MainActivity extends AppCompatActivity
                 index++;
             }
             userNameList = new String[index+1];
-            int newindex = 0;
+            int newIndex = 0;
             for (Object user : friendsList.toArray()) {
-                userNameList[index++] = (String) user;
-                if (newindex == index) {
+                userNameList[newIndex++] = user.toString();
+                if (newIndex == index) {
                     break;
                 }
             }
@@ -429,34 +440,25 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        builder = new LatLngBounds.Builder();
+        updateLocation();
 
         // Let's add a couple of markers
-        // TODO: add markers from the friendsList obtained from the backend
-        /*
-        for (String friend : this.friendsList)
+        for (String friend : friendsList)
         {
-            listOfAllMarkers.add(mMap.addMarker(new MarkerOptions().title(friend).
-                                        position(new LatLng())));
+            Log.e(TAG, "inside the loop with friend " + friend);
+            try
+            {
+                listOfAllMarkers.add(mMap.addMarker(new MarkerOptions().title(friend).
+                        position(new LatLng(MapHelper.get_latitude(friend, LoggedInUser.getUsername())
+                                , MapHelper.get_longitude(friend, LoggedInUser.getUsername())))));
+            }
+            catch (JSONException e)
+            {
+                Log.e(TAG, e.getMessage());
+            }
         }
-        */
-        /*
-        listOfAllMarkers.add(mMap.addMarker(new MarkerOptions()
-                                        .title("Ron_Weasley")
-                                        .snippet("Czech Republic")
-                                        .position(new LatLng(50.08, 14.43))));
-
-
-        listOfAllMarkers.add(mMap.addMarker(new MarkerOptions()
-                .title("Paris")
-                .snippet("France")
-                .position(new LatLng(48.86,2.33))));
-
-
-        listOfAllMarkers.add(mMap.addMarker(new MarkerOptions()
-                .title("Melbourne")
-                .snippet("Australia")
-                .position(new LatLng(-37.7964,144.9612))));
-        */
 
 
         mapLayout = (MapLayout) findViewById(R.id.map_container);
@@ -485,6 +487,52 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
+        // show the user's location on the main map
+        if (userLocation != null)
+        {
+            LatLng userLatLng = new LatLng(userLocation.getLatitude(), userLocation.getLongitude());
+            MapHelper.post_location(LoggedInUser.getUsername(), userLocation.getLatitude(), userLocation.getLongitude());
+            builder.include(userLatLng);
+            // LatLngBounds bounds = builder.build();
+            cameraUpdate = CameraUpdateFactory.newLatLng(userLatLng);
+            mMap.moveCamera(cameraUpdate);
+            cameraUpdate = CameraUpdateFactory.zoomTo(MAP_ZOOM_VIEW);
+            mMap.animateCamera(cameraUpdate);
+        }
+    }
+
+    private void updateLocation()
+    {
+        if (mMap == null) {
+            return;
+        }
+        try {
+            if (mLocationPermissionGranted) {
+                mMap.setMyLocationEnabled(true);
+                mMap.getUiSettings().setMyLocationButtonEnabled(true);
+                Criteria criteria = new Criteria();
+                userLocation = mLocationManager.getLastKnownLocation(mLocationManager.
+                        getBestProvider(criteria, false));
+            } else {
+                mMap.setMyLocationEnabled(false);
+                mMap.getUiSettings().setMyLocationButtonEnabled(false);
+                userLocation = null;
+                getLocationPermission();
+            }
+        } catch (SecurityException e)  {
+            Log.e("Exception: %s", e.getMessage());
+        }
+    }
+
+    private void getLocationPermission() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+            mLocationPermissionGranted = true;
+            updateLocation();
+        } else {
+            mLocationPermissionGranted = false;
+            Log.i(TAG,"location permission not granted");
+        }
     }
 
     public static int getPixelsFromDp(Context context, float dp)
@@ -524,4 +572,5 @@ public class MainActivity extends AppCompatActivity
             }
         }
     }
+
 }

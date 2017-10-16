@@ -103,7 +103,7 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onError(FacebookException exception) {
                         // App code
-                        Log.i(TAG,"fb error");
+                        Log.i(TAG,"fb error: "+exception.toString());
                     }
                 });
 
@@ -111,7 +111,7 @@ public class LoginActivity extends AppCompatActivity {
             Log.i(TAG,"current profile is null");
             signInButton.setVisibility(View.GONE);
             signUpButton.setVisibility(View.GONE);
-            fb_logout_message.setVisibility(View.GONE);
+            fb_logout_message.setVisibility(View.INVISIBLE);
         }
         else {
             signUpButton.setVisibility(View.VISIBLE);
@@ -149,6 +149,8 @@ public class LoginActivity extends AppCompatActivity {
                 facebookSignIn();
             }
         });
+
+        Log.i(TAG,"login page complete");
 
     }
 
@@ -195,13 +197,7 @@ public class LoginActivity extends AppCompatActivity {
     protected void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         Log.i(TAG, "on activity result");
-        finish();
         startActivity(getIntent());
-        if (Profile.getCurrentProfile() == null) {
-            signInButton.setVisibility(View.GONE);
-            signUpButton.setVisibility(View.GONE);
-            fb_logout_message.setVisibility(View.GONE);
-        }
         callbackManager.onActivityResult(requestCode, resultCode, data);
     }
 
@@ -209,4 +205,11 @@ public class LoginActivity extends AppCompatActivity {
     public void onDestroy() {
         super.onDestroy();
     }
+
+    // TODO: remove this method after AR improvement is done
+    public void directToCamera(View view)
+    {
+        startActivity(new Intent(LoginActivity.this, NeonARActivity.class));
+    }
+
 }
