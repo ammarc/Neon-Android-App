@@ -9,6 +9,7 @@ import android.graphics.BitmapFactory;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
@@ -32,6 +33,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.login.widget.ProfilePictureView;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -44,12 +46,18 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.json.JSONException;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import itproject.neon_client.helpers.FriendHelper;
 import itproject.neon_client.helpers.LoggedInUser;
@@ -202,8 +210,9 @@ public class MainActivity extends AppCompatActivity
         sideMenu = navigationView.getMenu();
 
         /* dp */
-        ImageView userDp = (ImageView) navigationBar.findViewById(R.id.user_dp);
-        //Bitmap dpBitmap = getFacebookProfilePicture(LoggedInUser.getUser().fb_id); // ToDo fb profile picture
+        ImageView userDp = (ImageView) navigationBar.findViewById(R.id.user_dp); // ToDo fb profile picture
+
+
 
         /* user info */
         TextView user_name = (TextView) navigationBar.findViewById(R.id.user_name);
@@ -224,11 +233,8 @@ public class MainActivity extends AppCompatActivity
 
         this.infoWindow = (ViewGroup)getLayoutInflater().inflate(R.layout.info_balloon, null);
         this.infoTitle = (TextView)infoWindow.findViewById(R.id.friend_name);
-        //this.infoSnippet = (TextView)infoWindow.findViewById(R.id.details);
 
         this.chatButton = (Button)infoWindow.findViewById(R.id.button_chat);
-        //this.cameraButton = (Button)infoWindow.findViewById(R.id.button_camera);
-        //this.mapButton = (Button)infoWindow.findViewById(R.id.button_map);
 
         // Setting custom OnTouchListener which deals with the pressed state
         // so it shows up
@@ -360,25 +366,6 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
-    }
-
-    public static Bitmap getFacebookProfilePicture(String userID){
-        URL imageURL = null;
-        Log.i("profile", "getting dp");
-        try {
-            imageURL = new URL("https://graph.facebook.com/" + userID + "/picture?type=large");
-        } catch (MalformedURLException e) {
-            Log.i("profile","dp failure *");
-            e.printStackTrace();
-        }
-        Bitmap bitmap = null;
-        try {
-            bitmap = BitmapFactory.decodeStream(imageURL.openConnection().getInputStream());
-        } catch (IOException e) {
-            Log.i("profile","dp failure !");
-            e.printStackTrace();
-        }
-        return bitmap;
     }
 
 
@@ -539,5 +526,48 @@ public class MainActivity extends AppCompatActivity
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
     }
+
+    private class FacebookDisplayPictureTask extends AsyncTask<String,Void,Bitmap> {
+
+        @Override
+        protected Bitmap doInBackground(String... fb_ids) {
+
+            String user_fb_id = fb_ids[0];
+
+            Bitmap bitmap = null;
+            Log.i(TAG,"fb id is " + user_fb_id + " in async task");
+
+            try {
+                URL img_url = new URL("http://graph.facebook.com/"+user_fb_id+"/picture?type=large");
+
+                bitmap = BitmapFactory.decodeStream((InputStream)img_url.getContent());
+
+                if (bitmap == null) {
+                    Log.i(TAG,"bitmap is null in async task");
+
+                } else {
+                    Log.i(TAG,"bitmap is not null in async task");
+                }
+
+                return bitmap;
+
+                /*(Bitmap mIcon = BitmapFactory.decodeStream(img_value.openConnection().getInputStream());
+                if (mIcon == null) {
+                    Log.i(TAG,"bitmap is null in async task");
+
+                } else {
+                    Log.i(TAG,"bitmap is not null in async task");
+                }*/
+
+
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+    }
+
 
 }
