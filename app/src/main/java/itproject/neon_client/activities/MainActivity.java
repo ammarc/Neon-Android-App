@@ -157,6 +157,8 @@ public class MainActivity extends AppCompatActivity
         mLocationPermissionGranted = false;
         isMapReady = false;
 
+        getLocationPermission();
+
         try
         {
             friendsList = FriendHelper.getFriendList(LoggedInUser.getUsername());
@@ -506,6 +508,8 @@ public class MainActivity extends AppCompatActivity
             }
         }
     }
+
+
 
     private void updateLocation()
     {
