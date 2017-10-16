@@ -257,7 +257,6 @@ public class NeonARActivity extends eu.kudan.kudan.ARActivity implements SensorE
         if(renders == RENDER_LIMIT) {
             // initialPropertySet();
             // targetNode.resetToTrackNewLocation();
-
             renders = 0;
         }
 

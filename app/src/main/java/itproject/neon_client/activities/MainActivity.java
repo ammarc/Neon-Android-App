@@ -496,6 +496,8 @@ public class MainActivity extends AppCompatActivity
                 marker.setPosition(new LatLng(MapHelper.get_latitude(marker.getTitle(),
                         LoggedInUser.getUsername()),
                         MapHelper.get_longitude(marker.getTitle(), LoggedInUser.getUsername())));
+                // Post a new location every couple of seconds
+                MapHelper.post_location(LoggedInUser.getUsername(), userLocation.getLatitude(), userLocation.getLongitude());
             }
             catch (JSONException e)
             {
@@ -628,11 +630,11 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onLocationChanged(Location location)
     {
-        userLocation = location;
+        // userLocation = location;
         // can be used to update location info on screen
-        Log.i(TAG, "Posting location from main");
-        MapHelper.post_location(LoggedInUser.getUsername(), userLocation.getLatitude(),
-                userLocation.getLongitude());
+        // Log.i(TAG, "Posting location from main");
+        // MapHelper.post_location(LoggedInUser.getUsername(), userLocation.getLatitude(),
+                // userLocation.getLongitude());
     }
 
     @Override
