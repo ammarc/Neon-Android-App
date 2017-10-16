@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:showDividers="beginning"
+    android:divider="@color/black"
+    android:weightSum="1">
+    <TextView
+        android:id="@+id/friend_name"
+        android:layout_height="37dp"
+        android:layout_width="wrap_content"
+        android:gravity="center"
+        android:background="@color/white"/>
+
+
+    <Button
+        android:id="@+id/button_chat"
+        android:layout_width="127dp"
+        android:layout_height="wrap_content"
+        android:text="Chat"
+        android:textSize="10dp"
+        android:background="@color/white"
+        android:layout_weight="0.30" />
+
+</LinearLayout>

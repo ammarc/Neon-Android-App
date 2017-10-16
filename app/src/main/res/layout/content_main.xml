@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="itproject.neon_client.activities.MainActivity"
+    tools:showIn="@layout/app_bar_main">
+
+
+    <itproject.neon_client.helpers.MapLayout
+        android:id="@+id/map_container"
+        android:layout_width="420dp"
+        android:layout_height="610dp"
+        tools:layout_constraintRight_toRightOf="parent"
+        tools:layout_constraintBottom_toBottomOf="parent"
+        tools:layout_constraintLeft_toLeftOf="parent"
+        android:layout_gravity="bottom|center"
+        tools:layout_editor_absoluteY="0dp"
+        tools:layout_editor_absoluteX="8dp">
+
+        <fragment
+            android:id="@+id/map_main_view"
+            android:name="com.google.android.gms.maps.MapFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentStart="false"
+            android:layout_below="@+id/linearLayout"
+            tools:layout_constraintRight_toRightOf="parent"
+            tools:layout_constraintBottom_toBottomOf="parent"
+            tools:layout_constraintLeft_toLeftOf="parent" />
+
+        <itproject.neon_client.helpers.MapSearchAutoCompleteView
+            android:id="@+id/search_box"
+            android:layout_width="250dp"
+            android:layout_height="40dp"
+            android:completionThreshold="1"
+            android:layout_marginLeft="20dp"
+            android:background="@color/grey"
+            android:hint="Search Friends"
+            android:layout_alignBottom="@+id/map_search_button"
+            android:layout_alignStart="@+id/main_toolbar_layout" />
+
+        <Button
+            android:id="@+id/map_search_button"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_weight="0.5"
+            android:onClick="onMapSearch"
+            android:text="Search"
+            android:layout_below="@+id/linearLayout"
+            android:layout_toRightOf="@id/search_box"
+            android:layout_marginTop="44dp" />
+
+
+    </itproject.neon_client.helpers.MapLayout>
+
+
+</android.support.constraint.ConstraintLayout>

@@ -15,30 +15,33 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.CALL_PHONE" />
 
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
-    <uses-feature android:name="android.hardware.sensor.accelerometer" android:required="true" />
+    <uses-feature
+        android:name="android.hardware.sensor.accelerometer"
+        android:required="true" />
 
     <application
+        android:name="android.support.multidex.MultiDexApplication"
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
+        android:configChanges="keyboardHidden|orientation"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme"
-        android:configChanges="keyboardHidden|orientation">
-
-        <activity android:name=".ARSimpleActivity"
-                android:configChanges="orientation|screenSize"
-                android:screenOrientation="fullSensor"
-                  android:parentActivityName=".ProfilePageActivity">
-                <meta-data android:name="android.support.PARENT_ACTIVITY"
-                            android:value = ".ARSimpleActivity"/>
+        android:theme="@style/AppTheme">
+        <activity
+            android:name=".activities.NeonARActivity"
+            android:configChanges="orientation|screenSize"
+            android:parentActivityName=".activities.MainActivity"
+            android:screenOrientation="fullSensor">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activities.NeonARActivity" />
         </activity>
         <activity
-            android:name=".LoginActivity"
+            android:name=".activities.LoginActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="Login Page">
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -46,31 +49,24 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".NewProfileActivity"
-            android:parentActivityName=".LoginActivity">
+            android:name=".activities.NewProfileActivity"
+            android:parentActivityName=".activities.LoginActivity"
+            android:theme="@style/AppTheme.NoActionBar">
 
             <!-- The meta-data tag is required if you support API level 15 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".LoginActivity" />
+                android:value=".activities.LoginActivity" />
         </activity>
         <activity
-            android:name=".ProfilePageActivity"
-            android:parentActivityName=".NewProfileActivity">
+            android:name=".chat.ChatActivity"
+            android:parentActivityName=".activities.MainActivity">
+            android:theme="@style/AppTheme">
 
             <!-- The meta-data tag is required if you support API level 15 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".NewProfileActivity" />
-        </activity>
-        <activity
-            android:name=".ChatActivity"
-            android:parentActivityName=".ProfilePageActivity">
-
-            <!-- The meta-data tag is required if you support API level 15 and lower -->
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ProfilePageActivity" />
+                android:value=".activities.MainActivity" />
         </activity>
 
         <meta-data
@@ -79,8 +75,7 @@
 
         <activity
             android:name="com.facebook.FacebookActivity"
-            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
-            android:label="@string/app_name" /> <!-- todo: replace @string/app_name with app name -->
+            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation" />
         <activity
             android:name="com.facebook.CustomTabActivity"
             android:exported="true">
@@ -92,6 +87,55 @@
 
                 <data android:scheme="@string/fb_login_protocol_scheme" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".activities.MainActivity"
+            android:parentActivityName=".activities.LoginActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+        <!--
+             The API key for Google Maps-based APIs is defined as a string resource.
+             (See the file "res/values/google_maps_api.xml").
+             Note that the API key is linked to the encryption key used to sign the APK.
+             You need a different API key for each encryption key, including the release key that is used to
+             sign the APK for publishing.
+             You can define the keys for the debug and release targets in src/debug/ and src/release/. 
+        -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/google_maps_key" />
+
+
+
+        <activity
+            android:name=".activities.MapToFriendActivity"
+            android:label="@string/title_activity_map_to_friend"
+            android:parentActivityName=".chat.ChatActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+
+            <!-- The meta-data tag is required if you support API level 15 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".chat.ChatActivity" />
+        </activity>
+        <activity
+            android:name=".activities.FindFriendsActivity"
+            android:label="@string/title_activity_find_friends"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:parentActivityName=".activities.MainActivity">
+
+            <!-- The meta-data tag is required if you support API level 15 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activities.MainActivity" />
+        </activity>
+
+        <activity android:name=".activities.SearchableActivity" >
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+            </intent-filter>
+            <meta-data android:name="android.app.searchable"
+                android:resource="@xml/searchable"/>
         </activity>
     </application>
 
