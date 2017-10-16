@@ -16,10 +16,15 @@ import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.widget.Toast;
 
+import org.json.JSONException;
+
+import java.util.Map;
+
 import eu.kudan.kudan.ARArbiTrack;
 import eu.kudan.kudan.ARGyroPlaceManager;
 import itproject.neon_client.ar.ARSetup;
 import itproject.neon_client.ar.ARSimpleImageNode;
+import itproject.neon_client.helpers.LoggedInUser;
 import itproject.neon_client.helpers.MapHelper;
 
 import static eu.kudan.kudan.ARArbiTrack.deinitialise;
@@ -59,7 +64,7 @@ public class NeonARActivity extends eu.kudan.kudan.ARActivity implements SensorE
     private ARGyroPlaceManager gyroPlaceManager;
     private ARArbiTrack arbiTrack;
     private boolean locationPostedToDatabase;
-    private String username;
+    private String friendUsername;
 
     private float[] gravity;
     // magnetic data
@@ -77,7 +82,7 @@ public class NeonARActivity extends eu.kudan.kudan.ARActivity implements SensorE
     {
         super.onCreate(savedInstance);
         // Initialise gyro placement.
-        username = getIntent().getStringExtra(EXTRA_AR_MESSAGE);
+        friendUsername = getIntent().getStringExtra(EXTRA_AR_MESSAGE);
         initialPropertySet();
     }
 
@@ -179,9 +184,15 @@ public class NeonARActivity extends eu.kudan.kudan.ARActivity implements SensorE
                     , Toast.LENGTH_SHORT).show();
         }
 
-        destLocation = new Location(currentLocation);
-        destLocation.setLatitude(TEST_LOCATION_LATITUDE);
-        destLocation.setLongitude(TEST_LOCATION_LONGITUDE);
+        try {
+            destLocation = new Location(currentLocation);
+            destLocation.setLatitude(MapHelper.get_latitude(friendUsername, LoggedInUser.getUsername()));
+            destLocation.setLongitude(MapHelper.get_longitude(friendUsername, LoggedInUser.getUsername()));
+        }
+        catch (JSONException e)
+        {
+            Log.e(TAG, "Got JSON exception: " + e.getMessage());
+        }
 
     }
 
@@ -198,15 +209,16 @@ public class NeonARActivity extends eu.kudan.kudan.ARActivity implements SensorE
     @Override
     public void onLocationChanged(Location location)
     {
-        // Log.e(TAG, "I am in onLocationChanged");
         currentLocation = location;
-        // Log.e(TAG, "Found the current location to be " + currentLocation);
         // can be used to update location info on screen
         geomagneticField = new GeomagneticField(
                 (float) currentLocation.getLatitude(),
                 (float) currentLocation.getLongitude(),
                 (float) currentLocation.getAltitude(),
                 System.currentTimeMillis());
+        Log.i(TAG, "Posting location from AR");
+        MapHelper.post_location(LoggedInUser.getUsername(), currentLocation.getLatitude(),
+                currentLocation.getLongitude());
     }
 
     @Override
@@ -250,7 +262,7 @@ public class NeonARActivity extends eu.kudan.kudan.ARActivity implements SensorE
         // convert from radians to degrees
         bearing = Math.toDegrees(bearing);
 
-        // fix difference between true North and magnetical North
+        // fix difference between true North and magnetic North
         if (geomagneticField != null)
             bearing += geomagneticField.getDeclination();
 
@@ -273,7 +285,7 @@ public class NeonARActivity extends eu.kudan.kudan.ARActivity implements SensorE
         {
             if (!locationPostedToDatabase)
             {
-                MapHelper.post_location(username, currentLocation.getLatitude(),
+                MapHelper.post_location(LoggedInUser.getUsername(), currentLocation.getLatitude(),
                             currentLocation.getLongitude());
                 locationPostedToDatabase = true;
             }

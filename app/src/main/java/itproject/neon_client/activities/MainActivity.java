@@ -447,7 +447,7 @@ public class MainActivity extends AppCompatActivity
         // Let's add a couple of markers
         for (String friend : friendsList)
         {
-            Log.e(TAG, "inside the loop with friend " + friend);
+            Log.i(TAG, "Now adding a marker for friend: " + friend);
             try
             {
                 listOfAllMarkers.add(mMap.addMarker(new MarkerOptions().title(friend).
