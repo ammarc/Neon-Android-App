@@ -40,6 +40,7 @@ import static eu.kudan.kudan.ARArbiTrack.deinitialise;
 
 public class NeonARActivity extends eu.kudan.kudan.ARActivity implements SensorEventListener, LocationListener
 {
+    public static final String UI_POINTER_LOCATION = "arrow.png";
     private ARSetup setupObject;
     private boolean hasAccel = false;
     private boolean hasGravity = false;
@@ -129,7 +130,7 @@ public class NeonARActivity extends eu.kudan.kudan.ARActivity implements SensorE
 
 
         // Create a node to be used as the target.
-        targetNode = new ARSimpleImageNode("arrow.png");
+        targetNode = new ARSimpleImageNode(UI_POINTER_LOCATION);
 
         // Add it to the Gyro Placement Manager's world so that it moves with the device's Gyroscope.
         gyroPlaceManager.getWorld().removeAllChildren();
@@ -256,12 +257,15 @@ public class NeonARActivity extends eu.kudan.kudan.ARActivity implements SensorE
     {
         if(renders == RENDER_LIMIT) {
             // initialPropertySet();
-            // targetNode.resetToTrackNewLocation();
+            targetNode.resetToTrackNewLocation();
+            // TODO: this maybe causing the arrow to spin
+            targetNode = new ARSimpleImageNode(UI_POINTER_LOCATION);
 
             renders = 0;
         }
 
-        else {
+        else
+        {
             renders++;
         }
         if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER

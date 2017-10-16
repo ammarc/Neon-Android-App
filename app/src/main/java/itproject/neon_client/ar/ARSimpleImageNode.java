@@ -83,4 +83,5 @@ public class ARSimpleImageNode extends ARImageNode
         // currentAngleRadians = 0.0f;
         initialSettingFlag = -1;
     }
+
 }
