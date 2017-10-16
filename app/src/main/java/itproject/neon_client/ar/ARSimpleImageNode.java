@@ -80,6 +80,7 @@ public class ARSimpleImageNode extends ARImageNode
 
     public void resetToTrackNewLocation()
     {
+        // currentAngleRadians = 0.0f;
         initialSettingFlag = -1;
     }
 }

@@ -1,8 +1,10 @@
 package itproject.neon_client.activities;
 
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.hardware.Camera;
 import android.hardware.GeomagneticField;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -11,9 +13,11 @@ import android.hardware.SensorManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
+import android.view.Surface;
 import android.widget.Toast;
 
 import org.json.JSONException;
@@ -23,7 +27,9 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import eu.kudan.kudan.ARActivity;
 import eu.kudan.kudan.ARArbiTrack;
+import eu.kudan.kudan.ARCameraStream;
 import eu.kudan.kudan.ARGyroPlaceManager;
 import itproject.neon_client.ar.ARSetup;
 import itproject.neon_client.ar.ARSimpleImageNode;
@@ -101,6 +107,13 @@ public class NeonARActivity extends eu.kudan.kudan.ARActivity implements SensorE
                 });
             }
         }, 0, MAP_UPDATE_DELAY, TimeUnit.SECONDS);
+
+        if (Build.MODEL.equals("LGE Nexus 5X"))
+        {
+            // rotate camera 180°
+            ARCameraStream cameraStream = ARCameraStream.getInstance();
+            cameraStream.rotateCameraPreview(180);
+        }
     }
 
     @Override
@@ -242,7 +255,8 @@ public class NeonARActivity extends eu.kudan.kudan.ARActivity implements SensorE
     public void onSensorChanged(SensorEvent event)
     {
         if(renders == RENDER_LIMIT) {
-            //initialPropertySet();
+            // initialPropertySet();
+            // targetNode.resetToTrackNewLocation();
 
             renders = 0;
         }
@@ -399,4 +413,5 @@ public class NeonARActivity extends eu.kudan.kudan.ARActivity implements SensorE
             Log.e(TAG, "Got JSON exception: " + e.getMessage());
         }
     }
+
 }
