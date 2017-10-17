@@ -267,7 +267,7 @@ public class NeonARActivity extends eu.kudan.kudan.ARActivity implements SensorE
     {
         if(renders == RENDER_LIMIT) {
             // initialPropertySet();
-            targetNode = new ARSimpleImageNode("arrow.png");
+            // targetNode = new ARSimpleImageNode("arrow.png");
             targetNode.resetToTrackNewLocation();
             renders = 0;
         }
@@ -420,6 +420,7 @@ public class NeonARActivity extends eu.kudan.kudan.ARActivity implements SensorE
             targetNode.resetToTrackNewLocation();
             if (currentLocation != null)
                 MapHelper.post_location(LoggedInUser.getUsername(), currentLocation.getLatitude(), currentLocation.getLongitude());
+            targetNode = new ARSimpleImageNode("arrow.png");
         }
         catch (JSONException e)
         {
