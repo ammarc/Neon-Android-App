@@ -115,9 +115,11 @@ public class NeonARActivity extends eu.kudan.kudan.ARActivity implements SensorE
             cameraStream.rotateCameraPreview(180);
         }
         try {
-            destLocation = new Location(currentLocation);
-            destLocation.setLatitude(MapHelper.get_latitude(friendUsername, LoggedInUser.getUsername()));
-            destLocation.setLongitude(MapHelper.get_longitude(friendUsername, LoggedInUser.getUsername()));
+            if (currentLocation != null) {
+                destLocation = new Location(currentLocation);
+                destLocation.setLatitude(MapHelper.get_latitude(friendUsername, LoggedInUser.getUsername()));
+                destLocation.setLongitude(MapHelper.get_longitude(friendUsername, LoggedInUser.getUsername()));
+            }
         }
         catch (JSONException e)
         {

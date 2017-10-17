@@ -88,8 +88,8 @@ public class MainActivity extends AppCompatActivity
     public static final int MARKER_HEIGHT = 39;
     public static final int BALLOON_BOTTOM_EDGE_OFFSET = 20;
     private static final String TAG = "MainActivity";
-    private static final int LOCATION_MIN_TIME = 0;
-    private static final int LOCATION_MIN_DISTANCE = 0;
+    private static final int LOCATION_MIN_TIME = 10000;
+    private static final int LOCATION_MIN_DISTANCE = 1;
     private static final long MAP_UPDATE_DELAY = 20;
     public static final String EXTRA_MESSAGE = "itproject.neon_client.MESSAGE";
     public static final int MAP_ZOOM_VIEW = 15;
