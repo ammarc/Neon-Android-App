@@ -90,7 +90,7 @@ public class MainActivity extends AppCompatActivity
     private static final String TAG = "MainActivity";
     private static final int LOCATION_MIN_TIME = 0;
     private static final int LOCATION_MIN_DISTANCE = 0;
-    private static final long MAP_UPDATE_DELAY = 10;
+    private static final long MAP_UPDATE_DELAY = 20;
     public static final String EXTRA_MESSAGE = "itproject.neon_client.MESSAGE";
     public static final int MAP_ZOOM_VIEW = 15;
 
