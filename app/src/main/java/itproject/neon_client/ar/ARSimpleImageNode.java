@@ -2,10 +2,6 @@ package itproject.neon_client.ar;
 
 import android.util.Log;
 
-import com.jme3.math.Vector3f;
-
-import java.util.Arrays;
-
 import eu.kudan.kudan.ARImageNode;
 
 public class ARSimpleImageNode extends ARImageNode

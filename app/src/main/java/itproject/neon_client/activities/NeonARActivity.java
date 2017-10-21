@@ -19,6 +19,9 @@ import android.widget.Toast;
 
 import org.json.JSONException;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Scanner;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -35,7 +38,6 @@ public class NeonARActivity extends eu.kudan.kudan.ARActivity implements SensorE
         LocationListener
 {
     public static final String UI_POINTER_LOCATION = "arrow.png";
-    private ARSetup setupObject;
     private boolean hasAccel = false;
     private boolean hasGravity = false;
     private boolean hasCompass = false;
@@ -83,8 +85,16 @@ public class NeonARActivity extends eu.kudan.kudan.ARActivity implements SensorE
     public void onCreate(Bundle savedInstance)
     {
         super.onCreate(savedInstance);
-        setupObject = new ARSetup();
-        setupObject.setupAR();
+        try
+        {
+            InputStream inputStream = this.getApplicationContext().getAssets().open("APIKey.txt");
+            Scanner s = new Scanner(inputStream).useDelimiter("\\A");
+            ARSetup.setupAR(s.hasNext() ? s.next() : "");
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
         // Initialise gyro placement.
         friendUsername = getIntent().getStringExtra(EXTRA_AR_MESSAGE);
         initialPropertySet();
@@ -346,7 +356,6 @@ public class NeonARActivity extends eu.kudan.kudan.ARActivity implements SensorE
         rotation = new float[9];
         orientation = new float[3];
         smoothed = new float[3];
-        setupObject = new ARSetup();
         sensorManager.registerListener(this, sensorGravity, SensorManager.SENSOR_DELAY_UI);
         sensorManager.registerListener(this, sensorMagnetic, SensorManager.SENSOR_DELAY_UI);
         numSensorChanged = 0;
