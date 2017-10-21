@@ -107,15 +107,12 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
 
-        if (ActivityCompat.checkSelfPermission(ChatActivity.this,
-                Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(ChatActivity.this, new String[]{Manifest.permission.CALL_PHONE},1);
-        }
 
-        FloatingActionButton phone = (FloatingActionButton) findViewById(R.id.phone_fab);
-        phone.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Call " + friendName + "?");
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // User clicked OK button
                 Intent callIntent = new Intent(Intent.ACTION_CALL);
                 try {
                     callIntent.setData(Uri.parse("tel:" + FriendHelper.getUserPhoneNumber(friendName)));
@@ -134,6 +131,28 @@ public class ChatActivity extends AppCompatActivity {
                     Toast toast = Toast.makeText(getApplicationContext(),"Call failed",Toast.LENGTH_LONG);
                     toast.show();
                 }
+            }
+        });
+        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // User cancelled the dialog
+            }
+        });
+        final AlertDialog PhoneCallRequest = builder.create();
+
+
+        if (ActivityCompat.checkSelfPermission(ChatActivity.this,
+                Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(ChatActivity.this, new String[]{Manifest.permission.CALL_PHONE},1);
+        }
+
+        FloatingActionButton phone = (FloatingActionButton) findViewById(R.id.phone_fab);
+        phone.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+
+                PhoneCallRequest.show();
 
             }
         });
@@ -184,7 +203,7 @@ public class ChatActivity extends AppCompatActivity {
         });
 
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder = new AlertDialog.Builder(this);
         builder.setMessage(friendName + " has requested your location")
                 .setTitle("Location Sharing");
         builder.setPositiveButton("Accept", new DialogInterface.OnClickListener() {
