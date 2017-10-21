@@ -11,7 +11,7 @@ import eu.kudan.kudan.ARImageNode;
 public class ARSimpleImageNode extends ARImageNode
 {
     public static final String TAG = "ARSimpleNode";
-    private float orientationMatrix[];
+    private float orientationMatrixYaw;
     private float radiansToRotateBy;
     private float currentAngleRadians;
     private float yaw;
@@ -24,7 +24,8 @@ public class ARSimpleImageNode extends ARImageNode
         super.preRender();
         // update after getting the phone's position in space
 
-        radiansToRotateBy = orientationMatrix[0];
+        // radiansToRotateBy = orientationMatrix[0];
+        radiansToRotateBy = orientationMatrixYaw;
         if (initialSettingFlag == 1)
         {
             currentAngleRadians += radiansToRotateBy;
@@ -51,27 +52,16 @@ public class ARSimpleImageNode extends ARImageNode
     public ARSimpleImageNode(String assetName)
     {
         super(assetName);
-        orientationMatrix = new float[3];
-        Arrays.fill(orientationMatrix, 0.0f);
         radiansToRotateBy = 0.0f;
         currentAngleRadians = 0.0f;
         initialSettingFlag = -1;
     }
 
     // add a method to set the matrix so that the render can be easily done
-    public void updateOrientationMatrix(float[] updatedRotationMatrix, float newYaw)
+    public void updateOrientationValue(float newYaw)
     {
-        for (int i = 0; i < updatedRotationMatrix.length; i++)
-        {
-            if (i == 0)
-            {
-                orientationMatrix[0] = newYaw -  currentAngleRadians;
-            }
-           else
-            {
-                orientationMatrix[i] = updatedRotationMatrix[i];
-            }
-        }
+        orientationMatrixYaw = newYaw - currentAngleRadians;
+
         this.newYaw = newYaw;
 
         if (initialSettingFlag == -1)
@@ -80,7 +70,6 @@ public class ARSimpleImageNode extends ARImageNode
 
     public void resetToTrackNewLocation()
     {
-        // currentAngleRadians = 0.0f;
         initialSettingFlag = -1;
     }
 
