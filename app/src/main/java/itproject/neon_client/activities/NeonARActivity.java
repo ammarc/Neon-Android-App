@@ -44,8 +44,8 @@ public class NeonARActivity extends eu.kudan.kudan.ARActivity implements SensorE
     private boolean hasAccel = false;
     private boolean hasGravity = false;
     private boolean hasCompass = false;
-    private static final int LOCATION_MIN_TIME = 0;
-    private static final int LOCATION_MIN_DISTANCE = 0;
+    private static final int LOCATION_MIN_TIME = 10000;
+    private static final int LOCATION_MIN_DISTANCE = 1;
     private static final long MAP_UPDATE_DELAY = 20;
     // private static final double TEST_LOCATION_LATITUDE = -37.798649;
     // private static final double TEST_LOCATION_LONGITUDE= 144.960338;
@@ -269,7 +269,6 @@ public class NeonARActivity extends eu.kudan.kudan.ARActivity implements SensorE
     {
         if(renders == RENDER_LIMIT) {
             // initialPropertySet();
-            // targetNode = new ARSimpleImageNode("arrow.png");
             targetNode.resetToTrackNewLocation();
             renders = 0;
         }
@@ -422,7 +421,6 @@ public class NeonARActivity extends eu.kudan.kudan.ARActivity implements SensorE
             targetNode.resetToTrackNewLocation();
             if (currentLocation != null)
                 MapHelper.post_location(LoggedInUser.getUsername(), currentLocation.getLatitude(), currentLocation.getLongitude());
-            targetNode = new ARSimpleImageNode("arrow.png");
         }
         catch (JSONException e)
         {
