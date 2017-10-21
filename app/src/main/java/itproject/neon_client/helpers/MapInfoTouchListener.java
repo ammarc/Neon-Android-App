@@ -29,7 +29,6 @@ public abstract class MapInfoTouchListener implements OnTouchListener {
 
     public void setMarker(Marker marker)
     {
-        Log.e(TAG, "setMarker: Marker is set for the onTouchListener");
         this.marker = marker;
     }
 
@@ -38,27 +37,11 @@ public abstract class MapInfoTouchListener implements OnTouchListener {
     {
         int[] viewLocationOnScreen = new int[2];
 
-        Log.e(TAG, "views x and y are " + view.getX() + " " + view.getY());
-
-        Log.e(TAG, "views width value is " + view.getWidth());
-        Log.e(TAG, "views height value is " + view.getHeight());
-
-        Log.e(TAG, "vvs height value is " + vv.getHeight());
-        Log.e(TAG, "vvs width value is " + vv.getWidth());
-
         view.getLocationOnScreen(viewLocationOnScreen);
-        Log.e(TAG, "Location of the event on the screen is " + event.getRawX() + " " + event.getRawY());
-
-        Log.e(TAG, "vvs width and height are " + vv.getWidth() + " " + vv.getHeight());
-
-        Log.e(TAG, "vvs x is " + vv.getX() + " views X is " + view.getX() + " views width is " + view.getWidth());
-        Log.e(TAG, "vvs y is " + vv.getY() + " views Y is " + view.getY() + " views height is " + view.getHeight());
-        Log.e(TAG, "Views x bounds are: " + (vv.getX() + view.getX()) + " " + (vv.getX() + view.getWidth() + view.getX()));
 
         if (0 <= event.getX() && event.getX() <= view.getWidth() && 0 <= event.getY()
                 && event.getY() <= vv.getHeight())
         {
-            Log.e(TAG, "onTouch: Button's onTouch is called");
             switch (event.getActionMasked()) {
                 case MotionEvent.ACTION_DOWN: startPress(vv); break;
 

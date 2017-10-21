@@ -31,7 +31,8 @@ import itproject.neon_client.ar.ARSimpleImageNode;
 import itproject.neon_client.helpers.LoggedInUser;
 import itproject.neon_client.helpers.MapHelper;
 
-public class NeonARActivity extends eu.kudan.kudan.ARActivity implements SensorEventListener, LocationListener
+public class NeonARActivity extends eu.kudan.kudan.ARActivity implements SensorEventListener,
+        LocationListener
 {
     public static final String UI_POINTER_LOCATION = "arrow.png";
     private ARSetup setupObject;
@@ -48,7 +49,8 @@ public class NeonARActivity extends eu.kudan.kudan.ARActivity implements SensorE
     private static final float FILTER_THRESHOLD = 0.25f;
     private static final String TAG = "NeonARActivity";
     public static final String EXTRA_AR_MESSAGE = "itproject.neon_client.AR_MESSAGE";
-    private final ScheduledExecutorService locationUpdateExecutor = Executors.newSingleThreadScheduledExecutor();
+    private final ScheduledExecutorService locationUpdateExecutor = Executors.
+                                                            newSingleThreadScheduledExecutor();
     // sensor manager
     private SensorManager sensorManager;
     // sensor gravity
@@ -81,6 +83,8 @@ public class NeonARActivity extends eu.kudan.kudan.ARActivity implements SensorE
     public void onCreate(Bundle savedInstance)
     {
         super.onCreate(savedInstance);
+        setupObject = new ARSetup();
+        setupObject.setupAR();
         // Initialise gyro placement.
         friendUsername = getIntent().getStringExtra(EXTRA_AR_MESSAGE);
         initialPropertySet();
@@ -102,8 +106,10 @@ public class NeonARActivity extends eu.kudan.kudan.ARActivity implements SensorE
             if (currentLocation != null)
             {
                 destLocation = new Location(currentLocation);
-                destLocation.setLatitude(MapHelper.get_latitude(friendUsername, LoggedInUser.getUsername()));
-                destLocation.setLongitude(MapHelper.get_longitude(friendUsername, LoggedInUser.getUsername()));
+                destLocation.setLatitude(MapHelper.get_latitude(friendUsername,
+                                                                LoggedInUser.getUsername()));
+                destLocation.setLongitude(MapHelper.get_longitude(friendUsername,
+                                                                LoggedInUser.getUsername()));
             }
         }
         catch (JSONException e)
@@ -139,7 +145,8 @@ public class NeonARActivity extends eu.kudan.kudan.ARActivity implements SensorE
         if (initialArrowPosSet)
         {
             // Log.e(TAG, "Rotating by " + Math.toDegrees(initialArrowAngleRadians));
-            targetNode.rotateByDegrees(-(float)Math.toDegrees(initialArrowAngleRadians), 0.0f, 0.0f, 1.0f);
+            targetNode.rotateByDegrees(-(float)Math.toDegrees(initialArrowAngleRadians),
+                                                                            0.0f, 0.0f, 1.0f);
         }
 
         targetNode.scaleByUniform(0.3f);
@@ -172,7 +179,8 @@ public class NeonARActivity extends eu.kudan.kudan.ARActivity implements SensorE
         try
         {
             // 1 is a integer which will return the result in onRequestPermissionsResult
-            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.
+                                                                        ACCESS_FINE_LOCATION}, 1);
 
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
                     LOCATION_MIN_TIME, LOCATION_MIN_DISTANCE, this);
@@ -206,15 +214,17 @@ public class NeonARActivity extends eu.kudan.kudan.ARActivity implements SensorE
         catch (SecurityException e)
         {
             // let the user know about the lack of permission
-            Toast.makeText(getApplicationContext(), "You do not have permission to access the location"
-                    , Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "You do not have permission to access the " +
+                            "location", Toast.LENGTH_SHORT).show();
         }
 
         try {
             if (currentLocation != null) {
                 destLocation = new Location(currentLocation);
-                destLocation.setLatitude(MapHelper.get_latitude(friendUsername, LoggedInUser.getUsername()));
-                destLocation.setLongitude(MapHelper.get_longitude(friendUsername, LoggedInUser.getUsername()));
+                destLocation.setLatitude(MapHelper.get_latitude(friendUsername,
+                                                                    LoggedInUser.getUsername()));
+                destLocation.setLongitude(MapHelper.get_longitude(friendUsername,
+                                                                    LoggedInUser.getUsername()));
             }
         }
         catch (JSONException e)
@@ -296,7 +306,8 @@ public class NeonARActivity extends eu.kudan.kudan.ARActivity implements SensorE
         else if (targetNode != null && numSensorChanged > INITIAL_SENSOR_ACTIVITY_NUM-1)
         {
             // Log.i(TAG, "The angle to dest is " + currentLocation.bearingTo(destLocation) +
-                       // " with src: " + currentLocation.toString() + " and dest: " + destLocation.toString());
+                       // " with src: " + currentLocation.toString() + " and dest: " +
+            //                                                  destLocation.toString());
             targetNode.updateOrientationValue(orientation[0] -
                                 (float) Math.toRadians(currentLocation.bearingTo(destLocation)));
         }
@@ -365,11 +376,14 @@ public class NeonARActivity extends eu.kudan.kudan.ARActivity implements SensorE
         try
         {
             destLocation = new Location(currentLocation);
-            destLocation.setLongitude(MapHelper.get_longitude(friendUsername, LoggedInUser.getUsername()));
-            destLocation.setLatitude(MapHelper.get_latitude(friendUsername, LoggedInUser.getUsername()));
+            destLocation.setLongitude(MapHelper.get_longitude(friendUsername,
+                                                                    LoggedInUser.getUsername()));
+            destLocation.setLatitude(MapHelper.get_latitude(friendUsername,
+                                                                    LoggedInUser.getUsername()));
             targetNode.resetToTrackNewLocation();
             if (currentLocation != null)
-                MapHelper.post_location(LoggedInUser.getUsername(), currentLocation.getLatitude(), currentLocation.getLongitude());
+                MapHelper.post_location(LoggedInUser.getUsername(),
+                        currentLocation.getLatitude(), currentLocation.getLongitude());
         }
         catch (JSONException e)
         {
