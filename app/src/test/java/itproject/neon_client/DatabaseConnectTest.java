@@ -6,11 +6,8 @@ import org.json.JSONObject;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
 
 import java.util.Random;
-import itproject.neon_client.helper_test.*;
 import itproject.neon_client.helpers.*;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
