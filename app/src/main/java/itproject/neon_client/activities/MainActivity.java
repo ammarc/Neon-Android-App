@@ -88,9 +88,9 @@ public class MainActivity extends AppCompatActivity
     public static final int MARKER_HEIGHT = 39;
     public static final int BALLOON_BOTTOM_EDGE_OFFSET = 20;
     private static final String TAG = "MainActivity";
-    private static final int LOCATION_MIN_TIME = 0;
-    private static final int LOCATION_MIN_DISTANCE = 0;
-    private static final long MAP_UPDATE_DELAY = 10;
+    private static final int LOCATION_MIN_TIME = 10000;
+    private static final int LOCATION_MIN_DISTANCE = 1;
+    private static final long MAP_UPDATE_DELAY = 20;
     public static final String EXTRA_MESSAGE = "itproject.neon_client.MESSAGE";
     public static final int MAP_ZOOM_VIEW = 15;
 
@@ -156,6 +156,8 @@ public class MainActivity extends AppCompatActivity
         listOfAllMarkers = new ArrayList<>();
         mLocationPermissionGranted = false;
         isMapReady = false;
+
+        getLocationPermission();
 
         try
         {
@@ -496,6 +498,9 @@ public class MainActivity extends AppCompatActivity
                 marker.setPosition(new LatLng(MapHelper.get_latitude(marker.getTitle(),
                         LoggedInUser.getUsername()),
                         MapHelper.get_longitude(marker.getTitle(), LoggedInUser.getUsername())));
+                // Post a new location every couple of seconds
+                if (userLocation != null)
+                    MapHelper.post_location(LoggedInUser.getUsername(), userLocation.getLatitude(), userLocation.getLongitude());
             }
             catch (JSONException e)
             {
@@ -503,6 +508,8 @@ public class MainActivity extends AppCompatActivity
             }
         }
     }
+
+
 
     private void updateLocation()
     {
@@ -628,11 +635,11 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onLocationChanged(Location location)
     {
-        userLocation = location;
+        // userLocation = location;
         // can be used to update location info on screen
-        Log.i(TAG, "Posting location from main");
-        MapHelper.post_location(LoggedInUser.getUsername(), userLocation.getLatitude(),
-                userLocation.getLongitude());
+        // Log.i(TAG, "Posting location from main");
+        // MapHelper.post_location(LoggedInUser.getUsername(), userLocation.getLatitude(),
+                // userLocation.getLongitude());
     }
 
     @Override

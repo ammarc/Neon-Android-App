@@ -10,7 +10,7 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 
 /**
- * Adapted from guide:
+ * Adapted code from Omar Aflak's guide located here:
  *      https://causeyourestuck.io/2016/04/27/node-js-android-tcpip/
  */
 
@@ -74,17 +74,18 @@ public class Client {
     /* Sends the senders username and the recipients username to the server so that the
     *  conversation can be set up serverside. */
     public void initSocket(String friendName, String myName){
-        Message newMessage = new Message("init", "", myName, friendName, -1);
+        Message newMessage = new Message(Message.Type.INIT, "", myName, friendName, -1);
         JSONObject messageJson = newMessage.buildJson();
         send(messageJson.toString());
     }
 
-    /* Processes incoming messages. */
+    /* Thread to process incoming messages written to the socket. */
     private class ReceiveThread extends Thread implements Runnable{
         public void run(){
             String message;
             try {
-                while((message = socketInput.readLine()) != null) {   // each line must end with a \n to be received
+                // each message from the must be null terminated
+                while((message = socketInput.readLine()) != null) {
                     if(listener!=null)
                         listener.onMessage(message);
                 }
