@@ -1,7 +1,5 @@
 <resources>
     <!--
-    TODO: Before you run your application, you need a Google Maps API key.
-
     To get one, follow this link, follow the directions and press "Create" at the end:
 
     https://console.developers.google.com/flows/enableapi?apiid=maps_android_backend&keyType=CLIENT_SIDE_ANDROID&r=86:D0:05:87:6B:31:F0:85:C7:E1:1F:C8:67:7A:61:3E:4E:B4:A2:1D%3Bitproject.neon_client

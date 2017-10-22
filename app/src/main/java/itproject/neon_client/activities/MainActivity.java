@@ -224,7 +224,7 @@ public class MainActivity extends AppCompatActivity
         sideMenu = navigationView.getMenu();
 
         /* dp */
-        ImageView userDp = (ImageView) navigationBar.findViewById(R.id.user_dp); // ToDo fb profile picture
+        ImageView userDp = (ImageView) navigationBar.findViewById(R.id.user_dp);
 
 
 
