@@ -14,7 +14,10 @@ import com.google.android.gms.maps.model.Marker;
 
 import itproject.neon_client.R;
 
-
+/**
+ * This is used as a custom may layout so that we can display info bubbles on
+ * the marker of our main map
+ */
 public class MapLayout extends RelativeLayout
 {
     private GoogleMap mMap;
@@ -25,7 +28,7 @@ public class MapLayout extends RelativeLayout
     private View infoWindow;
 
 
-    /*
+    /**
      * The default constructors.
      */
     public MapLayout(Context context)
@@ -43,18 +46,34 @@ public class MapLayout extends RelativeLayout
         super(context, attrs, defStyle);
     }
 
+    /**
+     * Initializes the map layout's variables
+     * @param mMap the google map object used
+     * @param bottomOffsetInPixels the offset to be used to display the bubble above the marker
+     */
     public void initialize(GoogleMap mMap, int bottomOffsetInPixels)
     {
         this.mMap= mMap;
         this.bottomOffsetInPixels = bottomOffsetInPixels;
     }
 
+    /**
+     * Sets the marker's info window
+     * @param marker the marker to be set
+     * @param infoWindow the view of the info window to be set
+     */
     public void setMarkerWithInfoWindow(Marker marker, View infoWindow)
     {
         this.marker = marker;
         this.infoWindow = infoWindow;
     }
 
+    /**
+     * This method is used to trigger an event whenever the user clicks on
+     * one of the buttons of the info bubble
+     * @param e the click event where the user tapped on the screen
+     * @return true if the event was handled by the view, false otherwise
+     */
     @Override
     public boolean dispatchTouchEvent(MotionEvent e)
     {

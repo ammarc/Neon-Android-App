@@ -60,4 +60,6 @@ dependencies {
     compile 'com.googlecode.json-simple:json-simple:1.1.1'
     annotationProcessor 'android.arch.lifecycle:compiler:1.0.0-alpha9'
     annotationProcessor 'android.arch.persistence.room:compiler:1.0.0-alpha9'
+    testCompile group: 'org.mockito', name: 'mockito-all', version: '1.9.5'
+    testCompile "org.powermock:powermock-mockito-release-full:1.6.1"
 }

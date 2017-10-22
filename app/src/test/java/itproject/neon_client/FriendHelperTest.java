@@ -13,9 +13,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import itproject.neon_client.helpers.*;
 
-/**
- * Created by lachlanthomas on 10/10/17.
- */
 
 public class FriendHelperTest {
 
