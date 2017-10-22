@@ -8,9 +8,6 @@ import itproject.neon_client.helpers.*;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-/**
- * Created by lachlanthomas on 10/10/17.
- */
 
 public class FriendHelperTest {
     private Random rand = new Random();

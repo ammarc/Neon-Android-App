@@ -465,7 +465,6 @@ public class MainActivity extends AppCompatActivity
 
                 // We must call this to set the current marker and infoWindow references
                 // to the MapWrapperLayout
-                Log.e(TAG, "Setting the marker which is: " + marker);
                 mapLayout.setMarkerWithInfoWindow(marker, infoWindow);
                 return infoWindow;
             }

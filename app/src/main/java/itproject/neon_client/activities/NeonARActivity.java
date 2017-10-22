@@ -170,8 +170,6 @@ public class NeonARActivity extends eu.kudan.kudan.ARActivity implements SensorE
     {
         super.onStart();
 
-        Location gpsLocation;
-
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         if (hasGravity)
             sensorGravity = sensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY);
@@ -185,48 +183,7 @@ public class NeonARActivity extends eu.kudan.kudan.ARActivity implements SensorE
 
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
-        // request location data
-        try
-        {
-            // 1 is a integer which will return the result in onRequestPermissionsResult
-            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.
-                                                                        ACCESS_FINE_LOCATION}, 1);
-
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
-                    LOCATION_MIN_TIME, LOCATION_MIN_DISTANCE, this);
-            // get last known position
-            gpsLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-            if (gpsLocation != null)
-            {
-                currentLocation = gpsLocation;
-            }
-            else
-            {
-                // try with network provider
-                Location networkLocation = locationManager
-                        .getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-
-                if (networkLocation != null)
-                {
-                    currentLocation = networkLocation;
-                }
-                else
-                {
-                    // throw an error
-                    Log.e(TAG, "Couldn't find any location services");
-                    throw new SecurityException();
-                }
-
-                // set current location
-                onLocationChanged(currentLocation);
-            }
-        }
-        catch (SecurityException e)
-        {
-            // let the user know about the lack of permission
-            Toast.makeText(getApplicationContext(), "You do not have permission to access the " +
-                            "location", Toast.LENGTH_SHORT).show();
-        }
+        requestLocationData();
 
         try {
             if (currentLocation != null) {
@@ -376,6 +333,7 @@ public class NeonARActivity extends eu.kudan.kudan.ARActivity implements SensorE
         for (int i = 0; i < input.length; i++)
         {
             output[i] = output[i] + FILTER_THRESHOLD * (input[i] - output[i]);
+            Log.e(TAG, i + " " + output[i]);
         }
         return output;
     }
@@ -397,6 +355,53 @@ public class NeonARActivity extends eu.kudan.kudan.ARActivity implements SensorE
         catch (JSONException e)
         {
             Log.e(TAG, "Got JSON exception: " + e.getMessage());
+        }
+    }
+
+    public void requestLocationData()
+    {
+        Location gpsLocation;
+
+        try
+        {
+            // 1 is a integer which will return the result in onRequestPermissionsResult
+            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.
+                    ACCESS_FINE_LOCATION}, 1);
+
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
+                    LOCATION_MIN_TIME, LOCATION_MIN_DISTANCE, this);
+            // get last known position
+            gpsLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            if (gpsLocation != null)
+            {
+                currentLocation = gpsLocation;
+            }
+            else
+            {
+                // try with network provider
+                Location networkLocation = locationManager
+                        .getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+
+                if (networkLocation != null)
+                {
+                    currentLocation = networkLocation;
+                }
+                else
+                {
+                    // throw an error
+                    Log.e(TAG, "Couldn't find any location services");
+                    throw new SecurityException();
+                }
+
+                // set current location
+                onLocationChanged(currentLocation);
+            }
+        }
+        catch (SecurityException e)
+        {
+            // let the user know about the lack of permission
+            Toast.makeText(getApplicationContext(), "You do not have permission to access the " +
+                    "location", Toast.LENGTH_SHORT).show();
         }
     }
 
