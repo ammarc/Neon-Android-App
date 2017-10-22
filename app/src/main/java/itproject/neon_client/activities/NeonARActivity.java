@@ -32,6 +32,11 @@ import itproject.neon_client.ar.ARSimpleImageNode;
 import itproject.neon_client.helpers.LoggedInUser;
 import itproject.neon_client.helpers.MapHelper;
 
+/**
+ * This is the activity that gets launched when the AR is initiated. It takes sensor
+ * readings, gets data from the backend and also posts it and it also passes sensor data
+ * off to the image node to have the correct orientation on screen.
+ */
 public class NeonARActivity extends eu.kudan.kudan.ARActivity implements SensorEventListener,
         LocationListener
 {
@@ -51,9 +56,7 @@ public class NeonARActivity extends eu.kudan.kudan.ARActivity implements SensorE
     public static final String EXTRA_AR_MESSAGE = "itproject.neon_client.AR_MESSAGE";
     private final ScheduledExecutorService locationUpdateExecutor = Executors.
                                                             newSingleThreadScheduledExecutor();
-    // sensor manager
     private SensorManager sensorManager;
-    // sensor gravity
     private Sensor sensorGravity;
     private Sensor sensorMagnetic;
     private LocationManager locationManager;
@@ -78,11 +81,17 @@ public class NeonARActivity extends eu.kudan.kudan.ARActivity implements SensorE
     private float[] smoothed;
     private int numRendered;
 
-
+    /**
+     * When the activity is created, the API key is first read and then another thread is spun
+     * to get an updated friend's location periodically. The initial values of the variables
+     * are also set here.
+     * @param savedInstance the saved instance from Android
+     */
     @Override
     public void onCreate(Bundle savedInstance)
     {
         super.onCreate(savedInstance);
+        // read API key from where it's stored on file
         try
         {
             InputStream inputStream = this.getApplicationContext().getAssets().open("APIKey.txt");
@@ -93,7 +102,6 @@ public class NeonARActivity extends eu.kudan.kudan.ARActivity implements SensorE
         {
             e.printStackTrace();
         }
-        // Initialise gyro placement.
         friendUsername = getIntent().getStringExtra(EXTRA_AR_MESSAGE);
         initialPropertySet();
         locationUpdateExecutor.scheduleWithFixedDelay(new Runnable()
@@ -126,17 +134,22 @@ public class NeonARActivity extends eu.kudan.kudan.ARActivity implements SensorE
         }
     }
 
+    /**
+     * This is the method that is called by Kudan when first setting up the AR. This is used
+     * to set up AR objects like ArbiTrack and ARGyroPlaceManager. This is also where the arrow
+     * is tilted so as to appear laying flat on the user's screen
+     */
     @Override
     public void setup()
     {
         super.setup();
 
+        // Initialise gyro placement.
         gyroPlaceManager = ARGyroPlaceManager.getInstance();
         gyroPlaceManager.initialise();
         // Initialise ArbiTrack.
         arbiTrack = ARArbiTrack.getInstance();
         arbiTrack.initialise();
-
 
         // Create a node to be used as the target.
         targetNode = new ARSimpleImageNode(UI_POINTER_LOCATION);
@@ -152,7 +165,7 @@ public class NeonARActivity extends eu.kudan.kudan.ARActivity implements SensorE
         // Rotate the arrow by an initial reading
         if (initialArrowPosSet)
         {
-            // Log.e(TAG, "Rotating by " + Math.toDegrees(initialArrowAngleRadians));
+            Log.i(TAG, "Rotating by " + Math.toDegrees(initialArrowAngleRadians));
             targetNode.rotateByDegrees(-(float)Math.toDegrees(initialArrowAngleRadians),
                                                                             0.0f, 0.0f, 1.0f);
         }
@@ -163,6 +176,11 @@ public class NeonARActivity extends eu.kudan.kudan.ARActivity implements SensorE
         arbiTrack.setTargetNode(targetNode);
     }
 
+    /**
+     * After creation of this activity, we need to get the sensor data to find the orientation
+     * of the phone in 3d space. Here all of the sensors and their corresponding listeners are
+     * set up.
+     */
     @Override
     public void onStart()
     {
@@ -181,6 +199,7 @@ public class NeonARActivity extends eu.kudan.kudan.ARActivity implements SensorE
 
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
+        // get the current user's location
         requestLocationData();
 
         try {
@@ -199,6 +218,10 @@ public class NeonARActivity extends eu.kudan.kudan.ARActivity implements SensorE
 
     }
 
+    /**
+     * When the activity is stopped, we need to do some house-keeping and remove
+     * the sensor listeners for efficiency reasons like battery conservation
+     */
     @Override
     protected void onStop()
     {
@@ -209,27 +232,35 @@ public class NeonARActivity extends eu.kudan.kudan.ARActivity implements SensorE
         locationManager.removeUpdates(this);
     }
 
+    /**
+     * This is essentially used to update our location with the newly
+     * recorded location provided by Android
+     * @param location the newly recorded location
+     */
     @Override
     public void onLocationChanged(Location location)
     {
         currentLocation = location;
-        // can be used to update location info on screen
+        // could be used to show location updates to user
         geomagneticField = new GeomagneticField(
                 (float) currentLocation.getLatitude(),
                 (float) currentLocation.getLongitude(),
                 (float) currentLocation.getAltitude(),
                 System.currentTimeMillis());
-        // Log.i(TAG, "Posting location from AR");
-        // MapHelper.post_location(LoggedInUser.getUsername(), currentLocation.getLatitude(),
-                // currentLocation.getLongitude());
     }
 
+    /**
+     * This method is used to get sensor event changes including the accelerometer
+     * and the magnetic field sensor. Those raw values are smoothed and their values
+     * are offset between the true North and the bearing between the user and their
+     * friend.
+     * @param event the sensor event which recorded a change
+     */
     @Override
     public void onSensorChanged(SensorEvent event)
     {
         if(numRendered == RENDER_LIMIT)
         {
-            // initialPropertySet();
             targetNode.resetToTrackNewLocation();
             numRendered = 0;
         }
@@ -259,25 +290,27 @@ public class NeonARActivity extends eu.kudan.kudan.ARActivity implements SensorE
         // get bearing to target
         SensorManager.getOrientation(rotation, orientation);
 
+        // the first ~500 values aren't used as it was found that it takes about that
+        // many readings for the readings to be fairly stable and thus accurate
         if (numSensorChanged <= INITIAL_SENSOR_ACTIVITY_NUM)
             numSensorChanged++;
 
         if (!initialArrowPosSet)
         {
-            // Log.e(TAG, "Setting initial arrow direction as " + Math.toDegrees(orientation[0]));
             initialArrowAngleRadians = orientation[0];
             initialArrowPosSet = true;
         }
         else if (targetNode != null && numSensorChanged > INITIAL_SENSOR_ACTIVITY_NUM-1)
         {
-            // Log.i(TAG, "The angle to dest is " + currentLocation.bearingTo(destLocation) +
-                       // " with src: " + currentLocation.toString() + " and dest: " +
-            //                                                  destLocation.toString());
             targetNode.updateOrientationValue(orientation[0] -
                                 (float) Math.toRadians(currentLocation.bearingTo(destLocation)));
         }
     }
 
+    /**
+     * This method sets the initial values of all the attributes of this class or initializes
+     * them, where appropriate
+     */
     public void initialPropertySet()
     {
         gravity = new float[9];
@@ -302,6 +335,11 @@ public class NeonARActivity extends eu.kudan.kudan.ARActivity implements SensorE
             hasCompass = true;
     }
 
+    /**
+     * After the activity is resumed we need to make sure all of our sensor-data arrays
+     * are re-initialized to prevent old readings to influence our perception of the phone's
+     * orientation
+     */
     @Override
     public void onResume()
     {
@@ -316,6 +354,10 @@ public class NeonARActivity extends eu.kudan.kudan.ARActivity implements SensorE
         numSensorChanged = 0;
     }
 
+    /**
+     * We need to un-register this class as a listener whenever this activity
+     * is paused for a better in-app performance
+     */
     @Override
     public void onPause()
     {
@@ -323,6 +365,16 @@ public class NeonARActivity extends eu.kudan.kudan.ARActivity implements SensorE
         sensorManager.unregisterListener(this);
     }
 
+    /**
+     * This low pass filter is used to smooth raw values from the sensor. It essentially
+     * adjusts the output arrays' values with the difference between the current value
+     * and the newly recorded value such that the output array reflects a change in line
+     * with what was recorded but doesn't change them directly to the inputs' values for
+     * more stable values.
+     * @param input the raw-valued sensor data array
+     * @param output the current values stored in that array
+     * @return the adjusted values to reflect a change in the output caused by the input
+     */
     public float[] lowPassFilter(float[] input, float[] output)
     {
         if (output == null)
@@ -335,6 +387,10 @@ public class NeonARActivity extends eu.kudan.kudan.ARActivity implements SensorE
         return output;
     }
 
+    /**
+     * This method is used to update our version of the friend's location from the database.
+     * At the same time, it is also used to post our location to the server.
+     */
     public void updateFriendLocation()
     {
         try
@@ -355,6 +411,12 @@ public class NeonARActivity extends eu.kudan.kudan.ARActivity implements SensorE
         }
     }
 
+    /**
+     * This method is used to request the current location of the phone. It first tries to get
+     * that data from the GPS and then if that fails, it tries to get it from the network
+     * provider. It also creates a toast to inform the user, if there is problem with getting
+     * the correct permissions.
+     */
     public void requestLocationData()
     {
         Location gpsLocation;
