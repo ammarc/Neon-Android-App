@@ -11,7 +11,6 @@ import android.hardware.SensorManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
@@ -27,7 +26,6 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import eu.kudan.kudan.ARArbiTrack;
-import eu.kudan.kudan.ARCameraStream;
 import eu.kudan.kudan.ARGyroPlaceManager;
 import itproject.neon_client.ar.ARSetup;
 import itproject.neon_client.ar.ARSimpleImageNode;
@@ -78,7 +76,7 @@ public class NeonARActivity extends eu.kudan.kudan.ARActivity implements SensorE
     private float[] orientation;
     // smoothed values
     private float[] smoothed;
-    private int renders;
+    private int numRendered;
 
 
     @Override
@@ -229,14 +227,14 @@ public class NeonARActivity extends eu.kudan.kudan.ARActivity implements SensorE
     @Override
     public void onSensorChanged(SensorEvent event)
     {
-        if(renders == RENDER_LIMIT)
+        if(numRendered == RENDER_LIMIT)
         {
             // initialPropertySet();
             targetNode.resetToTrackNewLocation();
-            renders = 0;
+            numRendered = 0;
         }
         else
-            renders++;
+            numRendered++;
 
         if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER
                             || event.sensor.getType() == Sensor.TYPE_GRAVITY)
@@ -290,7 +288,7 @@ public class NeonARActivity extends eu.kudan.kudan.ARActivity implements SensorE
         orientation = new float[3];
         // smoothed values
         smoothed = new float[3];
-        renders = 0;
+        numRendered = 0;
         PackageManager manager = getPackageManager();
         initialArrowPosSet = false;
         initialArrowAngleRadians = 0.0f;
@@ -333,7 +331,6 @@ public class NeonARActivity extends eu.kudan.kudan.ARActivity implements SensorE
         for (int i = 0; i < input.length; i++)
         {
             output[i] = output[i] + FILTER_THRESHOLD * (input[i] - output[i]);
-            Log.e(TAG, i + " " + output[i]);
         }
         return output;
     }
