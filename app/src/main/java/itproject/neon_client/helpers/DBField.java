@@ -1,9 +1,7 @@
 package itproject.neon_client.helpers;
 
-import org.json.JSONObject;
-
-/* ASync task can only take 1 argument type so this is used as a struct to hold 2 different
-   arguments of different types.*/
+/* ASync task can only take 1 argument type so this class is used as a struct to hold 2 different
+   arguments.*/
 public class DBField {
     private String jsonObject;
     private String path;

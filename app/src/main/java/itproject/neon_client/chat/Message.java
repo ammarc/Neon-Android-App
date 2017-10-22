@@ -4,7 +4,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class Message {
-    private String type;
+    enum Type {
+                LIVE,        // Message being sent or retrieved in real time from a user
+                PREVIOUS,    // Message being retrieved from the server from a past conversation
+                INIT         // Message being sent to server to initialise a conversation
+              }
+    private Type type;
     private String data;
     private String toUser;
     private String fromUser;
@@ -14,7 +19,7 @@ public class Message {
 
     }
 */
-    public Message(String type, String data, String toUser, String fromUser, long time) {
+    public Message(Type type, String data, String toUser, String fromUser, long time) {
         this.type = type;
         this.data = data;
         this.toUser = toUser;
