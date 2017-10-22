@@ -27,5 +27,16 @@ Currently the app runs only through the Android Studio IDE. For detailed
 pre-requirements for installting that IDE, go to https://developer.android.com/studio/index.html
 
 ## Testing
+### Unit Tests
 To run the unit-tests just go the itproject.neon\_client > tests. And then
 click right-click > Run <test-name> to run the individual tests.
+
+### Instrumentation Tests
+To run instrumentation tests on an android phone itproject.neon\_client > androidTest
+and then right-click on the `UnitTestSuite`, this suite should then proceed
+to run all of the instrumented tests. There are a few things to note about
+running these tests:
+- since the instrumented tests launch activities interfacing with our 
+servers, ports 3000 and 4000 must be unblocked.
+- KudanAR has an issue running on Nexus devices (on both virtual and real),
+which might cause some tests to fail.
