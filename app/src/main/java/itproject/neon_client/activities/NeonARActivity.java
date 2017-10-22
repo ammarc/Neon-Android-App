@@ -44,9 +44,9 @@ public class NeonARActivity extends eu.kudan.kudan.ARActivity implements SensorE
     private boolean hasAccel = false;
     private boolean hasGravity = false;
     private boolean hasCompass = false;
-    private static final int LOCATION_MIN_TIME = 10000;
-    private static final int LOCATION_MIN_DISTANCE = 1;
-    private static final long MAP_UPDATE_DELAY = 20;
+    private static final int LOCATION_MIN_TIME = 0;
+    private static final int LOCATION_MIN_DISTANCE = 0;
+    private static final long MAP_UPDATE_DELAY = 10;
     // private static final double TEST_LOCATION_LATITUDE = -37.798649;
     // private static final double TEST_LOCATION_LONGITUDE= 144.960338;
     // private static final int LOCATION_MIN_TIME = 30 * 1000;
@@ -113,17 +113,6 @@ public class NeonARActivity extends eu.kudan.kudan.ARActivity implements SensorE
             // rotate camera 180°
             ARCameraStream cameraStream = ARCameraStream.getInstance();
             cameraStream.rotateCameraPreview(180);
-        }
-        try {
-            if (currentLocation != null) {
-                destLocation = new Location(currentLocation);
-                destLocation.setLatitude(MapHelper.get_latitude(friendUsername, LoggedInUser.getUsername()));
-                destLocation.setLongitude(MapHelper.get_longitude(friendUsername, LoggedInUser.getUsername()));
-            }
-        }
-        catch (JSONException e)
-        {
-            Log.e(TAG, "Got JSON exception: " + e.getMessage());
         }
     }
 
@@ -226,11 +215,9 @@ public class NeonARActivity extends eu.kudan.kudan.ARActivity implements SensorE
         }
 
         try {
-            if (currentLocation != null) {
-                destLocation = new Location(currentLocation);
-                destLocation.setLatitude(MapHelper.get_latitude(friendUsername, LoggedInUser.getUsername()));
-                destLocation.setLongitude(MapHelper.get_longitude(friendUsername, LoggedInUser.getUsername()));
-            }
+            destLocation = new Location(currentLocation);
+            destLocation.setLatitude(MapHelper.get_latitude(friendUsername, LoggedInUser.getUsername()));
+            destLocation.setLongitude(MapHelper.get_longitude(friendUsername, LoggedInUser.getUsername()));
         }
         catch (JSONException e)
         {
@@ -259,9 +246,9 @@ public class NeonARActivity extends eu.kudan.kudan.ARActivity implements SensorE
                 (float) currentLocation.getLongitude(),
                 (float) currentLocation.getAltitude(),
                 System.currentTimeMillis());
-        // Log.i(TAG, "Posting location from AR");
-        // MapHelper.post_location(LoggedInUser.getUsername(), currentLocation.getLatitude(),
-                // currentLocation.getLongitude());
+        Log.i(TAG, "Posting location from AR");
+        MapHelper.post_location(LoggedInUser.getUsername(), currentLocation.getLatitude(),
+                currentLocation.getLongitude());
     }
 
     @Override
@@ -269,7 +256,8 @@ public class NeonARActivity extends eu.kudan.kudan.ARActivity implements SensorE
     {
         if(renders == RENDER_LIMIT) {
             // initialPropertySet();
-            targetNode.resetToTrackNewLocation();
+            // targetNode.resetToTrackNewLocation();
+
             renders = 0;
         }
 
@@ -328,8 +316,8 @@ public class NeonARActivity extends eu.kudan.kudan.ARActivity implements SensorE
         {
             if (!locationPostedToDatabase)
             {
-                // MapHelper.post_location(LoggedInUser.getUsername(), currentLocation.getLatitude(),
-                            // currentLocation.getLongitude());
+                MapHelper.post_location(LoggedInUser.getUsername(), currentLocation.getLatitude(),
+                            currentLocation.getLongitude());
                 locationPostedToDatabase = true;
             }
             // targetNode.updateOrientationMatrix(orientation, orientation[0]);
@@ -419,8 +407,6 @@ public class NeonARActivity extends eu.kudan.kudan.ARActivity implements SensorE
             destLocation.setLongitude(MapHelper.get_longitude(friendUsername, LoggedInUser.getUsername()));
             destLocation.setLatitude(MapHelper.get_latitude(friendUsername, LoggedInUser.getUsername()));
             targetNode.resetToTrackNewLocation();
-            if (currentLocation != null)
-                MapHelper.post_location(LoggedInUser.getUsername(), currentLocation.getLatitude(), currentLocation.getLongitude());
         }
         catch (JSONException e)
         {

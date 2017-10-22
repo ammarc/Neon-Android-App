@@ -18,7 +18,11 @@ import java.util.concurrent.ExecutionException;
 
 public class DatabaseConnect {
 
-    /* Used to make a post request to the server. Makes the call on a seperate thread. */
+    /**
+     * Method to post a json message to a specified endpoint
+     * @param field contains the json message and the url path
+     * @return the response from the server
+     */
     public static JSONArray post(DBField field) {
         JSONArray result = null;
         try {
@@ -31,54 +35,54 @@ public class DatabaseConnect {
         return result;
     }
 
-    /* Calls the method postServer on another thread so the process is asynchronous and not
-       running on the main thread. */
+    /**
+     * asynchronously posts a json message to the server and reads the returned message
+     */
     private static class asyncPost extends AsyncTask<DBField, Void, JSONArray> {
         protected JSONArray doInBackground(DBField... fields) {
             for(DBField field : fields){
-                return postServer(field);
+                String jsonObject = field.getJsonObject();
+                String path = field.getPath();
+                try {
+                    URL url = new URL(path);
+                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                    conn.setRequestProperty("Content-Type", "application/json");
+                    conn.setDoOutput(true);
+                    conn.setDoInput(true);
+                    conn.setRequestMethod("POST");
+                    conn.connect();
+
+                    DataOutputStream wr = new DataOutputStream(conn.getOutputStream());
+                    wr.writeBytes(jsonObject);
+                    wr.flush();
+                    wr.close();
+
+                    if (conn.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                        String server_response = readStream(conn.getInputStream());
+                        conn.disconnect();
+                        if (!(server_response.charAt(0) == '[')) return null;
+                        JSONArray response_json_array;
+                        response_json_array = new JSONArray(server_response);
+                        return response_json_array;
+                    }
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                return null;
             }
             return null;
         }
     }
 
-    /* Completes the post request. */
-    private static JSONArray postServer(DBField field){
-        String jsonObject = field.getJsonObject();
-        String path = field.getPath();
-        try {
-            URL url = new URL(path);
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestProperty("Content-Type", "application/json");
-            conn.setDoOutput(true);
-            conn.setDoInput(true);
-            conn.setRequestMethod("POST");
-            conn.connect();
-
-            DataOutputStream wr = new DataOutputStream(conn.getOutputStream());
-            wr.writeBytes(jsonObject);
-            wr.flush();
-            wr.close();
-
-            if (conn.getResponseCode() == HttpURLConnection.HTTP_OK) {
-                String server_response = readStream(conn.getInputStream());
-                conn.disconnect();
-                if (!(server_response.charAt(0) == '[')) return null;
-                JSONArray response_json_array;
-                response_json_array = new JSONArray(server_response);
-                return response_json_array;
-            }
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    /* Used to make a get request to the server. Makes the call on a seperate thread. */
+    /**
+     * Method to GET a json message from the server
+     * @param path is the url that the method is getting a response from
+     * @return the servers response
+     */
     public static JSONArray get(String path) {
         JSONArray result = new JSONArray();
         try {
@@ -91,40 +95,41 @@ public class DatabaseConnect {
         return result;
     }
 
-    /* Calls the method getServer on another thread so the process is asynchronous and not
-       running on the main thread. */
+    /**
+     * asynchronously gets a json message from the server over the specified path
+     */
     private static class asyncGet extends AsyncTask<String, Void, JSONArray> {
         protected JSONArray doInBackground(String... strings) {
-            for(String path : strings){
-                return getServer(path);
+            for(String string : strings){
+                String path = string;
+                try {
+                    URL url = new URL(path);
+                    HttpURLConnection httpURLConnection = (HttpURLConnection)url.openConnection();
+                    httpURLConnection.connect();
+                    if (httpURLConnection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                        String server_response = readStream(httpURLConnection.getInputStream());
+                        JSONArray response_json_array;
+                        response_json_array = new JSONArray(server_response);
+                        return response_json_array;
+                    }
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                return null;
             }
             return null;
         }
     }
 
-    /* Completes the get request. */
-    private static JSONArray getServer(String path) {
-        try {
-            URL url = new URL(path);
-            HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
-            httpURLConnection.connect();
-            if (httpURLConnection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-                String server_response = readStream(httpURLConnection.getInputStream());
-                JSONArray response_json_array;
-                response_json_array = new JSONArray(server_response);
-                return response_json_array;
-            }
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    /* Used to make a put request to the server. Makes the call on a seperate thread. */
+    /**
+     * method to PUT a json message to the server
+     * @param field contains the url that we are putting to and the json message we are sending
+     * @return the servers response
+     */
     public static JSONArray put(DBField field) {
         JSONArray result = null;
         try {
@@ -137,57 +142,57 @@ public class DatabaseConnect {
         return result;
     }
 
-    /* Calls the method putServer on another thread so the process is asynchronous and not
-       running on the main thread. */
+    /**
+     * asynchronously puts a json message to the server on a specified url path
+     */
     private static class asyncPut extends AsyncTask<DBField, Void, JSONArray> {
         protected JSONArray doInBackground(DBField... fields) {
             for(DBField field : fields){
-                return putServer(field);
+                String jsonObject = field.getJsonObject();
+                String path = field.getPath();
+                try {
+                    JSONArray json_output = new JSONArray();
+                    URL url = new URL(path);
+                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                    conn.setRequestProperty("Content-Type", "application/json");
+                    conn.setDoOutput(true);
+                    conn.setDoInput(true);
+                    conn.setRequestMethod("PUT");
+                    conn.connect();
+
+                    DataOutputStream wr = new DataOutputStream(conn.getOutputStream());
+                    wr.writeBytes(jsonObject);
+                    wr.flush();
+                    wr.close();
+
+                    if (conn.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                        String server_response = readStream(conn.getInputStream());
+                        conn.disconnect();
+                        if (!(server_response.charAt(0) == '[')) return null;
+                        JSONArray response_json_array;
+                        response_json_array = new JSONArray(server_response);
+                        return response_json_array;
+                    }
+                    return json_output;
+                }
+                catch (MalformedURLException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                return null;
             }
             return null;
         }
     }
 
-    /* Completes the put request. */
-    private static JSONArray putServer(DBField field){
-        String jsonObject = field.getJsonObject();
-        String path = field.getPath();
-        try {
-            JSONArray json_output = new JSONArray();
-            URL url = new URL(path);
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestProperty("Content-Type", "application/json");
-            conn.setDoOutput(true);
-            conn.setDoInput(true);
-            conn.setRequestMethod("PUT");
-            conn.connect();
-
-            DataOutputStream wr = new DataOutputStream(conn.getOutputStream());
-            wr.writeBytes(jsonObject);
-            wr.flush();
-            wr.close();
-
-            if (conn.getResponseCode() == HttpURLConnection.HTTP_OK) {
-                String server_response = readStream(conn.getInputStream());
-                conn.disconnect();
-                if (!(server_response.charAt(0) == '[')) return null;
-                JSONArray response_json_array;
-                response_json_array = new JSONArray(server_response);
-                return response_json_array;
-            }
-            return json_output;
-        }
-        catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    /* Used to make a patch request to the server. Makes the call on a seperate thread. */
+    /**
+     * sends a json message to the server using the PATCH method
+     * @param field contains the json message being sent and the url path
+     * @return the servers response
+     */
     public static JSONArray patch(DBField field) {
         JSONArray result = null;
         try {
@@ -200,53 +205,54 @@ public class DatabaseConnect {
         return result;
     }
 
-    /* Calls the method patchServer on another thread so the process is asynchronous and not
-       running on the main thread. */
+    /**
+     * asynchronously sends a json message to a server using the patch method
+     */
     private static class asyncPatch extends AsyncTask<DBField, Void, JSONArray> {
         protected JSONArray doInBackground(DBField... fields) {
             for(DBField field : fields){
-                return patchServer(field);
+                String jsonObject = field.getJsonObject();
+                String path = field.getPath();
+                try {
+                    URL url = new URL(path);
+                    HttpURLConnection httpURLConnection = (HttpURLConnection)url.openConnection();
+                    httpURLConnection.setDoOutput(true);
+                    httpURLConnection.setRequestProperty("X-HTTP-Method-Override", "PATCH");
+                    httpURLConnection.setRequestProperty("Accept", "application/json");
+                    httpURLConnection.setRequestMethod("POST");
+                    httpURLConnection.connect();
+
+                    DataOutputStream wr = new DataOutputStream(httpURLConnection.getOutputStream());
+                    wr.writeBytes(jsonObject);
+                    wr.flush();
+                    wr.close();
+
+                    if (httpURLConnection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                        String server_response = readStream(httpURLConnection.getInputStream());
+                        httpURLConnection.disconnect();
+                        if (!(server_response.charAt(0) == '[')) return null;
+                        JSONArray response_json_array;
+                        response_json_array = new JSONArray(server_response);
+                        return response_json_array;
+                    }
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                return null;
             }
             return null;
         }
     }
 
-    /* Completes the patch request. */
-    private static JSONArray patchServer(DBField field){
-        String jsonObject = field.getJsonObject();
-        String path = field.getPath();
-        try {
-            URL url = new URL(path);
-            HttpURLConnection httpURLConnection = (HttpURLConnection)url.openConnection();
-            httpURLConnection.setDoOutput(true);
-            httpURLConnection.setRequestProperty("X-HTTP-Method-Override", "PATCH");
-            httpURLConnection.setRequestProperty("Accept", "application/json");
-            httpURLConnection.setRequestMethod("POST");
-            httpURLConnection.connect();
-
-            DataOutputStream wr = new DataOutputStream(httpURLConnection.getOutputStream());
-            wr.writeBytes(jsonObject);
-            wr.flush();
-            wr.close();
-
-            if (httpURLConnection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-                String server_response = readStream(httpURLConnection.getInputStream());
-                httpURLConnection.disconnect();
-                if (!(server_response.charAt(0) == '[')) return null;
-                JSONArray response_json_array;
-                response_json_array = new JSONArray(server_response);
-                return response_json_array;
-            }
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
+    /**
+     * Method to read the servers response
+     * @param in is the returned stream of bytes from the server
+     * @return the servers response as a string
+     */
     private static String readStream(InputStream in) {
         BufferedReader reader = null;
         StringBuffer response = new StringBuffer();

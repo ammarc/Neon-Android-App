@@ -38,8 +38,6 @@ import itproject.neon_client.activities.NeonARActivity;
 import java.net.Socket;
 import java.util.Map;
 
-import static itproject.neon_client.helpers.Tools.exceptionToast;
-
 public class ChatActivity extends AppCompatActivity {
 
     private static final String TAG = "testing";
@@ -109,12 +107,15 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
 
+        if (ActivityCompat.checkSelfPermission(ChatActivity.this,
+                Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(ChatActivity.this, new String[]{Manifest.permission.CALL_PHONE},1);
+        }
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Call " + friendName + "?");
-        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                // User clicked OK button
+        FloatingActionButton phone = (FloatingActionButton) findViewById(R.id.phone_fab);
+        phone.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
                 Intent callIntent = new Intent(Intent.ACTION_CALL);
                 try {
                     callIntent.setData(Uri.parse("tel:" + FriendHelper.getUserPhoneNumber(friendName)));
@@ -133,28 +134,6 @@ public class ChatActivity extends AppCompatActivity {
                     Toast toast = Toast.makeText(getApplicationContext(),"Call failed",Toast.LENGTH_LONG);
                     toast.show();
                 }
-            }
-        });
-        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                // User cancelled the dialog
-            }
-        });
-        final AlertDialog PhoneCallRequest = builder.create();
-
-
-        if (ActivityCompat.checkSelfPermission(ChatActivity.this,
-                Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(ChatActivity.this, new String[]{Manifest.permission.CALL_PHONE},1);
-        }
-
-        FloatingActionButton phone = (FloatingActionButton) findViewById(R.id.phone_fab);
-        phone.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-
-                PhoneCallRequest.show();
 
             }
         });
@@ -205,7 +184,7 @@ public class ChatActivity extends AppCompatActivity {
         });
 
 
-        builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage(friendName + " has requested your location")
                 .setTitle("Location Sharing");
         builder.setPositiveButton("Accept", new DialogInterface.OnClickListener() {
@@ -235,10 +214,9 @@ public class ChatActivity extends AppCompatActivity {
         chatView.setOnSentMessageListener(new ChatView.OnSentMessageListener() {
             @Override
             public boolean sendMessage(ChatMessage chatMessage) {
-                // Creates a new message and converts it to the correct JSON format to be sent.
-                Message newMessage = new Message(Message.Type.LIVE, chatMessage.getMessage(), friendName, userName, -1);
+                // Asynchronous call that sends the message to the recipients socket.
+                Message newMessage = new Message("live", chatMessage.getMessage(), friendName, userName, -1);
                 org.json.JSONObject messageJson = newMessage.buildJson();
-                // Asynchronous call that sends the message to the server to be processed.
                 new SendMessage().execute(messageJson.toString());
                 removeKeyboard();
                 return true;
@@ -257,13 +235,10 @@ public class ChatActivity extends AppCompatActivity {
 
 
 
-        /* Implements the callback for the client being used to send and recieve the chat messages
-           from the server via websockets. */
+
         mySocket.setClientCallback(new Client.ClientCallback () {
             @Override
-            /* Controls what happens when a message is recieved by the socket.*/
             public void onMessage(final String message) {
-                // Converts string from socket back into JSON.
                 JSONParser parser = new JSONParser();
                 JSONObject json = null;
                 try {
@@ -271,11 +246,8 @@ public class ChatActivity extends AppCompatActivity {
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
-                // Checks the type of message that has been recieved.
-                // Handles if the recieved message is a passed message to be redisplayed.
-                if(json.get("type").toString().equals(Message.Type.PREVIOUS.toString())){
-                    // Checks which user the message originated from so it is displayed to users
-                    // correctly.
+                Log.d("test",json.get("type").toString());
+                if(json.get("type").toString().equals("previous")){
                     if(json.get("toUser").toString().equals(friendName)){
                         addMessage((String) json.get("data"), Long.parseLong(String.valueOf(json.get("time"))), ChatMessage.Type.SENT);
                     }
@@ -283,17 +255,14 @@ public class ChatActivity extends AppCompatActivity {
                         addMessage((String) json.get("data"), Long.parseLong(String.valueOf(json.get("time"))), ChatMessage.Type.RECEIVED);
                     }
                 }
-                // Handles if the message has just been sent from another live socket.
-                else if(json.get("type").toString().equals(Message.Type.LIVE.toString())){
+                else if(json.get("type").toString().equals("live")){
                     addMessage((String) json.get("data"), System.currentTimeMillis(), ChatMessage.Type.RECEIVED);
                 }
 
             }
 
-            /* Displays a new message in the chat window. */
             public void addMessage(final String message, final long time, final ChatMessage.Type type){
-                // Runs the addMessage call on the UI thread as it is modifying the UI and cannot
-                // be run on any other thread.
+                // Need to run the addMessage call on the UI thread as it is modifying the UI
                 runOnUiThread(new Runnable(){
                     public void run(){
                         chatView.addMessage(new ChatMessage(message, time, type));
@@ -303,7 +272,7 @@ public class ChatActivity extends AppCompatActivity {
 
             @Override
             public void onConnect(Socket socket){
-                // Initialises socket with the name of the friend your chatting with and the your username
+                // Initialises socket with the name of the friend your chatting with and the your userName
                 mySocket.initSocket(friendName, userName);
             }
 
@@ -314,7 +283,6 @@ public class ChatActivity extends AppCompatActivity {
 
             @Override
             public void onConnectError(Socket socket, String message) {
-                exceptionToast(getApplicationContext(), message);
             }
         });
 
@@ -342,11 +310,20 @@ public class ChatActivity extends AppCompatActivity {
                 try {
                     mySocket.send(chatMessage + "\n");
                 } catch(NullPointerException e) {
-                    exceptionToast(getApplicationContext(), "Cannot connect to server!");
+                    Tools.exceptionToast(getApplicationContext(), "Cannot connect to server!");
                 }
             }
             return true;
         }
+
+
+        @Override
+        protected void onProgressUpdate(Void... params) { }
+
+        protected void onPostExecute() { }
+
+        @Override
+        protected void onPreExecute() {}
     }
 
     private void removeKeyboard() {
