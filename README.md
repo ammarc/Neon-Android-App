@@ -6,6 +6,10 @@ arena etc. Users also have the ability to chat with each other and
 send friend requests. Furthermore, the location of users are shared
 only when they have allowed others to view their location.
 
+_**Note: the app interfaces with our servers on ports 3000 and 4000,
+which maybe blocked by your network admin. If this is the case,
+try changing to mobile data or to a different network.**_
+
 ## Signing In
 The primary method the app uses to sign up users is to use Facebook.
 When a user signs up, they are assigned a username so that they

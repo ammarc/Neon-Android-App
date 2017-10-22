@@ -38,6 +38,8 @@ import itproject.neon_client.activities.NeonARActivity;
 import java.net.Socket;
 import java.util.Map;
 
+import static itproject.neon_client.helpers.Tools.exceptionToast;
+
 public class ChatActivity extends AppCompatActivity {
 
     private static final String TAG = "testing";
@@ -233,9 +235,10 @@ public class ChatActivity extends AppCompatActivity {
         chatView.setOnSentMessageListener(new ChatView.OnSentMessageListener() {
             @Override
             public boolean sendMessage(ChatMessage chatMessage) {
-                // Asynchronous call that sends the message to the recipients socket.
-                Message newMessage = new Message("live", chatMessage.getMessage(), friendName, userName, -1);
+                // Creates a new message and converts it to the correct JSON format to be sent.
+                Message newMessage = new Message(Message.Type.LIVE, chatMessage.getMessage(), friendName, userName, -1);
                 org.json.JSONObject messageJson = newMessage.buildJson();
+                // Asynchronous call that sends the message to the server to be processed.
                 new SendMessage().execute(messageJson.toString());
                 removeKeyboard();
                 return true;
@@ -254,10 +257,13 @@ public class ChatActivity extends AppCompatActivity {
 
 
 
-
+        /* Implements the callback for the client being used to send and recieve the chat messages
+           from the server via websockets. */
         mySocket.setClientCallback(new Client.ClientCallback () {
             @Override
+            /* Controls what happens when a message is recieved by the socket.*/
             public void onMessage(final String message) {
+                // Converts string from socket back into JSON.
                 JSONParser parser = new JSONParser();
                 JSONObject json = null;
                 try {
@@ -265,8 +271,11 @@ public class ChatActivity extends AppCompatActivity {
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
-                Log.d("test",json.get("type").toString());
-                if(json.get("type").toString().equals("previous")){
+                // Checks the type of message that has been recieved.
+                // Handles if the recieved message is a passed message to be redisplayed.
+                if(json.get("type").toString().equals(Message.Type.PREVIOUS.toString())){
+                    // Checks which user the message originated from so it is displayed to users
+                    // correctly.
                     if(json.get("toUser").toString().equals(friendName)){
                         addMessage((String) json.get("data"), Long.parseLong(String.valueOf(json.get("time"))), ChatMessage.Type.SENT);
                     }
@@ -274,14 +283,17 @@ public class ChatActivity extends AppCompatActivity {
                         addMessage((String) json.get("data"), Long.parseLong(String.valueOf(json.get("time"))), ChatMessage.Type.RECEIVED);
                     }
                 }
-                else if(json.get("type").toString().equals("live")){
+                // Handles if the message has just been sent from another live socket.
+                else if(json.get("type").toString().equals(Message.Type.LIVE.toString())){
                     addMessage((String) json.get("data"), System.currentTimeMillis(), ChatMessage.Type.RECEIVED);
                 }
 
             }
 
+            /* Displays a new message in the chat window. */
             public void addMessage(final String message, final long time, final ChatMessage.Type type){
-                // Need to run the addMessage call on the UI thread as it is modifying the UI
+                // Runs the addMessage call on the UI thread as it is modifying the UI and cannot
+                // be run on any other thread.
                 runOnUiThread(new Runnable(){
                     public void run(){
                         chatView.addMessage(new ChatMessage(message, time, type));
@@ -291,7 +303,7 @@ public class ChatActivity extends AppCompatActivity {
 
             @Override
             public void onConnect(Socket socket){
-                // Initialises socket with the name of the friend your chatting with and the your userName
+                // Initialises socket with the name of the friend your chatting with and the your username
                 mySocket.initSocket(friendName, userName);
             }
 
@@ -302,6 +314,7 @@ public class ChatActivity extends AppCompatActivity {
 
             @Override
             public void onConnectError(Socket socket, String message) {
+                exceptionToast(getApplicationContext(), message);
             }
         });
 
@@ -329,20 +342,11 @@ public class ChatActivity extends AppCompatActivity {
                 try {
                     mySocket.send(chatMessage + "\n");
                 } catch(NullPointerException e) {
-                    Tools.exceptionToast(getApplicationContext(), "Cannot connect to server!");
+                    exceptionToast(getApplicationContext(), "Cannot connect to server!");
                 }
             }
             return true;
         }
-
-
-        @Override
-        protected void onProgressUpdate(Void... params) { }
-
-        protected void onPostExecute() { }
-
-        @Override
-        protected void onPreExecute() {}
     }
 
     private void removeKeyboard() {
